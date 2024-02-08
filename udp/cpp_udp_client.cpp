@@ -9,25 +9,11 @@
 
 
 
-const int SERVER_PORT = 12345;
+const int SERVER_PORT = 25565;
 const int BUFFER_SIZE = 1024;
 
 int main() {
-    std::ifstream din;
-    din.open("hostname.txt"); //open the hostname file
-    std::string hostname; 
-    getline(din, hostname); //Getline doesn't like the type
-    const int length = hostname.length();
-    char* hostname_char = new char[length + 1]; //length +1 for null terminator
-    strcpy(hostname_char, hostname.c_str()); //copy
-
-    std::cout << "Hostname: ";
-    for (int i = 0; i < length; i++) // print the char array
-    { 
-        std::cout << hostname_char[i]; 
-    } 
-
-    const char* SERVER_IP = hostname_char;
+    const char* SERVER_IP = "170.176.232.159";
     // Create socket
     int clientSocket = socket(AF_INET, SOCK_DGRAM, 0);
     if (clientSocket == -1) {
