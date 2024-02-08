@@ -1,3 +1,9 @@
+#import pygame
+def main():
+    print("Hello World")
+    #pygame.display.set_caption("Professor Craven's Cool Game")
+if __name__ == "__main__":
+    main()
 #write a python front end for a laser tag game using the pygame library
 #this is the main file that will be run to start the game
 #this file will be responsible for setting up the game and running the game loop
