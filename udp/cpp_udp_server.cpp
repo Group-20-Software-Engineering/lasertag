@@ -35,7 +35,7 @@ int main() {
     char buffer[BUFFER_SIZE];
 
     while (true) {
-        char* responseMessage;
+        const char* responseMessage;
         // Receive data
         struct sockaddr_in clientAddress;
         socklen_t clientAddrLen = sizeof(clientAddress);
