@@ -50,6 +50,12 @@ int main() {
         buffer[receivedBytes] = '\0'; // Null-terminate the received data
         std::cout << "Received from " << inet_ntoa(clientAddress.sin_addr) << ":" << ntohs(clientAddress.sin_port)
                   << " - " << buffer << std::endl;
+        if(strcmp(buffer, "221"))
+        {
+            const char* responseMessage = "Hello, client! Looks like the game is over.";
+            sendto(serverSocket, responseMessage, strlen(responseMessage), 0,
+               (struct sockaddr*)&clientAddress, sizeof(clientAddress));
+        }
 
         // Send a response (optional)
         const char* responseMessage = "Hello, client! I received your message.";
