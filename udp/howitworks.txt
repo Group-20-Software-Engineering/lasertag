@@ -1,0 +1,9 @@
+Player 20 hits player 31
+20:31
+To shutdown player 31 Broadcast 31
+Player 31 hits player 20
+31:20
+To shutdown player 20, Broadcast 20
+
+Shutdown system 
+221
