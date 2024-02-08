@@ -4,12 +4,22 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <fstream>
 
-const char* SERVER_IP = "10.35.182.195";
+
+
+
 const int SERVER_PORT = 12345;
 const int BUFFER_SIZE = 1024;
 
 int main() {
+    std::ifstream din;
+    din.open("hostname.txt");
+    char* hostname;
+    //getline(din, hostname); //Getline doesn't like the type
+    din >> hostname;
+    std::cout << "Hostname: " << hostname;
+    const char* SERVER_IP = hostname;
     // Create socket
     int clientSocket = socket(AF_INET, SOCK_DGRAM, 0);
     if (clientSocket == -1) {
