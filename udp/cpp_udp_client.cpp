@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-const char* SERVER_IP = "10.35.199.186";
+const char* SERVER_IP = "10.35.182.195";
 const int SERVER_PORT = 12345;
 const int BUFFER_SIZE = 1024;
 
