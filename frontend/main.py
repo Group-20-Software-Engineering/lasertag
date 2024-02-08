@@ -1,7 +1,12 @@
-#import pygame
+import random
+import pygame
+#pygame.init()
 def main():
     print("Hello World")
-    #pygame.display.set_caption("Professor Craven's Cool Game")
+    while(1==1):
+        size = (500,500)
+        screen = pygame.display.set_mode(size)
+        pygame.display.set_caption("Photon")
 if __name__ == "__main__":
     main()
 #write a python front end for a laser tag game using the pygame library
@@ -20,7 +25,7 @@ if __name__ == "__main__":
 #this file will also be responsible for handling game saving and loading
 
 
-import random
+
 
 class Player:
     def __init__(self, name):   #self is a reference to the current instance of the class -- self = this in java
