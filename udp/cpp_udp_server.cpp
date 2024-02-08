@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-const int PORT = 12345;
+const int PORT = 25565;
 const int BUFFER_SIZE = 1024;
 
 int main() {
