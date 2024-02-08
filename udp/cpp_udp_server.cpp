@@ -52,7 +52,7 @@ int main() {
         std::cout << "Received from " << inet_ntoa(clientAddress.sin_addr) << ":" << ntohs(clientAddress.sin_port)
                   << " - " << buffer << std::endl;
 
-        if(strcmp(buffer, "221"))
+        if(strcmp(buffer,"221")== 0)
         {
             responseMessage = "Hello, client! Looks like the game is over.";
             sendto(serverSocket, responseMessage, strlen(responseMessage), 0,
@@ -61,7 +61,7 @@ int main() {
         }
 
         // Send a response (optional)
-        responseMessage = "Hello, client! I received your message.";
+        responseMessage = buffer;
         sendto(serverSocket, responseMessage, strlen(responseMessage), 0,
                (struct sockaddr*)&clientAddress, sizeof(clientAddress));
     }
