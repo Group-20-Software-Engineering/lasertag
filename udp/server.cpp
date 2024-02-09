@@ -94,10 +94,10 @@ int main() {
                (struct sockaddr*)&clientAddress, sizeof(clientAddress));
         }
         else{
-            responseMessage = "Message received.";
+            responseMessage = buffer;
             sendto(sendSocket, responseMessage, strlen(responseMessage), 0,
                (struct sockaddr*)&clientAddress, sizeof(clientAddress));
-
+            
         }
 
         // Send a response (optional)
