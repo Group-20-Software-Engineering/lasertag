@@ -41,8 +41,6 @@ int main() {
     
 
     while (true) {
-
-        
         // Get user input
         std::cout << "Enter a message (or type 'exit' to quit): ";
         std::cin.getline(sendBuffer, sizeof(sendBuffer));
@@ -51,9 +49,6 @@ int main() {
         if (strcmp(sendBuffer, "exit") == 0) {
             break;
         }
-        std::cin.clear();
-        std::cin.ignore(10000, '\n');
-        
 
         // Send the message to the server
         ssize_t sentBytes = sendto(sendSocket, sendBuffer, strlen(sendBuffer), 0,
@@ -76,8 +71,6 @@ int main() {
         socklen_t receiveAddressLen = sizeof(receiveAddress);
         ssize_t receivedBytes = recvfrom(receiveSocket, receiveBuffer, sizeof(receiveBuffer), 0,
                                          (struct sockaddr*)&receiveAddress, &receiveAddressLen);
-        
-        memset(sendBuffer, 0, sizeof(sendBuffer));
 
         if (receivedBytes == -1) {
             std::cerr << "Error receiving data" << std::endl;
@@ -87,9 +80,6 @@ int main() {
         // Print the server's response
         receiveBuffer[receivedBytes] = '\0'; // Null-terminate the received data
         std::cout << "Server response: " << receiveBuffer << std::endl;
-        memset(receiveBuffer, 0, sizeof(receiveBuffer));
-        
-
     }
 
     // Close the socket

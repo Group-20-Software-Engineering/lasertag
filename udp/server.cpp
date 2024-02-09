@@ -102,8 +102,7 @@ int main() {
 
         // Send a response (optional)
         
-        sendto(sendSocket, responseMessage, strlen(responseMessage), 0,
-               (struct sockaddr*)&clientAddress, sizeof(clientAddress));
+        
     }
 
     // Close the sockets
