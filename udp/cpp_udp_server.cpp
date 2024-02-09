@@ -77,7 +77,7 @@ int main() {
 
         // Print received data
         buffer[receivedBytes] = '\0'; // Null-terminate the received data
-        
+
         std::cout << "Received from " << inet_ntoa(clientAddress.sin_addr) << ":" << ntohs(clientAddress.sin_port)
                   << " - " << buffer << std::endl;
 
@@ -93,9 +93,12 @@ int main() {
             sendto(sendSocket, responseMessage, strlen(responseMessage), 0,
                (struct sockaddr*)&clientAddress, sizeof(clientAddress));
         }
+        else{
+            responseMessage = buffer;
+        }
 
         // Send a response (optional)
-        responseMessage = buffer;
+        
         sendto(sendSocket, responseMessage, strlen(responseMessage), 0,
                (struct sockaddr*)&clientAddress, sizeof(clientAddress));
     }
