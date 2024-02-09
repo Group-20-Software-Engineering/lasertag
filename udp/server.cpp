@@ -106,6 +106,7 @@ int main() {
     // Close the sockets
     close(sendSocket);
     close(receiveSocket);
+    std::cout << "Sockets Closed."<<std::endl; 
 
 
     return 0;
