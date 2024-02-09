@@ -6,7 +6,7 @@
 #include <arpa/inet.h>
 
 const int PORT = 25565; //make this 7501 later
-const int sendPort = 8123; //make this 7500 later
+const int sendPort = 25565; //make this 7500 later
 const int BUFFER_SIZE = 1024;
 
 int main() {

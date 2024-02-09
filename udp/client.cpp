@@ -10,7 +10,7 @@
 
 
 const int sendPort = 25565;
-const int receivePort = 8123;
+const int receivePort = 25565;
 const int BUFFER_SIZE = 1024;
 
 int main() {
@@ -60,6 +60,7 @@ int main() {
 
         // // Receive the response from the server (optional)
         // struct sockaddr_in receiveAddress;
+        std::cout << "Waiting for server response..." << std::endl;
 
             // Set up server address
         struct sockaddr_in receiveAddress;
@@ -71,6 +72,7 @@ int main() {
         socklen_t receiveAddressLen = sizeof(receiveAddress);
         ssize_t receivedBytes = recvfrom(receiveSocket, receiveBuffer, sizeof(receiveBuffer), 0,
                                          (struct sockaddr*)&receiveAddress, &receiveAddressLen);
+                                         
 
         if (receivedBytes == -1) {
             std::cerr << "Error receiving data" << std::endl;
