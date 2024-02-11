@@ -1,31 +1,38 @@
 import random
 import pygame
-#pygame.init()
+pygame.init()
+font = pygame.font.Font('freesansbold.ttf', 36)
+WHITE = (255, 255, 255)
+BLUE = (0, 71, 171)
+done = False
+clock = pygame.time.Clock()
+size = (900,700)
+screen = pygame.display.set_mode(size)
+pygame.display.set_caption("Photon")
+title = pygame.image.load("C:\\Users\\zheng\\OneDrive\\Desktop\\software\\lasertag\\frontend\\logo.jpg").convert()
+title = pygame.transform.scale(title, (500,400))
+    
+y = 0
+  
+while not done:
+        
+        
+        
+    screen.fill(BLUE)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+              
+    screen.blit(title,(screen.get_width()/2 - title.get_width()/2,screen.get_height() - y))
+    y = y + 1
+    storytext = font.render("Hello World", True, WHITE)
+    screen.blit(storytext,(screen.get_width()/2 - storytext.get_width()/2,screen.get_height() + title.get_height() -y))
+    pygame.display.flip()
+
+    clock.tick(60)
 def main():
     print("Hello World")
-    WHITE = (255, 255, 255)
-    BLUE = (0, 71, 171)
-    done = False
-    clock = pygame.time.Clock()
-    size = (900,700)
-    screen = pygame.display.set_mode(size)
-    title = pygame.image.load("C:\\Users\\zheng\\OneDrive\\Desktop\\software\\lasertag\\frontend\\logo.jpg").convert()
-    title = pygame.transform.scale(title, (500,400))
-    screen.fill(BLUE)
-    screen.blit(title,(200,200))
-  
-    while not done:
-        
-        
-        pygame.display.set_caption("Photon")
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
-        
 
-        pygame.display.flip()
-
-        clock.tick(60)
         
 if __name__ == "__main__":
     main()
