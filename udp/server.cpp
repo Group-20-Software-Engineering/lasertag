@@ -77,6 +77,7 @@ int main() {
 
         // Print received data
         buffer[receivedBytes] = '\0'; // Null-terminate the received data
+
         std::cout << "Received from " << inet_ntoa(clientAddress.sin_addr) << ":" << ntohs(clientAddress.sin_port)
                   << " - " << buffer << std::endl;
 
@@ -85,25 +86,29 @@ int main() {
             responseMessage = "Hello, client! Welcome to laser hair removal inc.";
             sendto(sendSocket, responseMessage, strlen(responseMessage), 0,
                (struct sockaddr*)&clientAddress, sizeof(clientAddress));
-            break;
         }
         else if(strcmp(buffer,"221")== 0)
         {
             responseMessage = "Hello, client! Looks like the game is over.";
             sendto(sendSocket, responseMessage, strlen(responseMessage), 0,
                (struct sockaddr*)&clientAddress, sizeof(clientAddress));
-            break;
+        }
+        else{
+            responseMessage = buffer;
+            sendto(sendSocket, responseMessage, strlen(responseMessage), 0,
+               (struct sockaddr*)&clientAddress, sizeof(clientAddress));
+            
         }
 
         // Send a response (optional)
-        responseMessage = buffer;
-        sendto(sendSocket, responseMessage, strlen(responseMessage), 0,
-               (struct sockaddr*)&clientAddress, sizeof(clientAddress));
+        
+        
     }
 
     // Close the sockets
     close(sendSocket);
     close(receiveSocket);
+    std::cout << "Sockets Closed."<<std::endl; 
 
 
     return 0;
