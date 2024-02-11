@@ -4,16 +4,24 @@ import pygame
 def main():
     print("Hello World")
     WHITE = (255, 255, 255)
+    BLUE = (0, 71, 171)
     done = False
     clock = pygame.time.Clock()
+    size = (900,700)
+    screen = pygame.display.set_mode(size)
+    title = pygame.image.load("C:\\Users\\zheng\\OneDrive\\Desktop\\software\\lasertag\\frontend\\logo.jpg").convert()
+    title = pygame.transform.scale(title, (500,400))
+    screen.fill(BLUE)
+    screen.blit(title,(200,200))
+  
     while not done:
-        size = (500,500)
-        screen = pygame.display.set_mode(size)
+        
+        
         pygame.display.set_caption("Photon")
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
-        screen.fill(WHITE)
+        
 
         pygame.display.flip()
 
