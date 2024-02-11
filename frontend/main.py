@@ -3,10 +3,22 @@ import pygame
 #pygame.init()
 def main():
     print("Hello World")
-    while(1==1):
+    WHITE = (255, 255, 255)
+    done = False
+    clock = pygame.time.Clock()
+    while not done:
         size = (500,500)
         screen = pygame.display.set_mode(size)
         pygame.display.set_caption("Photon")
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True
+        screen.fill(WHITE)
+
+        pygame.display.flip()
+
+        clock.tick(60)
+        
 if __name__ == "__main__":
     main()
 #write a python front end for a laser tag game using the pygame library
