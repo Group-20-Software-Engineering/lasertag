@@ -1,5 +1,6 @@
 import random
 import pygame
+import os
 pygame.init()
 font = pygame.font.Font('freesansbold.ttf', 36)
 WHITE = (255, 255, 255)
@@ -28,14 +29,20 @@ screen = pygame.display.set_mode(size)
 #         and space lasers.
 
 #             May your aim be true,
-#         good luck soldier."""     
+#         good luck soldier."""    
+
+currentDir = os.getcwd()
+image_path = "frontend/logo.jpg"
+full_path = os.path.join(currentDir,image_path) 
 
 pygame.display.set_caption("Photon")
-title = pygame.image.load("/home/max/Desktop/School/software/lasertag/frontend/logo.jpg").convert()
+title = pygame.image.load(full_path).convert()
 title = pygame.transform.scale(title, (500,400))
     
 y = 0
 i = 1
+
+
 
 while not done:
         
