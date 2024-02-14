@@ -2,6 +2,8 @@ import random
 import time
 import pygame
 import os
+
+
 pygame.init()
 font = pygame.font.Font('freesansbold.ttf', 36)
 WHITE = (255, 255, 255)
