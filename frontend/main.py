@@ -1,4 +1,5 @@
 import random
+import time
 import pygame
 import os
 pygame.init()
@@ -43,6 +44,7 @@ y = 0
 i = 1
 
 
+start = time.time()
 
 while not done:
         
@@ -87,6 +89,14 @@ while not done:
     pygame.display.flip()
 
     clock.tick(60)
+
+
+    end = time.time()
+    total = end - start
+    if (total > 20):
+            done = True
+
+
 def main():
     print("Hello World")
 
