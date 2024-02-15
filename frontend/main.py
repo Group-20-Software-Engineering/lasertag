@@ -5,7 +5,8 @@ import os
 
 
 pygame.init()
-font = pygame.font.Font('freesansbold.ttf', 36)
+fontName = "frontend/8-bit.ttf"
+font = pygame.font.Font(fontName, 36)
 WHITE = (255, 255, 255)
 BLUE = (0, 71, 171)
 BLACK = (0, 0, 0)
