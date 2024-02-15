@@ -5,8 +5,10 @@ import os
 
 
 pygame.init()
-fontName = "frontend/8-bit.ttf"
-font = pygame.font.Font(fontName, 36)
+coolFontName = "frontend/8-bit.ttf"
+coolFont = pygame.font.Font(coolFontName, 36)
+defFontName = "freesansbold.ttf"
+defFont = pygame.font.Font(defFontName, 24)
 WHITE = (255, 255, 255)
 BLUE = (0, 71, 171)
 BLACK = (0, 0, 0)
@@ -34,6 +36,25 @@ screen = pygame.display.set_mode(size)
 
 #             May your aim be true,
 #         good luck soldier."""    
+
+
+def blit_text(surface, text, pos, font, color=pygame.Color('yellow')):
+    words = [word.split(' ') for word in text.splitlines()]
+    space = font.size(' ')[0]
+    max_width, max_height = surface.get_size()
+    x, y = pos
+    for line in words:
+        for word in line:
+            word_surface = font.render(word, 0, color)
+            word_width, word_height = word_surface.get_size()
+            if x + word_width >= max_width:
+                x = pos[0]
+                y += word_height
+            surface.blit(word_surface, (x, y))
+            x += word_width + space
+        x = pos[0]
+        y += word_height
+
 
 currentDir = os.getcwd()
 image_path = "frontend/logo.jpg"
@@ -85,9 +106,12 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
               
+    
+    y = y + 2
+    rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         .\n        .\n        ."
+    blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 0 - y), defFont)
     screen.blit(title,(screen.get_width()/2 - title.get_width()/2,screen.get_height() - y))
-    y = y + 1
-    storytext = font.render("Welcome to Laser Tag", True, YELLOW)
+    storytext = coolFont.render("Welcome to Laser Tag", True, YELLOW)
     screen.blit(storytext,(screen.get_width()/2 - storytext.get_width()/2,screen.get_height() + title.get_height() -y))
     pygame.display.flip()
 
