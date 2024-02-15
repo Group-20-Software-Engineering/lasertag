@@ -6,7 +6,7 @@ import os
 
 pygame.init()
 coolFontName = "frontend/8-bit.ttf"
-coolFont = pygame.font.Font(coolFontName, 36)
+coolFont = pygame.font.Font(coolFontName, 18)
 defFontName = "freesansbold.ttf"
 defFont = pygame.font.Font(defFontName, 24)
 WHITE = (255, 255, 255)
@@ -107,12 +107,14 @@ while not done:
             done = True
               
     
-    y = y + 2
+    y = y + 1
     rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n         |"
-    blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 0 - y), defFont)
+    blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 20 - y), defFont)
     screen.blit(title,(screen.get_width()/2 - title.get_width()/2,screen.get_height() - y))
-    storytext = coolFont.render("Welcome to Laser Tag", True, YELLOW)
-    screen.blit(storytext,(screen.get_width()/2 - storytext.get_width()/2,screen.get_height() + title.get_height() -y))
+    storyText = "        In a world where lasers\n        (which aren't actually lasers\n        but simpler infrared lights\n        emitted as beams)\n                KILL.\n\n            But they don't kill you,\n        more like they kill your\n        frabricated health assigned\n        to your player when\n        you signed up for\n        this game.\n\n            EMBARK on a glorious\n        journey of action, adventure,\n        and space lasers.\n\n            May your aim be true,\n        good luck soldier."
+    blit_text(screen, storyText, (screen.get_width()/2 - title.get_width()/2 - 40,screen.get_height() + title.get_height() - y), coolFont)
+    # storytext = coolFont.render("Welcome to Laser Tag", True, YELLOW)
+    # screen.blit(storytext,(screen.get_width()/2 - storytext.get_width()/2,screen.get_height() + title.get_height() -y))
     pygame.display.flip()
 
     clock.tick(60)
@@ -120,7 +122,7 @@ while not done:
 
     end = time.time()
     total = end - start
-    if (total > 20):
+    if (total > 30):
             done = True
 
 
