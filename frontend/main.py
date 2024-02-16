@@ -62,7 +62,7 @@ full_path = os.path.join(currentDir,image_path)
 
 pygame.display.set_caption("Photon")
 title = pygame.image.load(full_path).convert()
-title = pygame.transform.scale(title, (500,400))
+title = pygame.transform.scale(title, (500,242))
     
 y = 0
 i = 1
@@ -108,10 +108,10 @@ while not done:
               
     
     y = y + 1
-    rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n         |"
+    rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n"
     blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 20 - y), defFont)
     screen.blit(title,(screen.get_width()/2 - title.get_width()/2,screen.get_height() - y))
-    storyText = "        In a world where lasers\n        (which aren't actually lasers\n        but simpler infrared lights\n        emitted as beams)\n                KILL.\n\n            But they don't kill you,\n        more like they kill your\n        frabricated health assigned\n        to your player when\n        you signed up for\n        this game.\n\n            EMBARK on a glorious\n        journey of action, adventure,\n        and space lasers.\n\n            May your aim be true,\n        good luck soldier."
+    storyText = "\n\n             In a world where lasers\n        (which aren't actually lasers\n         but simpler infrared lights\n                   emitted as beams)\n                            KILL.\n\n            But they don't kill you,\n           more like they kill your\n        fabricated health assigned\n            to your player when you\n           signed up for this game.\n\n              EMBARK on a glorious\n        journey of action, adventure,\n                  and space lasers.\n\n               May your aim be true,\n                 good luck soldier."
     blit_text(screen, storyText, (screen.get_width()/2 - title.get_width()/2 - 40,screen.get_height() + title.get_height() - y), coolFont)
     # storytext = coolFont.render("Welcome to Laser Tag", True, YELLOW)
     # screen.blit(storytext,(screen.get_width()/2 - storytext.get_width()/2,screen.get_height() + title.get_height() -y))
