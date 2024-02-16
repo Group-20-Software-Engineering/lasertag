@@ -8,7 +8,8 @@ pygame.init()
 
 currentDir = os.getcwd()
 
-coolFontName = os.path.join(currentDir, "frontend/8-bit.ttf")
+#coolFontName = os.path.join(currentDir, "frontend/8-bit.ttf")
+coolFontName = "8-bit.ttf"
 coolFont = pygame.font.Font(coolFontName, 18)
 defFontName = "freesansbold.ttf"
 defFont = pygame.font.Font(defFontName, 24)
@@ -60,11 +61,11 @@ def blit_text(surface, text, pos, font, color=pygame.Color('yellow')):
 
 
 
-image_path = "frontend/logo.jpg"
-full_path = os.path.join(currentDir,image_path) 
+image_path = "logo.jpg"
+
 
 pygame.display.set_caption("Photon")
-title = pygame.image.load(full_path).convert()
+title = pygame.image.load(image_path).convert()
 title = pygame.transform.scale(title, (500,242))
     
 y = 0
