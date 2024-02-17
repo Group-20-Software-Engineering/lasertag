@@ -9,8 +9,8 @@
 
 
 
-const int sendPort = 25565;
-const int receivePort = 8123;
+const int sendPort = 7501;
+const int receivePort = 7500;
 const int BUFFER_SIZE = 1024;
 
 int main() {
