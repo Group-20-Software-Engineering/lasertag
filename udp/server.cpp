@@ -5,112 +5,54 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-const int PORT = 7501; //make this 7501 later
-const int sendPort = 7500; //make this 7500 later
+const int PORT = 7501;
 const int BUFFER_SIZE = 1024;
 
 int main() {
-//--------------------------------------------------------------------------------------------------------
-//Socket to LISTEN
-    // Create socket
-    int receiveSocket = socket(AF_INET, SOCK_DGRAM, 0);
-    if (receiveSocket == -1) {
-        std::cerr << "Error creating receive socket" << std::endl;
+    int socketFD = socket(AF_INET, SOCK_DGRAM, 0);
+    if (socketFD == -1) {
+        std::cerr << "Error creating socket" << std::endl;
         return 1;
     }
-    
-    // Set up server address
-    struct sockaddr_in receiveAddress;
-    memset(&receiveAddress, 0, sizeof(receiveAddress));
-    receiveAddress.sin_family = AF_INET;
-    receiveAddress.sin_addr.s_addr = INADDR_ANY;
-    receiveAddress.sin_port = htons(PORT);
 
-    // Bind the socket to the specified port
-    if (bind(receiveSocket, (struct sockaddr*)&receiveAddress, sizeof(receiveAddress)) == -1) {
+    struct sockaddr_in serverAddress;
+    memset(&serverAddress, 0, sizeof(serverAddress));
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_addr.s_addr = INADDR_ANY;
+    serverAddress.sin_port = htons(PORT);
+
+    if (bind(socketFD, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1) {
         std::cerr << "Error binding socket" << std::endl;
-        close(receiveSocket);
+        close(socketFD);
         return 1;
     }
 
     std::cout << "UDP Server is listening on port " << PORT << std::endl;
 
-//--------------------------------------------------------------------------------------------------------
-//Socket to SEND BACK
-    // Create socket
-    int sendSocket = socket(AF_INET, SOCK_DGRAM, 0);
-    if (sendSocket == -1) {
-        std::cerr << "Error creating send socket" << std::endl;
-        return 1;
-    }
-    // Set up server address
-        struct sockaddr_in sendAddress;
-        memset(&sendAddress, 0, sizeof(sendAddress));
-        sendAddress.sin_family = AF_INET;
-        sendAddress.sin_addr.s_addr = INADDR_ANY;
-        sendAddress.sin_port = htons(sendPort);
-
-        // Bind the socket to the specified port
-        if (bind(sendSocket, (struct sockaddr*)&sendAddress, sizeof(sendAddress)) == -1) {
-            std::cerr << "Error binding socket" << std::endl;
-            close(sendSocket);
-            return 1;
-        }
-
-        std::cout << "UDP Server is sending on port " << sendPort << std::endl;
-//--------------------------------------------------------------------------------------------------------
-//Handle operation 
     char buffer[BUFFER_SIZE];
-
     while (true) {
-        const char* responseMessage;
-        // Receive data
         struct sockaddr_in clientAddress;
         socklen_t clientAddrLen = sizeof(clientAddress);
-        ssize_t receivedBytes = recvfrom(receiveSocket, buffer, sizeof(buffer), 0,
-                                        (struct sockaddr*)&clientAddress, &clientAddrLen);
-
+        ssize_t receivedBytes = recvfrom(socketFD, buffer, BUFFER_SIZE, 0, (struct sockaddr*)&clientAddress, &clientAddrLen);
         if (receivedBytes == -1) {
             std::cerr << "Error receiving data" << std::endl;
             continue;
         }
 
-        // Print received data
         buffer[receivedBytes] = '\0'; // Null-terminate the received data
+        std::cout << "Received: " << buffer << std::endl;
 
-        std::cout << "Received from " << inet_ntoa(clientAddress.sin_addr) << ":" << ntohs(clientAddress.sin_port)
-                  << " - " << buffer << std::endl;
-
-        if(strcmp(buffer,"202")== 0)
-        {
+        // Respond based on the received message
+        const char* responseMessage = "Default response";
+        if (strcmp(buffer, "202") == 0) {
             responseMessage = "Hello, client! Welcome to laser hair removal inc.";
-            sendto(sendSocket, responseMessage, strlen(responseMessage), 0,
-               (struct sockaddr*)&clientAddress, sizeof(clientAddress));
-        }
-        else if(strcmp(buffer,"221")== 0)
-        {
+        } else if (strcmp(buffer, "221") == 0) {
             responseMessage = "Hello, client! Looks like the game is over.";
-            sendto(sendSocket, responseMessage, strlen(responseMessage), 0,
-               (struct sockaddr*)&clientAddress, sizeof(clientAddress));
-        }
-        else{
-            responseMessage = buffer;
-            sendto(sendSocket, responseMessage, strlen(responseMessage), 0,
-               (struct sockaddr*)&clientAddress, sizeof(clientAddress));
-            
         }
 
-        // Send a response (optional)
-        
-        
+        sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
     }
 
-    // Close the sockets
-    close(sendSocket);
-    close(receiveSocket);
-    std::cout << "Sockets Closed."<<std::endl; 
-
-
+    close(socketFD);
     return 0;
 }
-

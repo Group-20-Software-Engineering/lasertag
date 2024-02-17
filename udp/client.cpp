@@ -4,75 +4,52 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <fstream>
 
-
-
-
-const int sendPort = 7501;
-const int receivePort = 7500;
+const int SERVER_PORT = 7501; // Server's listening port
 const int BUFFER_SIZE = 1024;
 
 int main() {
-    const char* SERVER_IP = "170.176.232.159";
+    const char* SERVER_IP = "170.176.232.159"; // Server IP address
     // Create socket
-    int sendSocket = socket(AF_INET, SOCK_DGRAM, 0);
-    if (sendSocket == -1) {
+    int socketFD = socket(AF_INET, SOCK_DGRAM, 0);
+    if (socketFD == -1) {
         std::cerr << "Error creating socket" << std::endl;
         return 1;
     }
 
     // Set up server address
-    struct sockaddr_in sendAddress;
-    memset(&sendAddress, 0, sizeof(sendAddress));
-    sendAddress.sin_family = AF_INET;
-    sendAddress.sin_addr.s_addr = inet_addr(SERVER_IP);
-    sendAddress.sin_port = htons(sendPort);
-    char sendBuffer[BUFFER_SIZE];
+    struct sockaddr_in serverAddress;
+    memset(&serverAddress, 0, sizeof(serverAddress));
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_addr.s_addr = inet_addr(SERVER_IP);
+    serverAddress.sin_port = htons(SERVER_PORT);
 
-    //Create recive socket
-    int receiveSocket = socket(AF_INET, SOCK_DGRAM, 0);
-    if (receiveSocket == -1) {
-        std::cerr << "Error creating socket" << std::endl;
-        return 1;
-    }
-
-    char receiveBuffer[BUFFER_SIZE];
-    
+    char buffer[BUFFER_SIZE];
+    struct sockaddr_in fromAddress;
+    socklen_t fromAddressLen = sizeof(fromAddress);
 
     while (true) {
-        // Get user input
         std::cout << "Enter a message (or type 'exit' to quit): ";
-        std::cin.getline(sendBuffer, sizeof(sendBuffer));
+        std::cin.getline(buffer, BUFFER_SIZE);
 
         // Check for exit command
-        if (strcmp(sendBuffer, "exit") == 0) {
+        if (strcmp(buffer, "exit") == 0) {
             break;
         }
 
         // Send the message to the server
-        ssize_t sentBytes = sendto(sendSocket, sendBuffer, strlen(sendBuffer), 0,
-                                   (struct sockaddr*)&sendAddress, sizeof(sendAddress));
+        ssize_t sentBytes = sendto(socketFD, buffer, strlen(buffer), 0,
+                                   (struct sockaddr*)&serverAddress, sizeof(serverAddress));
         if (sentBytes == -1) {
             std::cerr << "Error sending data" << std::endl;
             continue;
         }
 
-        // // Receive the response from the server (optional)
-        // struct sockaddr_in receiveAddress;
-        std::cout << "Waiting for server response..." << std::endl;
+        std::cout << "Message sent, waiting for server response..." << std::endl;
 
-            // Set up server address
-        struct sockaddr_in receiveAddress;
-        memset(&receiveAddress, 0, sizeof(receiveAddress));
-        receiveAddress.sin_family = AF_INET;
-        receiveAddress.sin_addr.s_addr = inet_addr(SERVER_IP);
-        receiveAddress.sin_port = htons(receivePort);
-        
-        socklen_t receiveAddressLen = sizeof(receiveAddress);
-        ssize_t receivedBytes = recvfrom(receiveSocket, receiveBuffer, sizeof(receiveBuffer), 0,
-                                         (struct sockaddr*)&receiveAddress, &receiveAddressLen);
-                                         
+        // Receive the response from the server
+        ssize_t receivedBytes = recvfrom(socketFD, buffer, BUFFER_SIZE, 0,
+                                         (struct sockaddr*)&fromAddress, &fromAddressLen);
 
         if (receivedBytes == -1) {
             std::cerr << "Error receiving data" << std::endl;
@@ -80,14 +57,12 @@ int main() {
         }
 
         // Print the server's response
-        receiveBuffer[receivedBytes] = '\0'; // Null-terminate the received data
-        std::cout << "Server response: " << receiveBuffer << std::endl;
+        buffer[receivedBytes] = '\0'; // Null-terminate the received data
+        std::cout << "Server response: " << buffer << std::endl;
     }
 
     // Close the socket
-    close(sendSocket);
-    close(receiveSocket);
+    close(socketFD);
 
     return 0;
 }
-
