@@ -11,3 +11,4 @@ cd "$directory" || exit
 
 # Run the Python file
 python3 "$filename"
+
