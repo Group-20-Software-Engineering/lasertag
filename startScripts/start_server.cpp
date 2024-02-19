@@ -4,6 +4,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <cstdlib>
 
 const int PORT = 7501;
 const int BUFFER_SIZE = 1024;
@@ -45,7 +46,7 @@ int main() {
         // Respond based on the received message
         const char* responseMessage = "Default response";
         if (strcmp(buffer, "100") == 0) {
-            system("~/home/junior_second_semester/Software_Eng/lasertag/startScripts/true_start.sh");
+            system("/home/main/school/junior_second_semester/Software_Eng/lasertag/startScripts");
             
         } 
         sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
