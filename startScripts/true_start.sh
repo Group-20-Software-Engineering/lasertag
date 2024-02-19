@@ -1,0 +1,1 @@
+tmux new -s lasertag-session ./start_server.sh
