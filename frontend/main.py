@@ -10,8 +10,8 @@ currentDir = os.getcwd()
 
 #coolFontName = os.path.join(currentDir, "frontend/8-bit.ttf")
 coolFontName = "8-bit.ttf"
-coolFont = pygame.font.Font(coolFontName, 18)
 defFontName = "freesansbold.ttf"
+coolFont = pygame.font.Font(coolFontName, 18) #changing font because on mine it doesn't work for the cool font
 defFont = pygame.font.Font(defFontName, 24)
 WHITE = (255, 255, 255)
 BLUE = (0, 71, 171)
@@ -70,9 +70,14 @@ title = pygame.transform.scale(title, (500,242))
     
 y = 0
 i = 1
-
-
+userInput = ''
+InputColorActive = pygame.Color('lightskyblue3')
+InputColorPassive = pygame.Color('chartreuse4')
+InputBoxColor = InputColorPassive
+active = False
+inputBox = pygame.Rect(200, 200, 140, 32)
 start = time.time()
+
 
 while not done:
         
@@ -80,7 +85,7 @@ while not done:
         
     screen.fill(BLACK)
 
-
+    
     a = random.randrange(899) + 1
     b = random.randrange(699) + 1
     pygame.draw.circle(screen, WHITE,(a,b), 2)
@@ -109,8 +114,15 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
-              
+        
+     
+
+      
     
+
+    textSurface = coolFont.render(userInput, True, (255, 255, 255))
+    screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
+    inputBox.w = max(100, textSurface.get_width()+10)
     y = y + 1
     rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n"
     blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 20 - y), defFont)
@@ -119,16 +131,31 @@ while not done:
     blit_text(screen, storyText, (screen.get_width()/2 - title.get_width()/2 - 40,screen.get_height() + title.get_height() - y), coolFont)
     # storytext = coolFont.render("Welcome to Laser Tag", True, YELLOW)
     # screen.blit(storytext,(screen.get_width()/2 - storytext.get_width()/2,screen.get_height() + title.get_height() -y))
+    
+    
+    end = time.time()
+    total = end - start
+    if (total > 2):
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if inputBox.collidepoint(event.pos):
+                    active = True
+                else:
+                    active = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    userInput = userInput[:-1]
+                else:
+                    userInput += event.unicode
+        if active:
+            InputBoxColor = InputColorActive
+        else:
+            InputBoxColor = InputColorPassive
+        pygame.draw.rect(screen, InputBoxColor, inputBox)
+        #done = True
     pygame.display.flip()
 
     clock.tick(60)
-
-
-    end = time.time()
-    total = end - start
-    if (total > 30):
-            done = True
-
 
 def main():
     print("Hello World")
