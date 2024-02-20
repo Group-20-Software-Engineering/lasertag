@@ -1,16 +1,17 @@
 import random
 import time
 import pygame
-from dotenv import load_dotenv #holds api keys
-load_dotenv()
+import sys
+#from dotenv import load_dotenv #holds api keys
+#load_dotenv()
 import os
 
-from supabase import create_client, Client 
+#from supabase import create_client, Client 
 
 url: str = os.environ.get("SUPABASE_URL")
 key: str = os.environ.get("SUPABASE_KEY")
 
-supabase: Client = create_client(url, key)
+#supabase: Client = create_client(url, key)
 
 pygame.init()
 
@@ -83,7 +84,7 @@ InputColorActive = pygame.Color('lightskyblue3')
 InputColorPassive = pygame.Color('chartreuse4')
 InputBoxColor = InputColorPassive
 active = False
-inputBox = pygame.Rect(200, 200, 140, 32)
+inputBox = pygame.Rect(400, 400, 400, 40)
 start = time.time()
 
 
@@ -158,7 +159,7 @@ while not done:
         else:
             InputBoxColor = InputColorPassive
         pygame.draw.rect(screen, InputBoxColor, inputBox)
-        textSurface = coolFont.render(userInput, True, (255, 255, 255))
+        textSurface = coolFont.render(userInput, True, YELLOW)
         screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
         inputBox.w = max(100, textSurface.get_width()+10)
         #done = True
