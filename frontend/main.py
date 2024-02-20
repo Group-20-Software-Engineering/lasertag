@@ -120,9 +120,7 @@ while not done:
       
     
 
-    textSurface = coolFont.render(userInput, True, (255, 255, 255))
-    screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
-    inputBox.w = max(100, textSurface.get_width()+10)
+    
     y = y + 1
     rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n"
     blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 20 - y), defFont)
@@ -152,6 +150,9 @@ while not done:
         else:
             InputBoxColor = InputColorPassive
         pygame.draw.rect(screen, InputBoxColor, inputBox)
+        textSurface = coolFont.render(userInput, True, (255, 255, 255))
+        screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
+        inputBox.w = max(100, textSurface.get_width()+10)
         #done = True
     pygame.display.flip()
 
