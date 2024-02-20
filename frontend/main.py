@@ -142,7 +142,7 @@ while not done:
     
     end = time.time()
     total = end - start
-    if (total > 2):
+    while (total > 2):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if inputBox.collidepoint(event.pos):
@@ -162,6 +162,7 @@ while not done:
         textSurface = coolFont.render(userInput, True, YELLOW)
         screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
         inputBox.w = max(100, textSurface.get_width()+10)
+        pygame.display.update()
         #done = True
     pygame.display.flip()
 
