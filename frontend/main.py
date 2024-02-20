@@ -14,6 +14,7 @@ key: str = os.environ.get("SUPABASE_KEY")
 #supabase: Client = create_client(url, key)
 
 pygame.init()
+pygame.key.set_repeat(500, 100)
 
 currentDir = os.getcwd()
 
