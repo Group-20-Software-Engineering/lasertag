@@ -49,6 +49,9 @@ int main() {
             system("/home/main/school/junior_second_semester/Software_Eng/lasertag/startScripts/true_start.sh");
             
         } 
+        else if(strcmp(buffer, "101") == 0){
+            
+        }
         sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
     }
 
