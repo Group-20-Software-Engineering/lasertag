@@ -10,4 +10,4 @@ Repository dedicated to developing the software to run a game utilizing the Phot
 - Click Start Game
 
 # TO QUIT
-- The program should quit automatically, but if it does not ctrl + c the terminal that is running the python code
+- The program should quit automatically, but if it does not `ctrl + c` the terminal that is running the Python code
