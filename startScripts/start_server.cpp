@@ -47,7 +47,6 @@ int main() {
         const char* responseMessage = "Default response";
         if (strcmp(buffer, "100") == 0) {
             system("/home/main/school/junior_second_semester/Software_Eng/lasertag/startScripts/start.sh");
-            return false;
             
         } 
         else if(strcmp(buffer, "101") == 0){

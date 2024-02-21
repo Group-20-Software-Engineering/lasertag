@@ -1,7 +1,7 @@
 import socket
 
 server_ip = '170.176.232.159'
-port = 7501
+port = 7500
 message = '100'
 
 def send_udp_packet(server_ip, port, message):
@@ -22,7 +22,7 @@ def send_udp_packet(server_ip, port, message):
 
 # Replace 'localhost' with your server's IP address if it's not running locally
 server_ip = '170.176.232.159'
-port = 7501
+port = 7500
 message = '100'
 
 send_udp_packet(server_ip, port, message)
