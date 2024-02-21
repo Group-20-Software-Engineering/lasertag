@@ -6,7 +6,7 @@
 #include <arpa/inet.h>
 #include <cstdlib>
 
-const int PORT = 7501;
+const int PORT = 7500;
 const int BUFFER_SIZE = 1024;
 
 int main() {
