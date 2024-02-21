@@ -1,6 +1,5 @@
-# lasertag
-Software Engineering project
-Team 20
+# Photon LaserTag Software
+Repository dedicated to developing the software to run a game utilizing the Photon Lasertag equipment.
 
 
 # TO RUN
