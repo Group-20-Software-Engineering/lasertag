@@ -165,7 +165,7 @@ while not exitIntroScreen:
     
     end = time.time()
     total = end - start
-    if (total > 27):
+    if (total > 1):
         exitIntroScreen = True
         inEntryScreen = True
     
@@ -173,6 +173,9 @@ while not exitIntroScreen:
     while ((exitIntroScreen == True) and (inEntryScreen == True)):
         screen.fill(BLACK)
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exitProgram = True
+                inEntryScreen = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if inputBox.collidepoint(event.pos):
                     active = True
