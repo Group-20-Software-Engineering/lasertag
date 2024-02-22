@@ -195,6 +195,12 @@ while not exitIntroScreen:
                     exitProgram = True
                 else:
                     userInput += event.unicode
+            #if userInput == 'exists':
+                #idNamePairFound = True
+                #display welcome text with registered codename - potental option to change existing codename
+                #ask for users machine code
+                #start game button
+                     
         if active:
             InputBoxColor = InputColorActive
         else:
