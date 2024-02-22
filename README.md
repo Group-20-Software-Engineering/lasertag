@@ -6,7 +6,7 @@ Repository dedicated to developing the software to run a game utilizing the Phot
 
 - Clone the project `git clone https://github.com/Group-20-Software-Engineering/lasertag`
 - Run the project `python3 py.bash`
-- After Splash Screen enter player IDs and names
+- After Splash Screen enter player IDs, Machine Codes, and Player Codenames(if prompted)
 - Click Start Game
 
 # TO QUIT

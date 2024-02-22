@@ -49,6 +49,13 @@ int main() {
         } else if (strcmp(buffer, "221") == 0) {
             responseMessage = "Hello, client! Looks like the game is over.";
         }
+        else if (strncmp(buffer, "Hardware/", 9) == 0) {
+            char* id = buffer + 9; // Get the ID part of the message
+            std::cout << "Received Hardware ID: " << id << std::endl;
+
+            // Broadcast the ID to all clients right now it only echos back to the client
+            sendto(socketFD, id, strlen(id), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
+        } 
 
         sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
     }
