@@ -1,2 +1,31 @@
 Put any changes to the frontend here
 this is a change
+
+Red team is Odd Green team is Even. 
+Take in Player ID 
+Check Databse to see if CodeName matches Player ID
+
+    If(Player ID == CodeName){
+        "Prompt for Equipment ID"
+
+            If(Equipment ID == ODD){
+                Add player to Red Team
+            }
+            else if (Equipment ID == EVEN){
+                Add player to Green Team 
+            }
+        
+    }
+    Else{
+        "Prompt User for CodeName"
+        *Enter Info into Database*
+
+        "Prompt User for Equipment ID"
+        
+        If(Equipment ID == ODD){
+                Add player to Red Team
+            }
+            else if (Equipment ID == EVEN){
+                Add player to Green Team 
+            }
+    }
