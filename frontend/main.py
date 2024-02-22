@@ -140,21 +140,7 @@ while not exitIntroScreen:
     rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n"
     blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 25 - y), defFont)
     screen.blit(title,(screen.get_width()/2 - title.get_width()/2, screen.get_height() - y))
-    storyText = '''\n\n             In a world where lasers\n
-                                    (which aren't actually lasers\n
-                                    but simpler infrared lights\n 
-                                    emitted as beams)\n 
-                                    KILL.\n\n 
-                                    But they don't kill you,\n 
-                                    more like they kill your\n  
-                                    fabricated health assigned\n  
-                                    to your player when you\n           
-                                    signed up for this game.\n\n              
-                                    EMBARK on a glorious\n        
-                                    journey of action, adventure,\n                  
-                                    and space lasers.\n\n               
-                                    May your aim be true,\n                 
-                                    good luck soldier.'''
+    storyText = "\n\n             In a world where lasers\n        (which aren't actually lasers\n         but simpler infrared lights\n                  emitted as beams)\n                           KILL.\n\n             But they don't kill you,\n            more like they kill your\n         fabricated health assigned\n             to your player when you\n            signed up for this game.\n\n              EMBARK on a glorious\n       journey of action, adventure,\n                  and space lasers.\n\n               May your aim be true,\n                 good luck soldier."
     blit_text(screen, storyText, (screen.get_width()/2 - title.get_width()/2 - 40,screen.get_height() + title.get_height() - y), coolFont)
     # storytext = coolFont.render("Welcome to Laser Tag", True, YELLOW)
     # screen.blit(storytext,(screen.get_width()/2 - storytext.get_width()/2,screen.get_height() + title.get_height() -y))
@@ -177,7 +163,7 @@ while not exitIntroScreen:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     userInput = userInput[:-1]
-                elif event.key == pygame.K_MINUS:
+                elif event.key == pygame.K_MINUS or event.key == pygame.K_ESCAPE:
                     inEntryScreen = False
                     exitProgram = True
                 else:
