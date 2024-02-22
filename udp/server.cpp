@@ -5,6 +5,9 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
+//Bind server receive port 7501 do not bind 7500 but still create it
+//127.0.0.1
+
 const int PORT = 7501;
 const int BUFFER_SIZE = 1024;
 
