@@ -23,6 +23,7 @@ currentDir = os.getcwd()
 coolFontName = "8-bit.ttf"
 defFontName = "freesansbold.ttf"
 coolFont = pygame.font.Font(coolFontName, 18) #changing font because on mine it doesn't work for the cool font
+inputBoxFont = pygame.font.Font(coolFontName, 14) 
 defFont = pygame.font.Font(defFontName, 24)
 WHITE = (255, 255, 255)
 BLUE = (0, 71, 171)
@@ -90,7 +91,7 @@ InputColorActive = pygame.Color('lightskyblue3')
 InputColorPassive = pygame.Color('chartreuse4')
 InputBoxColor = InputColorPassive
 active = False
-inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_height()/2 - 20, screen.get_width()/2, 40)
+inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_height()/2 + 200, screen.get_width()/2, 40)
 start = time.time()
 
 
@@ -161,7 +162,7 @@ while not exitIntroScreen:
     
     end = time.time()
     total = end - start
-    if (total > 27):
+    if (total > 1):
         exitIntroScreen = True
         inEntryScreen = True
     
@@ -186,8 +187,8 @@ while not exitIntroScreen:
             InputBoxColor = InputColorActive
         else:
             InputBoxColor = InputColorPassive
-        idText = coolFont.render("Please Enter Player ID", True, YELLOW)
-        screen.blit(idText,(screen.get_width()/2 - 185, screen.get_height()/2 - 75))
+        idText = inputBoxFont.render("Please Enter Player ID. Press Enter Key to Submit", True, YELLOW)
+        screen.blit(idText,(screen.get_width()/2 - screen.get_width()/3, screen.get_height()/2 +150))
         pygame.draw.rect(screen, InputBoxColor, inputBox)
         textSurface = coolFont.render(userInput, True, YELLOW)
         screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
