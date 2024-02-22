@@ -163,7 +163,7 @@ while not exitIntroScreen:
     
     end = time.time()
     total = end - start
-    if (total > 27):
+    if (total > 28):
         exitIntroScreen = True
         inEntryScreen = True
     
