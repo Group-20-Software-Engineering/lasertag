@@ -2,7 +2,7 @@ import socket
 
 server_ip = '170.176.232.159'
 port = 7500
-message = '100'
+message = ''
 
 def send_udp_packet(server_ip, port, message):
     # Create a socket object for UDP communication
