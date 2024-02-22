@@ -174,10 +174,29 @@ while not exitIntroScreen:
 
     while ((exitIntroScreen == True) and (inEntryScreen == True)):
         screen.fill(BLACK)
-        left_rect = pygame.Rect(0, 0, screen.get_width()/2, 625)
-        pygame.draw.rect(screen, RED, left_rect)
-        right_rect = pygame.Rect(screen.get_width()/2, 0, screen.get_width()/2, 625)
-        pygame.draw.rect(screen, GREEN, right_rect)
+        # left_rect = pygame.Rect(0, 0, screen.get_width()/2, 624)
+        # pygame.draw.rect(screen, RED, left_rect)
+        # right_rect = pygame.Rect(screen.get_width()/2, 0, screen.get_width()/2, 624)
+        # pygame.draw.rect(screen, GREEN, right_rect)
+
+        rect_width = 900/4
+        rect_height = 580/16
+        for row in range(16):
+            for col in range(2):
+                x = col * rect_width
+                y = row * rect_height + 44
+                rect = pygame.Rect(x, y, rect_width, rect_height)
+                pygame.draw.rect(screen, BLACK, rect, 1)
+                pygame.draw.rect(screen, RED, rect.inflate(-2, -2))
+
+        for row in range(16):
+            for col in range(2):
+                x = col * rect_width + screen.get_width() / 2
+                y = row * rect_height + 44
+                rect = pygame.Rect(x, y, rect_width, rect_height)
+                pygame.draw.rect(screen, BLACK, rect, 1)
+                pygame.draw.rect(screen, GREEN, rect.inflate(-2, -2))
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exitProgram = True
