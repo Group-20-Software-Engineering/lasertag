@@ -30,6 +30,8 @@ WHITE = (255, 255, 255)
 BLUE = (0, 71, 171)
 BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
+RED = (125, 19, 19)
+GREEN = (32, 87, 60)
 exitProgram = False
 exitIntroScreen = False
 inEntryScreen = False
@@ -92,7 +94,7 @@ InputColorActive = pygame.Color('lightskyblue3')
 InputColorPassive = pygame.Color('chartreuse4')
 InputBoxColor = InputColorPassive
 active = False
-inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_height()/2 + 200, screen.get_width()/2, 40)
+inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_height()/2 + 300, screen.get_width()/2, 40)
 start = time.time()
 
 
@@ -172,6 +174,10 @@ while not exitIntroScreen:
 
     while ((exitIntroScreen == True) and (inEntryScreen == True)):
         screen.fill(BLACK)
+        left_rect = pygame.Rect(0, 0, screen.get_width()/2, 625)
+        pygame.draw.rect(screen, RED, left_rect)
+        right_rect = pygame.Rect(screen.get_width()/2, 0, screen.get_width()/2, 625)
+        pygame.draw.rect(screen, GREEN, right_rect)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exitProgram = True
@@ -194,7 +200,7 @@ while not exitIntroScreen:
         else:
             InputBoxColor = InputColorPassive
         idText = inputBoxFont.render("Please Enter Player ID. Press Enter Key to Submit", True, YELLOW)
-        screen.blit(idText,(screen.get_width()/2 - screen.get_width()/3, screen.get_height()/2 +150))
+        screen.blit(idText,(screen.get_width()/2 - screen.get_width()/3, screen.get_height()/2 +275))
         pygame.draw.rect(screen, InputBoxColor, inputBox)
         textSurface = coolFont.render(userInput, True, YELLOW)
         screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
