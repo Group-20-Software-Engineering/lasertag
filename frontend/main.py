@@ -224,8 +224,12 @@ while not exitIntroScreen:
             InputBoxColor = InputColorActive
         else:
             InputBoxColor = InputColorPassive
-        idText = inputBoxFont.render("Please Enter Player ID. Press Enter Key to Submit", True, YELLOW)
+        idText = inputBoxFont.render("Please Enter Player ID. Press Enter Key to Submit", True, YELLOW) # Input Box Message
         screen.blit(idText,(screen.get_width()/2 - screen.get_width()/3, screen.get_height()/2 +275))
+        redText = inputBoxFont.render("Red Team", True, RED) # Red Team
+        screen.blit(redText,(screen.get_width()/4 - screen.get_width()/18, 12))
+        redText = inputBoxFont.render("Green Team", True, GREEN) # Green Team
+        screen.blit(redText,(screen.get_width() - screen.get_width()/4 - screen.get_width()/14, 12))
         pygame.draw.rect(screen, InputBoxColor, inputBox)
         textSurface = coolFont.render(userInput, True, YELLOW)
         screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
