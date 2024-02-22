@@ -53,7 +53,7 @@ int main() {
             char* id = buffer + 9; // Get the ID part of the message
             std::cout << "Received Hardware ID: " << id << std::endl;
 
-            // Broadcast the ID to all clients
+            // Broadcast the ID to all clients right now it only echos back to the client
             sendto(socketFD, id, strlen(id), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
         } 
 
