@@ -27,7 +27,10 @@ WHITE = (255, 255, 255)
 BLUE = (0, 71, 171)
 BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
-done = False
+exitProgram = False
+exitIntroScreen = False
+inEntryScreen = False
+idNamePairFound = True
 clock = pygame.time.Clock()
 size = (900,700)
 screen = pygame.display.set_mode(size)
@@ -73,6 +76,7 @@ def blit_text(surface, text, pos, font, color=pygame.Color('yellow')):
 
 image_path = "logo.jpg"
 
+center = screen.get_rect().center
 
 pygame.display.set_caption("Photon")
 title = pygame.image.load(image_path).convert()
@@ -85,11 +89,11 @@ InputColorActive = pygame.Color('lightskyblue3')
 InputColorPassive = pygame.Color('chartreuse4')
 InputBoxColor = InputColorPassive
 active = False
-inputBox = pygame.Rect(400, 400, 400, 40)
+inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_height()/2 - 20, screen.get_width()/2, 40)
 start = time.time()
 
 
-while not done:
+while not exitIntroScreen:
         
         
         
@@ -123,7 +127,7 @@ while not done:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            done = True
+            exitProgram = True
         
      
 
@@ -133,17 +137,22 @@ while not done:
     
     y = y + 1
     rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n"
-    blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 20 - y), defFont)
-    screen.blit(title,(screen.get_width()/2 - title.get_width()/2,screen.get_height() - y))
+    blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 25 - y), defFont)
+    screen.blit(title,(screen.get_width()/2 - title.get_width()/2, screen.get_height() - y))
     storyText = "\n\n             In a world where lasers\n        (which aren't actually lasers\n         but simpler infrared lights\n                   emitted as beams)\n                            KILL.\n\n            But they don't kill you,\n           more like they kill your\n        fabricated health assigned\n            to your player when you\n           signed up for this game.\n\n              EMBARK on a glorious\n        journey of action, adventure,\n                  and space lasers.\n\n               May your aim be true,\n                 good luck soldier."
     blit_text(screen, storyText, (screen.get_width()/2 - title.get_width()/2 - 40,screen.get_height() + title.get_height() - y), coolFont)
     # storytext = coolFont.render("Welcome to Laser Tag", True, YELLOW)
     # screen.blit(storytext,(screen.get_width()/2 - storytext.get_width()/2,screen.get_height() + title.get_height() -y))
     
-    
     end = time.time()
     total = end - start
-    while (total > 2):
+    if (total > 27):
+        exitIntroScreen = True
+        inEntryScreen = True
+    
+
+    while ((exitIntroScreen == True) and (inEntryScreen == True)):
+        screen.fill(BLACK)
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if inputBox.collidepoint(event.pos):
@@ -153,18 +162,27 @@ while not done:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     userInput = userInput[:-1]
+                elif event.key == pygame.K_MINUS:
+                    inEntryScreen = False
+                    exitProgram = True
                 else:
                     userInput += event.unicode
         if active:
             InputBoxColor = InputColorActive
         else:
             InputBoxColor = InputColorPassive
+        idText = coolFont.render("Please Enter Player ID", True, YELLOW)
+        screen.blit(idText,(screen.get_width()/2 - 185, screen.get_height()/2 - 75))
         pygame.draw.rect(screen, InputBoxColor, inputBox)
         textSurface = coolFont.render(userInput, True, YELLOW)
         screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
-        inputBox.w = max(100, textSurface.get_width()+10)
+        inputBox.w = max(screen.get_width()/2, textSurface.get_width()+10)
         pygame.display.update()
-        #done = True
+        # random ass pseudocode blabber
+        # if (idNamePairFound == True): go to next id selection
+        # elif (idNamePairFound == False): do nameText instead of idText, "Name Not Found. Please Enter Player Name", prompt again, pair it up
+        # have a button underneath to start game, activates next part inPlayerScoreboard, have two tables of teams and scores and shit
+        # at end have exitProgram = True
     pygame.display.flip()
 
     clock.tick(60)
