@@ -1,6 +1,9 @@
 # Photon LaserTag Software
 Repository dedicated to developing the software to run a game utilizing the Photon Lasertag equipment.
 
+# Before Running
+- Make sure you have Pygame and Supabase Installed
+- Run `pip install pygame` and `pip install supabase`
 
 # TO RUN
 
