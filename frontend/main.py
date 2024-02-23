@@ -218,7 +218,13 @@ while not exitIntroScreen:
                     inEntryScreen = False
                     exitProgram = True
                 else:
-                    userInput += event.unicode
+                    if (event.key != pygame.K_RETURN):
+                        userInput += event.unicode
+                    else:
+                        userInput = ""
+                        #code to send userInput to the database
+
+                        
             #if userInput == 'exists':
                 #idNamePairFound = True
                 #display welcome text with registered codename - potental option to change existing codename
