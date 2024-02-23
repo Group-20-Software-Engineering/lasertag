@@ -71,7 +71,7 @@ int main() {
             memset(&broadcastAddress, 0, sizeof(broadcastAddress));
             broadcastAddress.sin_family = AF_INET;
             broadcastAddress.sin_port = htons(BROADCAST_PORT);
-            broadcastAddress.sin_addr.s_addr = inet_addr("170.176.232.159");
+            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
 
             sendto(socketFD, id, strlen(id), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
         } 
