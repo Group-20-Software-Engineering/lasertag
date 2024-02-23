@@ -5,16 +5,25 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-//Bind server receive port 7501 do not bind 7500 but still create it
+//Bind server receive port 7501 do not bind 7500 broadcast but still create it
 //127.0.0.1
 
 const int PORT = 7501;
+const int BROADCAST_PORT = 7500;
 const int BUFFER_SIZE = 1024;
 
 int main() {
     int socketFD = socket(AF_INET, SOCK_DGRAM, 0);
     if (socketFD == -1) {
         std::cerr << "Error creating socket" << std::endl;
+        return 1;
+    }
+
+    //Enables Broadcasting
+    int broadcastEnable=1;
+    if(setsockopt(socketFD, SOL_SOCKET, SO_BROADCAST, &broadcastEnable, sizeof(broadcastEnable)) == -1){
+        std::cerr << "Error setting socket to broadcast" << std::endl;
+        close(socketFD);
         return 1;
     }
 
@@ -58,9 +67,17 @@ int main() {
 
             // Broadcast the ID to all clients right now it only echos back to the client
             sendto(socketFD, id, strlen(id), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
+            struct sockaddr_in broadcastAddress;
+            memset(&broadcastAddress, 0, sizeof(broadcastAddress));
+            broadcastAddress.sin_family = AF_INET;
+            broadcastAddress.sin_port = htons(BROADCAST_PORT);
+            broadcastAddress.sin_addr.s_addr = inet_addr("170.176.232.159");
+
+            sendto(socketFD, id, strlen(id), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
         } 
 
         sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
+
     }
 
     close(socketFD);
