@@ -2,8 +2,17 @@
 Repository dedicated to developing the software to run a game utilizing the Photon Lasertag equipment.
 
 # Before Running
+- Make sure you have python installed
+  - For Windows run:
+  - For Linux run:
+- Make sure you have gcc installed
+  - For Windows run:
+  - For Linux run:
+- Make sure you have pip installed
+  - For Windows run: `py get-pip.py`
+  - For Linux run: `python get-pip.py`
 - Make sure you have Pygame and Supabase Installed
-- Run `pip install pygame` and `pip install supabase`
+  - Run `pip install pygame` and `pip install supabase`
 
 # TO RUN
 
