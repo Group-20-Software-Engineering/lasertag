@@ -1,5 +1,8 @@
-g++ start_server.cpp -Wall -o start_server
+#!/bin/bash
+#Compiles the server and starts in a seperate window
+set -e
+g++ -Wall udp/server.cpp -o udp/server
+g++ -Wall udp/client.cpp -o udp/client
 
-sleep 5s
-
-./start_server
+xterm -e ./udp/server&
+xterm -e ./udp/client&
