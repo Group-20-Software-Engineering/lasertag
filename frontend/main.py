@@ -97,8 +97,10 @@ start = time.time()
 
 while not exitIntroScreen:
         
-        
-        
+    #WHEN SENDING HARDWARE ID USE THE FORMAT "Hardware/ID" AS SEEN BELLOW
+    test = "Hardware/9"
+    send_udp_packet(test)
+
     screen.fill(BLACK)
 
     
@@ -258,7 +260,7 @@ while not exitIntroScreen:
 
 def main():
     print("Hello World")
-    send_udp_packet("Hardware/9")
+    
 
 
         
