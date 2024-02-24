@@ -4,6 +4,7 @@ import time
 import pygame
 import textwrap
 import os
+from send import send_udp_packet
 
 #supabase api stuff
 from supabase import create_client, Client 
@@ -257,6 +258,8 @@ while not exitIntroScreen:
 
 def main():
     print("Hello World")
+    send_udp_packet("Hardware/9")
+
 
         
 if __name__ == "__main__":
