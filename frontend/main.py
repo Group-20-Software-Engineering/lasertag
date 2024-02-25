@@ -199,7 +199,7 @@ while not exitIntroScreen:
                 rect = pygame.Rect(x, y, rectWidth, rectHeight)
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, RED, rect.inflate(-2, -2))
-                text = coolFont.render(f"Row {row}, Col {col}", True, WHITE)
+                text = coolFont.render(f"Row {row}, Col {col}", True, WHITE) #14 is the max char limit for a given input box in the table
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
                 screen.blit(text, text_rect)
