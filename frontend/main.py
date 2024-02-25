@@ -95,6 +95,7 @@ InputColorActive = pygame.Color('lightskyblue3')
 InputColorPassive = pygame.Color('chartreuse4')
 InputBoxColor = InputColorPassive
 active = False
+idWords = "Please Enter Player ID. Press Enter Key to Submit"
 inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_height()/2 + 300, screen.get_width()/2, 40)
 start = time.time()
 RedTable = []
@@ -240,7 +241,7 @@ while not exitIntroScreen:
                         fetchId = supabase.table('player').select('id').eq('id', userInput).execute()
                         if not fetchId:
                             print("Welcome to the battlefield, enter your codename.")
-
+                            idWords = "Please Enter Code Name. Press Enter Key to Submit"
                             addPlayer = supabase.table('player').insert({ 'id': userInput, 'codename': codeName }).execute()
                         else:
                             print("Welcome back {codeName}")
@@ -260,7 +261,7 @@ while not exitIntroScreen:
             InputBoxColor = InputColorActive
         else:
             InputBoxColor = InputColorPassive
-        idText = inputBoxFont.render("Please Enter Player ID. Press Enter Key to Submit", True, YELLOW) # Input Box Message
+        idText = inputBoxFont.render(idWords, True, YELLOW) # Input Box Message
         screen.blit(idText,(screen.get_width()/2 - screen.get_width()/3, screen.get_height()/2 +275))
         redText = inputBoxFont.render("Red Team", True, RED) # Red Team
         screen.blit(redText,(screen.get_width()/4 - screen.get_width()/18, 12))
