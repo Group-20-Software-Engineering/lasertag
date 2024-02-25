@@ -252,23 +252,24 @@ while not exitIntroScreen:
                                 print("Welcome to the battlefield, enter your codename.")
                                 idWords = "Please Enter Code Name. Press Enter Key to Submit"
                                 
-                                if ((userInput != "") & (isIDAdded == False)):
+                                if ((userInput != "") and (isIDAdded == False)):
                                     addPlayer = supabase.table('player').insert({ 'id': userInput}).execute()
                                     isIDAdded = True
                                     #set the addedID equal to the userInput
                                     addedID = userInput
                                     userInput = ""
-                                elif ((userInput != "") & (isIDAdded == True)):
+                                elif ((userInput != "") and (isIDAdded == True)):
                                     supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute() 
                             else:
                                 print("Welcome back {codeName}")
                                 supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()  
-                        if (isIDAdded == True):
+                        if (isIDAdded == True) and (userInput != ""):
                             supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()
                             fetchCodeName = supabase.table('player').select("codename").eq('id', addedID).execute()
                             print(fetchCodeName)
-                            
-                            #code to send userInput to the database
+                            isIDAdded = False
+                            idWords = "Please Enter Player ID. Press Enter Key to Submit"
+                            userInput = ""
 
                         
             #if userInput == 'exists':
