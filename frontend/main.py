@@ -191,21 +191,26 @@ while not exitIntroScreen:
             RowRedRect = []
 
             for col in range(2):
-                x = col * rect_width
-                y = row * rect_height + 44
-                rect = pygame.Rect(x, y, rect_width, rect_height)
+                x = col * rectWidth
+                y = row * rectHeight + 44
+                rect = pygame.Rect(x, y, rectWidth, rectHeight)
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, RED, rect.inflate(-2, -2))
-
+                text = coolFont.render(f"Row {row}, Col {col}", True, WHITE)
+                text_rect = text.get_rect(center=rect.center)
+                # Blit text onto the screen
+                screen.blit(text, text_rect)
+            RedTable.append(RowRedRect)
         for row in range(16):
             RowGreenRect = []
             for col in range(2):
-                x = col * rect_width + screen.get_width() / 2
-                y = row * rect_height + 44
-                rect = pygame.Rect(x, y, rect_width, rect_height)
+                x = col * rectWidth + screen.get_width() / 2
+                y = row * rectHeight + 44
+                rect = pygame.Rect(x, y, rectWidth, rectHeight)
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, GREEN, rect.inflate(-2, -2))
-        
+                text = coolFont.render(f"Row {row}, Col {col}", True, WHITE)
+                text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
                 screen.blit(text, text_rect)
             GreenTable.append(RowGreenRect)
