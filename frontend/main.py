@@ -3,14 +3,16 @@ import random
 import time
 import pygame
 import textwrap
+
 import os
 from send import send_udp_packet
 
-#supabase api stuff
 from supabase import create_client, Client 
-url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
-key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
-supabase: Client = create_client(url, key)
+
+url: str = os.environ.get("SUPABASE_URL")
+key: str = os.environ.get("SUPABASE_KEY")
+
+#supabase: Client = create_client(url, key)
 
 pygame.init()
 pygame.key.set_repeat(500, 100)
@@ -93,7 +95,8 @@ InputBoxColor = InputColorPassive
 active = False
 inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_height()/2 + 300, screen.get_width()/2, 40)
 start = time.time()
-
+RedTable = []
+GreenTable = []
 
 while not exitIntroScreen:
         
@@ -181,21 +184,38 @@ while not exitIntroScreen:
         rect_width = 900/4
         rect_height = 580/16
         for row in range(16):
+            RowRedRect = []
+
             for col in range(2):
                 x = col * rect_width
                 y = row * rect_height + 44
                 rect = pygame.Rect(x, y, rect_width, rect_height)
+                RowRedRect.append(rect)
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, RED, rect.inflate(-2, -2))
 
+                text = coolFont.render(f"Row {row}, Col {col}", True, WHITE)
+                text_rect = text.get_rect(center=rect.center)
+        
+                # Blit text onto the screen
+                screen.blit(text, text_rect)
+            RedTable.append(RowRedRect)
+        
         for row in range(16):
+            RowGreenRect = []
             for col in range(2):
                 x = col * rect_width + screen.get_width() / 2
                 y = row * rect_height + 44
                 rect = pygame.Rect(x, y, rect_width, rect_height)
+                RowGreenRect.append(rect)
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, GREEN, rect.inflate(-2, -2))
+                text = coolFont.render(f"Row {row}, Col {col}", True, WHITE)
+                text_rect = text.get_rect(center=rect.center)
         
+                # Blit text onto the screen
+                screen.blit(text, text_rect)
+            GreenTable.append(RowGreenRect)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exitProgram = True
