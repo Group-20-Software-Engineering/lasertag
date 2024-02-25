@@ -19,7 +19,7 @@ pygame.key.set_repeat(500, 100)
 
 currentDir = os.getcwd()
 
-#coolFontName = os.path.join(currentDir, "frontend/8-bit.ttf")
+#coolFontName = os.path.join(currentDir, "8-bit.ttf")
 coolFontName = "8-bit.ttf"
 defFontName = "freesansbold.ttf"
 coolFont = pygame.font.Font(coolFontName, 18) #changing font because on mine it doesn't work for the cool font
@@ -101,8 +101,8 @@ GreenTable = []
 while not exitIntroScreen:
         
     #WHEN SENDING HARDWARE ID USE THE FORMAT "Hardware/ID" AS SEEN BELLOW
-    test = "Hardware/9"
-    send_udp_packet(test)
+    # test = "Hardware/9"
+    # send_udp_packet(test)
 
     screen.fill(BLACK)
 
