@@ -181,8 +181,12 @@ while not exitIntroScreen:
         # right_rect = pygame.Rect(screen.get_width()/2, 0, screen.get_width()/2, 624)
         # pygame.draw.rect(screen, GREEN, right_rect)
 
-        rect_width = 900/4
-        rect_height = 580/16
+        rectWidth = 900/4
+        rectHeight = 580/16
+
+        redRects = [[None] * 2 for _ in range(16)]
+        greenRects = [[None] * 2 for _ in range(16)]
+
         for row in range(16):
             RowRedRect = []
 
@@ -190,28 +194,17 @@ while not exitIntroScreen:
                 x = col * rect_width
                 y = row * rect_height + 44
                 rect = pygame.Rect(x, y, rect_width, rect_height)
-                RowRedRect.append(rect)
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, RED, rect.inflate(-2, -2))
 
-                text = coolFont.render(f"Row {row}, Col {col}", True, WHITE)
-                text_rect = text.get_rect(center=rect.center)
-        
-                # Blit text onto the screen
-                screen.blit(text, text_rect)
-            RedTable.append(RowRedRect)
-        
         for row in range(16):
             RowGreenRect = []
             for col in range(2):
                 x = col * rect_width + screen.get_width() / 2
                 y = row * rect_height + 44
                 rect = pygame.Rect(x, y, rect_width, rect_height)
-                RowGreenRect.append(rect)
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, GREEN, rect.inflate(-2, -2))
-                text = coolFont.render(f"Row {row}, Col {col}", True, WHITE)
-                text_rect = text.get_rect(center=rect.center)
         
                 # Blit text onto the screen
                 screen.blit(text, text_rect)
