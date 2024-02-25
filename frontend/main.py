@@ -226,7 +226,7 @@ while not exitIntroScreen:
                     active = True
                 else:
                     active = False
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYUP:
                 if event.key == pygame.K_BACKSPACE:
                     userInput = userInput[:-1]
 
@@ -238,16 +238,19 @@ while not exitIntroScreen:
                         userInput += event.unicode
                     else:
                         
-                        fetchId = supabase.table('player').select('id').eq('id', userInput).execute()
-                        if not fetchId:
+                        fetchId = supabase.table('player').select("id").eq('id', userInput).execute()
+
+                        if fetchId:
                             print("Welcome to the battlefield, enter your codename.")
                             idWords = "Please Enter Code Name. Press Enter Key to Submit"
-                            addPlayer = supabase.table('player').insert({ 'id': userInput, 'codename': codeName }).execute()
+                            
+                            if (userInput != ""):
+                                addPlayer = supabase.table('player').insert({ 'id': userInput}).execute()
+                                userInput = ""
                         else:
                             print("Welcome back {codeName}")
                             #put id and codename pair onto table    
                         
-                        userInput = ""
                         #code to send userInput to the database
 
                         
