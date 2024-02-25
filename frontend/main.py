@@ -12,7 +12,7 @@ from supabase import create_client, Client
 url: str = os.environ.get("SUPABASE_URL")
 key: str = os.environ.get("SUPABASE_KEY")
 
-#supabase: Client = create_client(url, key)
+supabase: Client = create_client(url, key)
 
 pygame.init()
 pygame.key.set_repeat(500, 100)
@@ -89,6 +89,7 @@ title = pygame.transform.scale(title, (500,242))
 y = 0
 i = 1
 userInput = ''
+codeName = ''
 InputColorActive = pygame.Color('lightskyblue3')
 InputColorPassive = pygame.Color('chartreuse4')
 InputBoxColor = InputColorPassive
@@ -234,15 +235,16 @@ while not exitIntroScreen:
                     if (event.key != pygame.K_RETURN):
                         userInput += event.unicode
                     else:
-                        """
+                        
                         fetchId = supabase.table('player').select('id').eq('id', userInput).execute()
-                        if not FetchId:
+                        if not fetchId:
                             print("Welcome to the battlefield, enter your codename.")
+
                             addPlayer = supabase.table('player').insert({ 'id': userInput, 'codename': codeName }).execute()
                         else:
                             print("Welcome back {codeName}")
                             #put id and codename pair onto table    
-                        """
+                        
                         userInput = ""
                         #code to send userInput to the database
 
