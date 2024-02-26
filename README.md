@@ -9,10 +9,13 @@ Repository dedicated to developing the software to run a game utilizing the Phot
 # TO RUN
 
 - Clone the project `git clone https://github.com/Group-20-Software-Engineering/lasertag`
-- Run the project `./build.sh`
+- Build Dependencies `./build.sh`
   - This will update your machine, install all dependencies, and start the server
-- After Splash Screen enter player IDs, Machine Codes, and Player Codenames(if prompted)
-- Click Start Game
+  - You will need to instert your passcode as it calls sudo
+  - After the dependencies finish downloading, restart vscode to allow the changes to be applied
+- Run code './run.sh'
+- After Splash Screen enter player ID, Followed by Codename, followed by Machine ID *In that Order*
+
 
 # TO QUIT
 - The program should quit automatically, but if it does not `ctrl + c` the terminal that is running the Python code
