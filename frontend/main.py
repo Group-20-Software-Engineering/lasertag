@@ -221,7 +221,7 @@ while not exitIntroScreen:
                     textWords = "CodeName"
                 if row == 1 and col == 0:
 
-                    textWords = userInput
+                    textWords = ''
                 if row == 1 and col == 1:
                     textWords = ""
                 text = coolFont.render(textWords, True, WHITE)
@@ -321,7 +321,7 @@ while not exitIntroScreen:
                             send_udp_packet(userInput)
                             idWords = "Please Enter Player ID. Press Enter Key to Submit"
                             inputField = 0
-                            #userInput = ""
+                            userInput = ""
 
 
 
