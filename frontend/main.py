@@ -275,7 +275,7 @@ while not exitIntroScreen:
                             supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()
                             fetchCodeName = supabase.table('player').select("codename").eq('id', addedID).execute()
                             print(fetchCodeName)
-                            infputField = 2
+                            inputField = 2
                             idWords = "Please Enter Machine Code. Press Enter Key to Submit"
                             userInput = ""
                             numPlayers += 1
@@ -293,8 +293,9 @@ while not exitIntroScreen:
                                 print (id)
                             else:
                                 print("No data found.")
+
                         if (inputField == 2) and (userInput != ""):
-                            userInput += "Hardware/"
+                            userInput = "Hardware/" + userInput
                             send_udp_packet(userInput)
                             idWords = "Please Enter Player ID. Press Enter Key to Submit"
                             inputField = 0
