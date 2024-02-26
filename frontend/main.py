@@ -92,6 +92,9 @@ y = 0
 i = 1
 userInput = ''
 codeName = ''
+red_Id = []
+red_Code = []
+
 InputColorActive = pygame.Color('lightskyblue3')
 InputColorPassive = pygame.Color('chartreuse4')
 InputBoxColor = InputColorPassive
@@ -106,6 +109,10 @@ GreenTable = []
 id = ''
 codename = ''
 numPlayers = 1
+
+
+
+
 
 while not exitIntroScreen:
         
@@ -178,9 +185,11 @@ while not exitIntroScreen:
     
     end = time.time()
     total = end - start
-    if (total > 1):
+    if (total > 28):
         exitIntroScreen = True
         inEntryScreen = True
+
+    
     
 
     while ((exitIntroScreen == True) and (inEntryScreen == True)):
@@ -211,13 +220,15 @@ while not exitIntroScreen:
                 if row == 0 and col == 1:
                     textWords = "CodeName"
                 if row == 1 and col == 0:
+
                     textWords = userInput
                 if row == 1 and col == 1:
-                    textWords = "name"
+                    textWords = ""
                 text = coolFont.render(textWords, True, WHITE)
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
                 screen.blit(text, text_rect)
+                
             RedTable.append(RowRedRect)
         for row in range(16):
             RowGreenRect = []
@@ -258,10 +269,12 @@ while not exitIntroScreen:
                 else:
                     if (event.key != pygame.K_RETURN):
                         userInput += event.unicode
-
+                        
+                        
                     elif (event.key == pygame.K_RETURN):
                         
                         if (inputField == 0):
+                            red_Id.append(userInput)
                             fetchId = supabase.table('player').select("id").eq('id', userInput).execute()
 
                             if (fetchId):
@@ -308,7 +321,7 @@ while not exitIntroScreen:
                             send_udp_packet(userInput)
                             idWords = "Please Enter Player ID. Press Enter Key to Submit"
                             inputField = 0
-                            userInput = ""
+                            #userInput = ""
 
 
 
