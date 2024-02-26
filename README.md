@@ -3,12 +3,11 @@ Repository dedicated to developing the software to run a game utilizing the Phot
 
 # Before Running
 - Make sure you have pip installed
-  - For Windows run: `py get-pip.py`
   - For Linux run: `python get-pip.py`
-  - Build Dependencies `./build.sh`
-    - This will update your machine and install the needed dependencies
-    - You will need to instert your passcode as it calls sudo
-    - After the dependencies finish downloading, restart vscode to allow the changes to be applied
+- Build Dependencies `./build.sh`
+  - This will update your machine and install the needed dependencies
+  - You will need to instert your passcode as it calls sudo
+  - After the dependencies finish downloading, restart vscode to allow the changes to be applied
 
 # TO RUN
 - Clone the project `git clone https://github.com/Group-20-Software-Engineering/lasertag`
