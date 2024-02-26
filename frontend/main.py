@@ -109,10 +109,23 @@ GreenTable = []
 id = ''
 codename = ''
 numPlayers = 1
-
-
-
-
+addedID = ''
+addedCodeName = ''
+machineCode = ''
+class RedTeam:
+    def __init__(red, id, codename, machineCode):
+        red.id = id
+        red.codename = codename
+        red.machineCode = machineCode
+    redPlayers = []
+class GreenTeam:
+    def __init__(green, id, codename, machineCode):
+        green.id = id
+        green.codename = codename
+        green.machineCode = machineCode
+    greenPlayers = []
+listNotEmpty = False
+textWords = ''
 
 while not exitIntroScreen:
         
@@ -185,7 +198,7 @@ while not exitIntroScreen:
     
     end = time.time()
     total = end - start
-    if (total > 28):
+    if (total > 1):
         exitIntroScreen = True
         inEntryScreen = True
 
@@ -215,15 +228,15 @@ while not exitIntroScreen:
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, RED, rect.inflate(-2, -2))
                 RowRedRect.append(rect)
-                if row == 0 and col == 0:
-                    textWords = "ID"
-                if row == 0 and col == 1:
-                    textWords = "CodeName"
-                if row == 1 and col == 0:
-
-                    textWords = ''
-                if row == 1 and col == 1:
-                    textWords = ""
+                if (len(RedTeam.redPlayers) == 0):
+                    pass
+                elif (listNotEmpty == True):
+                    if col == 0 and row < len(RedTeam.redPlayers):
+                        textWords = RedTeam.redPlayers[row].id
+                    if col == 1 and row < len(RedTeam.redPlayers):
+                        textWords = RedTeam.redPlayers[row].codename
+                    if row >= len(RedTeam.redPlayers):
+                        textWords = " "
                 text = coolFont.render(textWords, True, WHITE)
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
@@ -238,12 +251,15 @@ while not exitIntroScreen:
                 rect = pygame.Rect(x, y, rectWidth, rectHeight)
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, GREEN, rect.inflate(-2, -2))
-                if row == 0 and col == 0:
-                    textWords = 'ID'
-                if row == 0 and col == 1:
-                    textWords = 'CodeName'
-                if row > 0:
-                    textWords = " "
+                if (len(GreenTeam.greenPlayers) == 0):
+                    pass
+                elif (listNotEmpty == True):
+                    if col == 0 and row < len(GreenTeam.greenPlayers):
+                        textWords = GreenTeam.greenPlayers[row].id
+                    if col == 1 and row < len(GreenTeam.greenPlayers):
+                        textWords = GreenTeam.greenPlayers[row].codename
+                    if row >= len(GreenTeam.greenPlayers):
+                        textWords = " "
                 text = coolFont.render(textWords, True, WHITE)
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
@@ -296,6 +312,7 @@ while not exitIntroScreen:
                             supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()
                             fetchCodeName = supabase.table('player').select("codename").eq('id', addedID).execute()
                             print(fetchCodeName)
+                            addedCodeName = userInput
                             inputField = 2
                             idWords = "Please Enter Machine Code. Press Enter Key to Submit"
                             userInput = ""
@@ -317,6 +334,14 @@ while not exitIntroScreen:
                                 print("No data found.")
 
                         if (inputField == 2) and (userInput != ""):
+                            
+                            listNotEmpty = True
+                            if (int(userInput) % 2 != 0):
+                                newPlayer = RedTeam(addedID, addedCodeName, userInput)
+                                RedTeam.redPlayers.append(newPlayer)
+                            if (int(userInput) % 2 == 0):
+                                newPlayer = GreenTeam(addedID, addedCodeName, userInput)
+                                GreenTeam.greenPlayers.append(newPlayer)
                             userInput = "Hardware/" + userInput
                             send_udp_packet(userInput)
                             idWords = "Please Enter Player ID. Press Enter Key to Submit"
