@@ -316,13 +316,14 @@ while not exitIntroScreen:
                                 print("No data found.")
 
                         if (inputField == 2) and (userInput != ""):
-                            userInput = "Hardware/" + userInput
-                            send_udp_packet(userInput)
+
                             listNotEmpty = True
                             if (int(userInput) % 2 == 0):
                                 RedTeam.append(addedID, addedCodeName, userInput)
                             if (int(userInput) % 2 != 0):
                                 GreenTeam.append(addedID, addedCodeName, userInput)
+                            userInput = "Hardware/" + userInput
+                            send_udp_packet(userInput)
                             idWords = "Please Enter Player ID. Press Enter Key to Submit"
                             inputField = 0
                             userInput = ""
