@@ -230,9 +230,9 @@ while not exitIntroScreen:
                 RowRedRect.append(rect)
                 if (listNotEmpty == True):
                     if row == 0 and col == 0:
-                        textWords = RedTeam[0].id
+                        textWords = RedTeam.redPlayers[0].id
                     if row == 0 and col == 1:
-                        textWords = RedTeam[0].codename
+                        textWords = RedTeam.redPlayers[0].codename
                 text = coolFont.render(textWords, True, WHITE)
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
@@ -247,12 +247,11 @@ while not exitIntroScreen:
                 rect = pygame.Rect(x, y, rectWidth, rectHeight)
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, GREEN, rect.inflate(-2, -2))
-                if row == 0 and col == 0:
-                    textWords = 'ID'
-                if row == 0 and col == 1:
-                    textWords = 'CodeName'
-                if row > 0:
-                    textWords = " "
+                if (listNotEmpty == True):
+                    if row == 0 and col == 0:
+                        textWords = GreenTeam.greenPlayers[0].id
+                    if row == 0 and col == 1:
+                        textWords = GreenTeam.greenPlayers[0].codename
                 text = coolFont.render(textWords, True, WHITE)
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
