@@ -228,7 +228,9 @@ while not exitIntroScreen:
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, RED, rect.inflate(-2, -2))
                 RowRedRect.append(rect)
-                if (listNotEmpty == True):
+                if (len(RedTeam.redPlayers) == 0):
+                    pass
+                elif (listNotEmpty == True):
                     if col == 0 and row < len(RedTeam.redPlayers):
                         textWords = RedTeam.redPlayers[row].id
                     if col == 1 and row < len(RedTeam.redPlayers):
@@ -249,7 +251,9 @@ while not exitIntroScreen:
                 rect = pygame.Rect(x, y, rectWidth, rectHeight)
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, GREEN, rect.inflate(-2, -2))
-                if (listNotEmpty == True):
+                if (len(GreenTeam.greenPlayers) == 0):
+                    pass
+                elif (listNotEmpty == True):
                     if col == 0 and row < len(GreenTeam.greenPlayers):
                         textWords = GreenTeam.greenPlayers[row].id
                     if col == 1 and row < len(GreenTeam.greenPlayers):
@@ -335,8 +339,6 @@ while not exitIntroScreen:
                             if (int(userInput) % 2 != 0):
                                 newPlayer = RedTeam(addedID, addedCodeName, userInput)
                                 RedTeam.redPlayers.append(newPlayer)
-                                blankPlyaer = GreenTeam('', '', '')
-                                GreenTeam.greenPlayers.append(blankPlyaer)
                             if (int(userInput) % 2 == 0):
                                 newPlayer = GreenTeam(addedID, addedCodeName, userInput)
                                 GreenTeam.greenPlayers.append(newPlayer)
