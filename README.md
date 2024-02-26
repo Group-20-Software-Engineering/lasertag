@@ -13,7 +13,7 @@ Repository dedicated to developing the software to run a game utilizing the Phot
   - This will update your machine, install all dependencies, and start the server
   - You will need to instert your passcode as it calls sudo
   - After the dependencies finish downloading, restart vscode to allow the changes to be applied
-- Run code './run.sh'
+- Run code `./run.sh`
 - After Splash Screen enter player ID, Followed by Codename, followed by Machine ID *In that Order*
 
 
