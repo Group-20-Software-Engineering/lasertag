@@ -205,12 +205,15 @@ while not exitIntroScreen:
                 rect = pygame.Rect(x, y, rectWidth, rectHeight)
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, RED, rect.inflate(-2, -2))
+                RowRedRect.append(rect)
                 if row == 0 and col == 0:
                     textWords = "ID"
                 if row == 0 and col == 1:
                     textWords = "CodeName"
-                if row > 0:
-                    textWords = " "
+                if row == 1 and col == 0:
+                    textWords = userInput
+                if row == 1 and col == 1:
+                    textWords = "name"
                 text = coolFont.render(textWords, True, WHITE)
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
@@ -228,15 +231,13 @@ while not exitIntroScreen:
                     textWords = 'ID'
                 if row == 0 and col == 1:
                     textWords = 'CodeName'
-                # if row == numPlayers and col == 0:
-                #     textWords = id
-                if row == numPlayers and col == 1:
-                    textWords = codename
+                if row > 0:
+                    textWords = " "
                 text = coolFont.render(textWords, True, WHITE)
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
                 screen.blit(text, text_rect)
-                textWords = " "
+                
             GreenTable.append(RowGreenRect)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -259,6 +260,7 @@ while not exitIntroScreen:
                         userInput += event.unicode
 
                     elif (event.key == pygame.K_RETURN):
+                        
                         if (inputField == 0):
                             fetchId = supabase.table('player').select("id").eq('id', userInput).execute()
 
