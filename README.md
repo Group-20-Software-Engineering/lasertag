@@ -17,3 +17,12 @@ Repository dedicated to developing the software to run a game utilizing the Phot
 
 # TO QUIT
 - The program should quit automatically, but if it does not `ctrl + c` the terminal that is running the Python code
+
+# Contributers 
+Programmer061703--------------Blake Williams            
+m-thursday--------------------Max Thursday
+chinamanryan------------------Ryan Cheng
+noahnewton10------------------noahnewton
+JosephFolenV------------------JosephFolen
+unclejeffaimgumin-------------Kevin Zheng
+landonr7----------------------Landon Reynolds
