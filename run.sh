@@ -1,5 +1,7 @@
 #!/bin/bash
 
+./startScripts/compile.sh &
+
 # Set the directory where the Python file is located
 directory="frontend"
 
@@ -11,4 +13,3 @@ cd "$directory" || exit
 
 # Run the Python file
 python3 "$filename"
-
