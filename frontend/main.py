@@ -233,6 +233,8 @@ while not exitIntroScreen:
                         textWords = RedTeam.redPlayers[row].id
                     if col == 1 and row < len(RedTeam.redPlayers):
                         textWords = RedTeam.redPlayers[row].codename
+                    if row >= len(RedTeam.redPlayers):
+                        textWords = " "
                 text = coolFont.render(textWords, True, WHITE)
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
@@ -252,6 +254,8 @@ while not exitIntroScreen:
                         textWords = GreenTeam.greenPlayers[row].id
                     if col == 1 and row < len(GreenTeam.greenPlayers):
                         textWords = GreenTeam.greenPlayers[row].codename
+                    if row >= len(GreenTeam.greenPlayers):
+                        textWords = " "
                 text = coolFont.render(textWords, True, WHITE)
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
