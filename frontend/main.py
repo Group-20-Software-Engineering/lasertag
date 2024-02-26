@@ -328,10 +328,10 @@ while not exitIntroScreen:
                         if (inputField == 2) and (userInput != ""):
                             
                             listNotEmpty = True
-                            if (int(userInput) % 2 == 0):
+                            if (int(userInput) % 2 != 0):
                                 newPlayer = RedTeam(addedID, addedCodeName, userInput)
                                 RedTeam.redPlayers.append(newPlayer)
-                            if (int(userInput) % 2 != 0):
+                            if (int(userInput) % 2 == 0):
                                 newPlayer = GreenTeam(addedID, addedCodeName, userInput)
                                 GreenTeam.greenPlayers.append(newPlayer)
                             userInput = "Hardware/" + userInput
