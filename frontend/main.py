@@ -166,6 +166,7 @@ while not exitIntroScreen:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exitProgram = True
+            exitIntroScreen = True
         
      
 
@@ -200,7 +201,7 @@ while not exitIntroScreen:
     
     end = time.time()
     total = end - start
-    if (total > 28):
+    if (total > 1):
         exitIntroScreen = True
         inEntryScreen = True
 
@@ -220,7 +221,7 @@ while not exitIntroScreen:
         redRects = [[None] * 2 for _ in range(16)]
         greenRects = [[None] * 2 for _ in range(16)]
 
-        for row in range(16):
+        for row in range(15):
             RowRedRect = []
 
             for col in range(2):
@@ -245,7 +246,7 @@ while not exitIntroScreen:
                 screen.blit(text, text_rect)
                 
             RedTable.append(RowRedRect)
-        for row in range(16):
+        for row in range(15):
             RowGreenRect = []
             for col in range(2):
                 x = col * rectWidth + screen.get_width() / 2
@@ -282,8 +283,8 @@ while not exitIntroScreen:
                     userInput = userInput[:-1]
 
                 elif event.key == pygame.K_MINUS or event.key == pygame.K_ESCAPE:
-                    inEntryScreen = False
-                    exitProgram = True
+                    RedTeam.redPlayers.clear()
+                    GreenTeam.greenPlayers.clear()
                 else:
                     if (event.key != pygame.K_RETURN):
                         userInput += event.unicode
@@ -392,6 +393,8 @@ while not exitIntroScreen:
             InputBoxColor = InputColorPassive
         idText = inputBoxFont.render(idWords, True, YELLOW) # Input Box Message
         screen.blit(idText,(screen.get_width()/2 - screen.get_width()/3, screen.get_height()/2 +275))
+        deleteStartText = inputBoxFont.render("'-' To Clear the Players '=' To Start Game", True, WHITE)
+        screen.blit(deleteStartText,(screen.get_width()/2 - screen.get_width()/3.5, screen.get_height()/2 +250))
         redText = inputBoxFont.render("Red Team", True, RED) # Red Team
         screen.blit(redText,(screen.get_width()/4 - screen.get_width()/18, 12))
         redText = inputBoxFont.render("Green Team", True, GREEN) # Green Team
@@ -406,6 +409,7 @@ while not exitIntroScreen:
         # elif (idNamePairFound == False): do nameText instead of idText, "Name Not Found. Please Enter Player Name", prompt again, pair it up
         # have a button underneath to start game, activates next part inPlayerScoreboard, have two tables of teams and scores and shit
         # at end have exitProgram = True
+    
     pygame.display.flip()
 
     clock.tick(60)
