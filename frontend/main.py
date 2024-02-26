@@ -331,6 +331,8 @@ while not exitIntroScreen:
                             if (int(userInput) % 2 != 0):
                                 newPlayer = RedTeam(addedID, addedCodeName, userInput)
                                 RedTeam.redPlayers.append(newPlayer)
+                                blankPlyaer = GreenTeam('', '', '')
+                                GreenTeam.greenPlayers.append(blankPlyaer)
                             if (int(userInput) % 2 == 0):
                                 newPlayer = GreenTeam(addedID, addedCodeName, userInput)
                                 GreenTeam.greenPlayers.append(newPlayer)
