@@ -96,7 +96,7 @@ InputColorActive = pygame.Color('lightskyblue3')
 InputColorPassive = pygame.Color('chartreuse4')
 InputBoxColor = InputColorPassive
 active = False
-isIDAdded = False
+inputField = 0
 numPlayers = 0
 idWords = "Please Enter Player ID. Press Enter Key to Submit"
 inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_height()/2 + 300, screen.get_width()/2, 40)
@@ -253,29 +253,29 @@ while not exitIntroScreen:
                         userInput += event.unicode
 
                     elif (event.key == pygame.K_RETURN):
-                        if (isIDAdded == False):
+                        if (inputField == 0):
                             fetchId = supabase.table('player').select("id").eq('id', userInput).execute()
 
                             if (fetchId):
                                 print("Welcome to the battlefield, enter your codename.")
                                 idWords = "Please Enter Code Name. Press Enter Key to Submit"
                                 
-                                if ((userInput != "") and (isIDAdded == False)):
+                                if ((userInput != "") and (inputField == 0)):
                                     addPlayer = supabase.table('player').insert({ 'id': userInput}).execute()
-                                    isIDAdded = True
+                                    inputField = 1
                                     #set the addedID equal to the userInput
                                     addedID = userInput
                                     userInput = ""
-                                elif ((userInput != "") and (isIDAdded == True)):
+                                elif ((userInput != "") and (inputField == 1)):
                                     supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute() 
                             else:
                                 print("Welcome back {codeName}")
                                 supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()  
-                        if (isIDAdded == True) and (userInput != ""):
+                        if (inputField == 1) and (userInput != ""):
                             supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()
                             fetchCodeName = supabase.table('player').select("codename").eq('id', addedID).execute()
                             print(fetchCodeName)
-                            isIDAdded = False
+                            infputField = 0
                             idWords = "Please Enter Player ID. Press Enter Key to Submit"
                             userInput = ""
                             numPlayers += 1
@@ -294,17 +294,6 @@ while not exitIntroScreen:
                             else:
                                 print("No data found.")
                             
-
-                            #attempting to read data from supabase to then display to the table in splash screen
-                            #data_to_be_displayed = str(data_to_be_displayed)
-                            #print(data_to_be_displayed.__dir__())
-                            #print(data_to_be_displayed.__getattribute__('data').__str__())
-                            #print (data_to_be_displayed[0]['id'])
-                            #print(getattr(data_to_be_displayed, 'id'))
-                            #data_to_be_displayed = json.load(data_to_be_displayed)
-
-                            #print(data_to_be_displayed)
-
 
                             #CodeName_to_be_displayed = supabase.table('player').select("codename").eq('id', addedID).execute()
                             # for row in range(16):
