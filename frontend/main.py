@@ -111,8 +111,9 @@ codename = ''
 numPlayers = 1
 addedID = ''
 addedCodeName = ''
-RedTeam = []
-GreenTeam = []
+machineCode = ''
+RedTeam = [id, codename, machineCode]
+GreenTeam = [id, codename, machineCode]
 listNotEmpty = False
 textWords = ''
 
@@ -187,7 +188,7 @@ while not exitIntroScreen:
     
     end = time.time()
     total = end - start
-    if (total > 28):
+    if (total > 1):
         exitIntroScreen = True
         inEntryScreen = True
 
