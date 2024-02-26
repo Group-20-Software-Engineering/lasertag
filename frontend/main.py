@@ -96,6 +96,7 @@ InputColorPassive = pygame.Color('chartreuse4')
 InputBoxColor = InputColorPassive
 active = False
 isIDAdded = False
+numPlayers = 0
 idWords = "Please Enter Player ID. Press Enter Key to Submit"
 inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_height()/2 + 300, screen.get_width()/2, 40)
 start = time.time()
@@ -270,6 +271,37 @@ while not exitIntroScreen:
                             isIDAdded = False
                             idWords = "Please Enter Player ID. Press Enter Key to Submit"
                             userInput = ""
+                            numPlayers += 1
+                            data_to_be_displayed = supabase.table('player').select("*").eq('id', addedID).execute()
+                            #print the id from data_to_be_displayed
+                            #data_to_be_displayed = str(data_to_be_displayed)
+                            #print(getattr(data_to_be_displayed, 'id'))
+
+
+                            #CodeName_to_be_displayed = supabase.table('player').select("codename").eq('id', addedID).execute()
+                            # for row in range(16):
+                            #     RowGreenRect = []
+                            #     for col in range(2):
+                            #         x = col * rectWidth + screen.get_width() / 2
+                            #         y = row * rectHeight + 44
+                            #         rect = pygame.Rect(x, y, rectWidth, rectHeight)
+                            #         pygame.draw.rect(screen, BLACK, rect, 1)
+                            #         pygame.draw.rect(screen, GREEN, rect.inflate(-2, -2))
+                            #         if row == 0 and col == 0:
+                            #             textWords = "ID"
+                            #         if row == 0 and col == 1:
+                            #             textWords = "CodeName"
+                            #         if col == 0 and row > 0:
+                            #             textWords = ID_to_be_displayed
+                            #         if col == 1 and row > 0:
+                            #             textWords = CodeName_to_be_displayed
+                            #         text = coolFont.render(textWords, True, WHITE)
+                            #         text_rect = text.get_rect(center=rect.center)
+                            #         # Blit text onto the screen
+                            #         screen.blit(text, text_rect)
+                            #     GreenTable.append(RowGreenRect)
+                                
+
 
                         
             #if userInput == 'exists':
