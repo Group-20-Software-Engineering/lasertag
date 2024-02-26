@@ -106,7 +106,7 @@ GreenTable = []
 id = ''
 codename = ''
 numPlayers = 1
-
+table_content = [['' for _ in range(2)] for _ in range(16)]
 while not exitIntroScreen:
         
     #WHEN SENDING HARDWARE ID USE THE FORMAT "Hardware/ID" AS SEEN BELLOW
@@ -195,7 +195,13 @@ while not exitIntroScreen:
 
         redRects = [[None] * 2 for _ in range(16)]
         greenRects = [[None] * 2 for _ in range(16)]
-
+        for row in range(16):
+            for col in range(2):
+                rect = RedTable[row][col]
+                text = coolFont.render(table_content[row][col], True, WHITE)
+                text_rect = text.get_rect(center=rect.center)
+                # Blit text onto the screen
+                screen.blit(text, text_rect)
         for row in range(16):
             RowRedRect = []
 
@@ -216,6 +222,7 @@ while not exitIntroScreen:
                 # Blit text onto the screen
                 screen.blit(text, text_rect)
             RedTable.append(RowRedRect)
+         
         for row in range(16):
             RowGreenRect = []
             for col in range(2):
@@ -230,14 +237,16 @@ while not exitIntroScreen:
                     textWords = 'CodeName'
                 # if row == numPlayers and col == 0:
                 #     textWords = id
-                if row == numPlayers and col == 1:
-                    textWords = codename
+                # if row == numPlayers and col == 1:
+                #     textWords = codename
                 text = coolFont.render(textWords, True, WHITE)
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
                 screen.blit(text, text_rect)
                 textWords = " "
             GreenTable.append(RowGreenRect)
+        
+            
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exitProgram = True
@@ -307,7 +316,7 @@ while not exitIntroScreen:
                             idWords = "Please Enter Player ID. Press Enter Key to Submit"
                             inputField = 0
                             userInput = ""
-
+                        
 
 
 
