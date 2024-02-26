@@ -103,6 +103,9 @@ inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_h
 start = time.time()
 RedTable = []
 GreenTable = []
+id = ''
+codename = ''
+numPlayers = 1
 
 while not exitIntroScreen:
         
@@ -222,15 +225,18 @@ while not exitIntroScreen:
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, GREEN, rect.inflate(-2, -2))
                 if row == 0 and col == 0:
-                    textWords = "ID"
+                    textWords = 'ID'
                 if row == 0 and col == 1:
-                    textWords = "CodeName"
-                if row > 0:
-                    textWords = " "
+                    textWords = 'CodeName'
+                # if row == numPlayers and col == 0:
+                #     textWords = id
+                if row == numPlayers and col == 1:
+                    textWords = codename
                 text = coolFont.render(textWords, True, WHITE)
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
                 screen.blit(text, text_rect)
+                textWords = " "
             GreenTable.append(RowGreenRect)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -281,7 +287,7 @@ while not exitIntroScreen:
                             numPlayers += 1
                             #data_to_be_displayed = supabase.table('player').select("id").eq('id', addedID).execute()
                             response = supabase.table('player').select("*").eq('id', addedID).execute()
-
+                            print(numPlayers)
                             # Extract the data part of the response
                             data = response.data
 
@@ -291,6 +297,7 @@ while not exitIntroScreen:
                                 id = data[0]['id']
                                 print(codename)
                                 print (id)
+                            
                             else:
                                 print("No data found.")
 
@@ -313,14 +320,15 @@ while not exitIntroScreen:
                             #         rect = pygame.Rect(x, y, rectWidth, rectHeight)
                             #         pygame.draw.rect(screen, BLACK, rect, 1)
                             #         pygame.draw.rect(screen, GREEN, rect.inflate(-2, -2))
+                                    
                             #         if row == 0 and col == 0:
                             #             textWords = "ID"
                             #         if row == 0 and col == 1:
                             #             textWords = "CodeName"
-                            #         if col == 0 and row > 0:
-                            #             textWords = ID_to_be_displayed
-                            #         if col == 1 and row > 0:
-                            #             textWords = CodeName_to_be_displayed
+                            #         if row == 1 and col == 0 :
+                            #             textWords = "Stuff"
+                            #         if row == 1 and col == 1:
+                            #             textWords = "Stuff"
                             #         text = coolFont.render(textWords, True, WHITE)
                             #         text_rect = text.get_rect(center=rect.center)
                             #         # Blit text onto the screen
