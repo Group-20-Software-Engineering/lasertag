@@ -1,3 +1,4 @@
+import json
 import sys
 import random
 import time
@@ -201,7 +202,13 @@ while not exitIntroScreen:
                 rect = pygame.Rect(x, y, rectWidth, rectHeight)
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, RED, rect.inflate(-2, -2))
-                text = coolFont.render(f"Row {row}, Col {col}", True, WHITE)
+                if row == 0 and col == 0:
+                    textWords = "ID"
+                if row == 0 and col == 1:
+                    textWords = "CodeName"
+                if row > 0:
+                    textWords = " "
+                text = coolFont.render(textWords, True, WHITE)
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
                 screen.blit(text, text_rect)
@@ -272,10 +279,16 @@ while not exitIntroScreen:
                             idWords = "Please Enter Player ID. Press Enter Key to Submit"
                             userInput = ""
                             numPlayers += 1
-                            data_to_be_displayed = supabase.table('player').select("*").eq('id', addedID).execute()
-                            #print the id from data_to_be_displayed
+                            data_to_be_displayed = supabase.table('player').select("id").eq('id', addedID).execute()
+                            #attempting to read data from supabase to then display to the table in splash screen
                             #data_to_be_displayed = str(data_to_be_displayed)
+                            #print(data_to_be_displayed.__dir__())
+                            #print(data_to_be_displayed.__getattribute__('data').__str__())
+                            #print (data_to_be_displayed[0]['id'])
                             #print(getattr(data_to_be_displayed, 'id'))
+                            #data_to_be_displayed = json.load(data_to_be_displayed)
+
+                            #print(data_to_be_displayed)
 
 
                             #CodeName_to_be_displayed = supabase.table('player').select("codename").eq('id', addedID).execute()
