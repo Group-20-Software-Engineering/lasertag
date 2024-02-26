@@ -1,6 +1,23 @@
 #!/bin/bash
 
-./startScripts/compile.sh &
+#./startScripts/compile.sh &
+
+
+#Compiles the server and starts in a seperate window
+set -e
+g++ -Wall udp/server.cpp -o udp/server
+g++ -Wall udp/client.cpp -o udp/client
+
+
+
+# Start the server in a new xterm window and get its PID.
+
+xterm -e ./udp/server &
+server_pid=$!
+
+# Start the client in a new xterm window and get its PID.
+xterm -e ./udp/client &
+client_pid=$!
 
 # Set the directory where the Python file is located
 directory="frontend"
@@ -13,3 +30,9 @@ cd "$directory" || exit
 
 # Run the Python file
 python3 "$filename"
+
+
+kill $server_pid
+kill $client_pid
+
+
