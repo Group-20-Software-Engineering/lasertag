@@ -112,8 +112,18 @@ numPlayers = 1
 addedID = ''
 addedCodeName = ''
 machineCode = ''
-RedTeam = [id, codename, machineCode]
-GreenTeam = [id, codename, machineCode]
+class RedTeam:
+    def __init__(red, id, codename, machineCode):
+        red.id = id
+        red.codename = codename
+        red.machineCode = machineCode
+    redPlayers = []
+class GreenTeam:
+    def __init__(green, id, codename, machineCode):
+        green.id = id
+        green.codename = codename
+        green.machineCode = machineCode
+    greenPlayers = []
 listNotEmpty = False
 textWords = ''
 
@@ -317,12 +327,12 @@ while not exitIntroScreen:
                                 print("No data found.")
 
                         if (inputField == 2) and (userInput != ""):
-
+                            
                             listNotEmpty = True
                             if (int(userInput) % 2 == 0):
-                                RedTeam.append(addedID, addedCodeName, userInput)
+                                RedTeam.redPlayers.append(addedID, addedCodeName, userInput)
                             if (int(userInput) % 2 != 0):
-                                GreenTeam.append(addedID, addedCodeName, userInput)
+                                GreenTeam.greenPlayers.append(addedID, addedCodeName, userInput)
                             userInput = "Hardware/" + userInput
                             send_udp_packet(userInput)
                             idWords = "Please Enter Player ID. Press Enter Key to Submit"
