@@ -106,6 +106,12 @@ GreenTable = []
 id = ''
 codename = ''
 numPlayers = 1
+addedID = ''
+addedCodeName = ''
+RedTeam = []
+GreenTeam = []
+listNotEmpty = False
+textWords = ''
 
 while not exitIntroScreen:
         
@@ -206,14 +212,11 @@ while not exitIntroScreen:
                 pygame.draw.rect(screen, BLACK, rect, 1)
                 pygame.draw.rect(screen, RED, rect.inflate(-2, -2))
                 RowRedRect.append(rect)
-                if row == 0 and col == 0:
-                    textWords = "ID"
-                if row == 0 and col == 1:
-                    textWords = "CodeName"
-                if row == 1 and col == 0:
-                    textWords = userInput
-                if row == 1 and col == 1:
-                    textWords = "name"
+                if (listNotEmpty == True):
+                    if row == 0 and col == 0:
+                        textWords = RedTeam[0].id
+                    if row == 0 and col == 1:
+                        textWords = RedTeam[0].codename
                 text = coolFont.render(textWords, True, WHITE)
                 text_rect = text.get_rect(center=rect.center)
                 # Blit text onto the screen
@@ -283,6 +286,7 @@ while not exitIntroScreen:
                             supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()
                             fetchCodeName = supabase.table('player').select("codename").eq('id', addedID).execute()
                             print(fetchCodeName)
+                            addedCodeName = userInput
                             inputField = 2
                             idWords = "Please Enter Machine Code. Press Enter Key to Submit"
                             userInput = ""
@@ -306,6 +310,11 @@ while not exitIntroScreen:
                         if (inputField == 2) and (userInput != ""):
                             userInput = "Hardware/" + userInput
                             send_udp_packet(userInput)
+                            listNotEmpty = True
+                            if (userInput % 2 == 0):
+                                RedTeam.append(addedID, addedCodeName, userInput)
+                            if (userInput % 2 != 0):
+                                GreenTeam.append(addedID, addedCodeName, userInput)
                             idWords = "Please Enter Player ID. Press Enter Key to Submit"
                             inputField = 0
                             userInput = ""
