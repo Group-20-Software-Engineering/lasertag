@@ -279,7 +279,19 @@ while not exitIntroScreen:
                             idWords = "Please Enter Player ID. Press Enter Key to Submit"
                             userInput = ""
                             numPlayers += 1
-                            data_to_be_displayed = supabase.table('player').select("id").eq('id', addedID).execute()
+                            #data_to_be_displayed = supabase.table('player').select("id").eq('id', addedID).execute()
+                            response = supabase.table('player').select("codename").eq('id', addedID).execute()
+
+                            # Extract the data part of the response
+                            data = response.data
+
+                            #Assuming there's at least one result and you want the first one
+                            if data:
+                                codename = data[0]['codename']
+                                print(codename)
+                            else:
+                                print("No data found.")
+
                             #attempting to read data from supabase to then display to the table in splash screen
                             #data_to_be_displayed = str(data_to_be_displayed)
                             #print(data_to_be_displayed.__dir__())
