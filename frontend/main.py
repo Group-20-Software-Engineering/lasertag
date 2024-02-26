@@ -330,9 +330,11 @@ while not exitIntroScreen:
                             
                             listNotEmpty = True
                             if (int(userInput) % 2 == 0):
-                                RedTeam.redPlayers.append(addedID, addedCodeName, userInput)
+                                newPlayer = RedTeam(addedID, addedCodeName, userInput)
+                                RedTeam.redPlayers.append(newPlayer)
                             if (int(userInput) % 2 != 0):
-                                GreenTeam.greenPlayers.append(addedID, addedCodeName, userInput)
+                                newPlayer = GreenTeam(addedID, addedCodeName, userInput)
+                                GreenTeam.greenPlayers.append(newPlayer)
                             userInput = "Hardware/" + userInput
                             send_udp_packet(userInput)
                             idWords = "Please Enter Player ID. Press Enter Key to Submit"
