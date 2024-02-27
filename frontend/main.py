@@ -25,7 +25,7 @@ currentDir = os.getcwd()
 #coolFontName = os.path.join(currentDir, "8-bit.ttf")
 coolFontName = "8-bit.ttf"
 defFontName = "freesansbold.ttf"
-coolFont = pygame.font.Font(coolFontName, 18) #changing font because on mine it doesn't work for the cool font
+coolFont = pygame.font.Font(coolFontName, 18)
 inputBoxFont = pygame.font.Font(coolFontName, 14) 
 defFont = pygame.font.Font(defFontName, 24)
 WHITE = (255, 255, 255)
@@ -176,7 +176,7 @@ while not exitIntroScreen:
     rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n"
     blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 25 - y), defFont)
     screen.blit(title,(screen.get_width()/2 - title.get_width()/2, screen.get_height() - y))
-    storyText = "\n\n       In a world where the Joestars\n          are now fighting in space!\n       You will now join the JoeStars\n   Against the evil laser Stand Users\n       (which aren't actually lasers\n        but simpler infrared lights\n                  emitted as beams)\n                           KILL.\n\n       But your enemies are not weak...\n     They have their own unqiue stands\n           with powerful abilities.\n  Dio has upgraded all his laser stand\n      users to FREEZE you upon damage.\n\n                 But do not fear!!!\n        As your uncle Jotaro Kujo\n   With his stand STARRRR PLATIUM.\n            Has done the same to your\n                 laser stands too.\n\n         Do not be too overconfident.\n As when you reading this amazing text\n  Dio hired Sigma from Overwatch 2 D:\n                With the power of\n        ''WHAT IS THAT MELODY?!?!''\n        Sigma fluxxed 99.99 percent\n             of the Joestar family.\n\nSo now it's up to you and your friends.\n       Oh wait you don't have friends...\n       No worries as your Jotaro will\nstill be with you on this massive journey\n\n      WHAT ARE YOU WAITING FOR!!!\n   GO NOW BEFORE THE TIMER ENDS\nGET THE WIN FOR THE JOESTAR FAMILY\n         DO NOT LET THE ENEMY WIN\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n                    What? NANI!\n   Did you find an easter egg yet??\n          Why are you still here?\n           What are you DOING!!!\n            Why are we still here\n                 Just to suffer...\n                     BYEEEEEEE\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Do you not want to help the Joestars????\n       Well then I would like to introduce\n           the sponsor of this project         \n                      RAID- wait what\n                      no no no... I mean\n                       OUR PET MASCOT        \n                        SHIPLEY!!!!!!!\n    for keeping team 20 sane for the\n              past few sprints :3     \n    Now you guys can go taste freedom\n      Thanks for reading this TedTalk."
+    storyText = "\n\n      In a world where the Joestars\n         are now fighting in space!\n      You will now join the Joestars\n  Against the evil laser Stand Users\n       (which aren't actually lasers\n        but simpler infrared lights\n                  emitted as beams)\n                            KILL.\n\n      But your enemies are not weak...\n    They have their own unique stands\n            with powerful abilities.\n Dio has upgraded all his laser stand\n    users to FREEZE you upon damage.\n\n                  But do not fear!!!\n        As your uncle Jotaro Kujo\n With his stand STARRRR PLATINUM.\n            Has done the same to your\n                  laser stands too.\n\n         Do not be too overconfident.\n As when you reading this amazing text\n  Dio hired Sigma from Overwatch 2 D:\n                  With the power of\n        ''WHAT IS THAT MELODY?!?!''\n        Sigma fluxxed 99.99 percent\n             of the Joestar family.\n\nSo now it's up to you and your friends.\n      Oh wait you don't have friends...\n No worries, as your Jotaro will still\n  be with you on this massive journey.\n\n      WHAT ARE YOU WAITING FOR!!!\n    GO NOW BEFORE THE TIMER ENDS\n    GET THE WIN FOR THE JOESTARS\n        DO NOT LET THE ENEMY WIN\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n                     What? NANI!\n   Did you find an easter egg yet??\n          Why are you still here?\n           What are you DOING!!!!\n            Why are we still here\n                 Just to suffer...\n                     BYEEEEEEE\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDo you not want to help the Joestars??\n  Well then, I would like to introduce\n          the sponsor of this project         \n                    RAID- wait what\n                    no no no... I mean\n                   OUR PET MASCOT        \n                       SHIPLEY!!!!!!!\n     for keeping team 20 sane for the\n                past few sprints :3     \n   Now you guys can go taste freedom\n    Thanks for reading this TedTalk."
     # storyText = textwrap.dedent('''\n\n             
     #    In a world where lasers\n        
     #    (which aren't actually lasers\n         
@@ -296,7 +296,9 @@ while not exitIntroScreen:
                     RedTeam.redPlayers.clear()
                     GreenTeam.greenPlayers.clear()
 
-                   
+                elif event.key == pygame.K_ESCAPE:
+                    inEntryScreen = False
+                    exitProgram = True
                     
                 else:
                     if (event.key != pygame.K_RETURN):
@@ -406,7 +408,7 @@ while not exitIntroScreen:
             InputBoxColor = InputColorPassive
         idText = inputBoxFont.render(idWords, True, YELLOW) # Input Box Message
         screen.blit(idText,(screen.get_width()/2 - screen.get_width()/3, screen.get_height()/2 +275))
-        deleteStartText = inputBoxFont.render("'-' To Clear the Players '=' To Start Game", True, WHITE)
+        deleteStartText = inputBoxFont.render("'-' To Clear the Players '+' To Start Game", True, WHITE)
         screen.blit(deleteStartText,(screen.get_width()/2 - screen.get_width()/3.5, screen.get_height()/2 +250))
         redText = inputBoxFont.render("Red Team", True, RED) # Red Team
         screen.blit(redText,(screen.get_width()/4 - screen.get_width()/18, 12))
@@ -417,13 +419,6 @@ while not exitIntroScreen:
         screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
         inputBox.w = max(screen.get_width()/2, textSurface.get_width()+10)
         pygame.display.update()
-        # random ass pseudocode blabber
-        # if (idNamePairFound == True): go to next id selection
-        # elif (idNamePairFound == False): do nameText instead of idText, "Name Not Found. Please Enter Player Name", prompt again, pair it up
-        # have a button underneath to start game, activates next part inPlayerScoreboard, have two tables of teams and scores and shit
-        # at end have exitProgram = True
-            
-
                     
     pygame.display.flip()
 
