@@ -127,6 +127,19 @@ class GreenTeam:
         green.codename = codename
         green.machineCode = machineCode
     greenPlayers = []
+def makeStars():
+    a = random.randrange(899) + 1
+    b = random.randrange(699) + 1
+    pygame.draw.circle(screen, WHITE,(a,b), 2)
+    a = random.randrange(899) + 1
+    b = random.randrange(699) + 1
+    pygame.draw.circle(screen, WHITE,(a,b), 2)
+    a = random.randrange(899) + 1
+    b = random.randrange(699) + 1
+    pygame.draw.circle(screen, WHITE,(a,b), 2)
+    a = random.randrange(899) + 1
+    b = random.randrange(699) + 1
+    pygame.draw.circle(screen, WHITE,(a,b), 2)   
 listNotEmpty = False
 textWords = ''
 pygame.mixer.music.load("music.wav")
@@ -138,41 +151,7 @@ while not exitIntroScreen:
     # send_udp_packet(test)
 
     screen.fill(BLACK)
-
-    
-    a = random.randrange(899) + 1
-    b = random.randrange(699) + 1
-    pygame.draw.circle(screen, WHITE,(a,b), 2)
-
-    a = random.randrange(899) + 1
-    b = random.randrange(699) + 1
-    pygame.draw.circle(screen, WHITE,(a,b), 2)
-
-    a = random.randrange(899) + 1
-    b = random.randrange(699) + 1
-    pygame.draw.circle(screen, WHITE,(a,b), 2)
-
-    a = random.randrange(899) + 1
-    b = random.randrange(699) + 1
-    pygame.draw.circle(screen, WHITE,(a,b), 2)
-
-    a = random.randrange(899) + 1
-    b = random.randrange(699) + 1
-    pygame.draw.circle(screen, WHITE,(a,b), 2)
-    
-    a = random.randrange(899) + 1
-    b = random.randrange(699) + 1
-    pygame.draw.circle(screen, WHITE,(a,b), 2)
-
-
-    
-
-     
-
-      
-    
-
-    
+    makeStars()
     y = y + 1
     rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n"
     blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 25 - y), defFont)
@@ -301,15 +280,11 @@ while not exitIntroScreen:
                     RedTeam.redPlayers.clear()
                     GreenTeam.greenPlayers.clear()
 
-                elif event.key == pygame.K_ESCAPE:
-                    inEntryScreen = False
-                    exitProgram = True
+                   
                     
                 else:
                     if (event.key != pygame.K_RETURN):
-                        userInput += event.unicode
-                        
-                        
+                        userInput += event.unicode    
                     elif (event.key == pygame.K_RETURN):
                         
                         if (inputField == 0):
@@ -424,9 +399,15 @@ while not exitIntroScreen:
         screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
         inputBox.w = max(screen.get_width()/2, textSurface.get_width()+10)
         pygame.display.update()
+        # random ass pseudocode blabber
+        # if (idNamePairFound == True): go to next id selection
+        # elif (idNamePairFound == False): do nameText instead of idText, "Name Not Found. Please Enter Player Name", prompt again, pair it up
+        # have a button underneath to start game, activates next part inPlayerScoreboard, have two tables of teams and scores and shit
+        # at end have exitProgram = True
+            
+
                     
     pygame.display.flip()
-
     clock.tick(60)
 
 def main():
