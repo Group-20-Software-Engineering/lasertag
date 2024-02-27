@@ -204,6 +204,10 @@ while not exitIntroScreen:
         pygame.mixer.quit()
         exitIntroScreen = True
         inEntryScreen = True
+        pygame.mixer.init()
+        pygame.mixer.music.load("player_entry.wav")
+        pygame.mixer.music.set_volume(1)
+        pygame.mixer.music.play(-1)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exitProgram = True
