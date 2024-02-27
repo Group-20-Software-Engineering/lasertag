@@ -21,7 +21,6 @@ pygame.key.set_repeat(500, 100)
 
 currentDir = os.getcwd()
 
-#this is a cummotion
 
 #coolFontName = os.path.join(currentDir, "8-bit.ttf")
 coolFontName = "8-bit.ttf"
