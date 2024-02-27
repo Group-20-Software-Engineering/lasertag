@@ -128,7 +128,8 @@ class GreenTeam:
     greenPlayers = []
 listNotEmpty = False
 textWords = ''
-
+pygame.mixer.music.load("music.wav")
+pygame.mixer.music.play(-1)
 while not exitIntroScreen:
         
     #WHEN SENDING HARDWARE ID USE THE FORMAT "Hardware/ID" AS SEEN BELLOW
@@ -199,6 +200,7 @@ while not exitIntroScreen:
     end = time.time()
     total = end - start
     if (total > 150 or y > 6000):
+        pygame.mixer.quit()
         exitIntroScreen = True
         inEntryScreen = True
     for event in pygame.event.get():
@@ -212,6 +214,7 @@ while not exitIntroScreen:
                 y = y - 60
             elif event.key == pygame.K_MINUS:
                 y = y + 60
+    
     
     
 
