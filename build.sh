@@ -4,7 +4,7 @@
 sudo apt install pip
 sudo apt-get update
 sudo apt-get install -y xterm
-sudo apt install wmctrl
+
 
 #Install Python dependencies sequentially 
 pip install python-dotenv
