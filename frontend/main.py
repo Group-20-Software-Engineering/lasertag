@@ -19,7 +19,7 @@ def proceedToPlayerEntry():
     pygame.mixer.music.play(-1)
 
 def playMusic():
-    pygame.mixer.music.load("funnysound.wav")
+    pygame.mixer.music.load("music.wav")
     pygame.mixer.music.play(-1)
 
 
