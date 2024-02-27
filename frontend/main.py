@@ -206,9 +206,9 @@ def setup():
                         RedTeam.redPlayers.clear()
                         GreenTeam.greenPlayers.clear()
 
-                    elif event.key == pygame.K_PLUS:
-                        inEntryScreen = False
+                    elif event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
                         exitProgram = True
+                        inEntryScreen = False
                         
                     else:
                         if (event.key != pygame.K_RETURN):
