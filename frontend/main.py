@@ -38,6 +38,7 @@ GREEN = (32, 87, 60)
 exitProgram = False
 exitIntroScreen = False
 inEntryScreen = False
+inPlayScreen = False
 idNamePairFound = True
 clock = pygame.time.Clock()
 size = (900,700)
@@ -163,11 +164,8 @@ while not exitIntroScreen:
     pygame.draw.circle(screen, WHITE,(a,b), 2)
 
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exitProgram = True
-            exitIntroScreen = True
-        
+    
+
      
 
       
@@ -178,7 +176,7 @@ while not exitIntroScreen:
     rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n"
     blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 25 - y), defFont)
     screen.blit(title,(screen.get_width()/2 - title.get_width()/2, screen.get_height() - y))
-    storyText = "\n\n             In a world where lasers\n        (which aren't actually lasers\n         but simpler infrared lights\n                  emitted as beams)\n                           KILL.\n\n             But they don't kill you,\n            more like they kill your\n         fabricated health assigned\n             to your player when you\n            signed up for this game.\n\n              EMBARK on a glorious\n       journey of action, adventure,\n                  and space lasers.\n\n               May your aim be true,\n                 good luck soldier."
+    storyText = "\n\n       In a world where the Joestars\n          are now fighting in space!\n       You will now join the JoeStars\n   Against the evil laser Stand Users\n       (which aren't actually lasers\n        but simpler infrared lights\n                  emitted as beams)\n                           KILL.\n\n       But your enemies are not weak...\n     They have their own unqiue stands\n           with powerful abilities.\n  Dio has upgraded all his laser stand\n      users to FREEZE you upon damage.\n\n                 But do not fear!!!\n        As your uncle Jotaro Kujo\n   With his stand STARRRR PLATIUM.\n            Has done the same to your\n                 laser stands too.\n\n         Do not be too overconfident.\n As when you reading this amazing text\n  Dio hired Sigma from Overwatch 2 D:\n                With the power of\n        ''WHAT IS THAT MELODY?!?!''\n        Sigma fluxxed 99.99 percent\n             of the Joestar family.\n\nSo now it's up to you and your friends.\n       Oh wait you don't have friends...\n       No worries as your Jotaro will\nstill be with you on this massive journey\n\n      WHAT ARE YOU WAITING FOR!!!\n   GO NOW BEFORE THE TIMER ENDS\nGET THE WIN FOR THE JOESTAR FAMILY\n         DO NOT LET THE ENEMY WIN\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n                    What? NANI!\n   Did you find an easter egg yet??\n          Why are you still here?\n           What are you DOING!!!\n            Why are we still here\n                 Just to suffer...\n                     BYEEEEEEE\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Do you not want to help the Joestars????\n       Well then I would like to introduce\n           the sponsor of this project         \n                      RAID- wait what\n                      no no no... I mean\n                       OUR PET MASCOT        \n                        SHIPLEY!!!!!!!\n    for keeping team 20 sane for the\n              past few sprints :3     \n    Now you guys can go taste freedom\n      Thanks for reading this TedTalk."
     # storyText = textwrap.dedent('''\n\n             
     #    In a world where lasers\n        
     #    (which aren't actually lasers\n         
@@ -201,10 +199,20 @@ while not exitIntroScreen:
     
     end = time.time()
     total = end - start
-    if (total > 1):
+    if (total > 150 or y > 6000):
         exitIntroScreen = True
         inEntryScreen = True
-
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            exitProgram = True
+            exitIntroScreen = True
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_BACKSPACE:
+                print("Pressing Back")
+                print(y)
+                y = y - 60
+            elif event.key == pygame.K_MINUS:
+                y = y + 60
     
     
 
@@ -282,9 +290,12 @@ while not exitIntroScreen:
                 if event.key == pygame.K_BACKSPACE:
                     userInput = userInput[:-1]
 
-                elif event.key == pygame.K_MINUS or event.key == pygame.K_ESCAPE:
+                elif event.key == pygame.K_MINUS:
                     RedTeam.redPlayers.clear()
                     GreenTeam.greenPlayers.clear()
+
+                   
+                    
                 else:
                     if (event.key != pygame.K_RETURN):
                         userInput += event.unicode
@@ -409,7 +420,9 @@ while not exitIntroScreen:
         # elif (idNamePairFound == False): do nameText instead of idText, "Name Not Found. Please Enter Player Name", prompt again, pair it up
         # have a button underneath to start game, activates next part inPlayerScoreboard, have two tables of teams and scores and shit
         # at end have exitProgram = True
-    
+            
+
+                    
     pygame.display.flip()
 
     clock.tick(60)
