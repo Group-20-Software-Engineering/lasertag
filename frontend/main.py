@@ -206,16 +206,20 @@ def setup():
                         RedTeam.redPlayers.clear()
                         GreenTeam.greenPlayers.clear()
 
-                   
-                    
-                else:
-                    if (event.key != pygame.K_RETURN):
-                        userInput += event.unicode    
-                    elif (event.key == pygame.K_RETURN):
+                    elif event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
+                        exitProgram = True
+                        inEntryScreen = False
                         
-                        if (inputField == 0):
-                            red_Id.append(userInput)
-                            fetchId = supabase.table('player').select("id").eq('id', userInput).execute()
+                    else:
+                        if (event.key != pygame.K_RETURN):
+                            userInput += event.unicode
+                            
+                            
+                        elif (event.key == pygame.K_RETURN):
+                            
+                            if (inputField == 0):
+                                red_Id.append(userInput)
+                                fetchId = supabase.table('player').select("id").eq('id', userInput).execute()
 
                                 if (fetchId):
                                     print("Welcome to the battlefield, enter your codename.")
