@@ -30,9 +30,10 @@ RED = (125, 19, 19)
 GREEN = (32, 87, 60)
 clock = pygame.time.Clock()
 size = (900,700)
+
 pygame.display.set_caption("Photon -1: The Sequel (Laser Boogaloo)")
 screen = pygame.display.set_mode(size)
-countDownBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/17, screen.get_height()/40,100,40)
+countDownBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/18, screen.get_height()/40,100,40)
 done = False
 while not done:
     screen.fill(BLACK)
@@ -44,6 +45,15 @@ while not done:
     greenText = DisplayBoxFont.render("Green Team", True, GREEN) # Green Team
     screen.blit(greenText,(screen.get_width() - screen.get_width()/4 - screen.get_width()/14, 12))
     pygame.draw.rect(screen, BLUE, countDownBox)
+    rect = pygame.Rect(0, 75, 448, 300)
+    pygame.draw.rect(screen, RED, rect, 1)
+    pygame.draw.rect(screen, BLACK, rect.inflate(-2, -2))
+    rect = pygame.Rect(screen.get_width() / 2 + 2, 75, 448, 300)
+    pygame.draw.rect(screen, GREEN, rect, 1)
+    pygame.draw.rect(screen, BLACK, rect.inflate(-2, -2))
+    rect = pygame.Rect(0, 378, 900, 320)
+    pygame.draw.rect(screen, BLUE, rect, 1)
+    pygame.draw.rect(screen, BLACK, rect.inflate(-2, -2))
     pygame.display.flip()
     clock.tick(60)
 
