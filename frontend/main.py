@@ -198,7 +198,7 @@ def setup():
                         active = True
                     else:
                         active = False
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYUP:
                     if event.key == pygame.K_BACKSPACE:
                         userInput = userInput[:-1]
 
@@ -214,14 +214,25 @@ def setup():
                         if (event.key != pygame.K_RETURN):
                             userInput += event.unicode
                             
-                            
                         elif (event.key == pygame.K_RETURN):
                             
                             if (inputField == 0):
-                                red_Id.append(userInput)
-                                fetchId = supabase.table('player').select("id").eq('id', userInput).execute()
-
-                                if (fetchId):
+                                fetchId = (supabase.table('player').select("id").eq('id', userInput).execute())
+                                print("fetchId = " + str(fetchId))
+                                ID_data = fetchId.data
+                                key = "none"
+                                if (ID_data):
+                                    key = ID_data[0]['id']
+                                    print ("outside if statement. key = " + str(key) + " userInput = " + userInput)
+                                    if (userInput == str(key)):
+                                        print("ID already exists, please input a new ID.") 
+                                        idWords = "ID already exists, please input a new ID."
+                                        userInput = ""
+                                        #print("Welcome back {codeName}")
+                                        #supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()  
+                                        print("inside if statement " + " userInput = " + userInput + " key = " + str(key))
+                                    
+                                elif ((userInput != str(key)) and (userInput != "")):                           
                                     print("Welcome to the battlefield, enter your codename.")
                                     idWords = "Please Enter Code Name. Press Enter Key to Submit"
                                     
@@ -233,9 +244,7 @@ def setup():
                                         userInput = ""
                                     elif ((userInput != "") and (inputField == 1)):
                                         supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute() 
-                                else:
-                                    print("Welcome back {codeName}")
-                                    supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()  
+
                             if (inputField == 1) and (userInput != ""):
                                 supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()
                                 fetchCodeName = supabase.table('player').select("codename").eq('id', addedID).execute()
