@@ -35,16 +35,39 @@ pygame.display.set_caption("Photon -1: The Sequel (Laser Boogaloo)")
 screen = pygame.display.set_mode(size)
 countDownBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/18, screen.get_height()/40,100,40)
 done = False
+
+timer30sec = 0
+timer6min = 1
+timerState = timer30sec
+totalTime = 30
+startTime = pygame.time.get_ticks()
+
 while not done:
     screen.fill(BLACK)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+
+    currentTime = (pygame.time.get_ticks() - startTime) / 1000
+    if timerState == timer30sec and currentTime >= totalTime:
+        timerState = timer6min
+        totalTime = 360
+        startTime = pygame.time.get_ticks()
+    elif timerState == timer6min and currentTime >= totalTime:
+        done = True
+    remainingTime = max(0, totalTime - currentTime)
+    minutes = int(remainingTime) // 60
+    seconds = int(remainingTime) % 60
+    timeText = f"{minutes:02d}:{seconds:02d}"
+
     redText = DisplayBoxFont.render("Red Team", True, RED) # Red Team
     screen.blit(redText,(screen.get_width()/4 - screen.get_width()/18, 12))
     greenText = DisplayBoxFont.render("Green Team", True, GREEN) # Green Team
     screen.blit(greenText,(screen.get_width() - screen.get_width()/4 - screen.get_width()/14, 12))
     pygame.draw.rect(screen, BLUE, countDownBox)
+    timer = coolFont.render(timeText, True, WHITE)
+    countDownBoxRect = timer.get_rect(center=countDownBox.center)
+    screen.blit(timer, countDownBoxRect)
     rect = pygame.Rect(0, 75, 448, 300)
     pygame.draw.rect(screen, RED, rect, 1)
     pygame.draw.rect(screen, BLACK, rect.inflate(-2, -2))
