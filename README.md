@@ -23,6 +23,6 @@ Repository dedicated to developing the software to run a game utilizing the Phot
 - m-thursday--------------------Max Thursday
 - chinamanryan------------------Ryan Cheng
 - noahnewton10------------------Noah Newton
-- JosephFolenV------------------JosephFolen
+- JosephFolenV------------------Joseph Folen
 - unclejeffaimgumin-------------Kevin Zheng
 - landonr7----------------------Landon Reynolds
