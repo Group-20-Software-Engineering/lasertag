@@ -6,7 +6,7 @@ Repository dedicated to developing the software to run a game utilizing the Phot
   - For Linux run: `python get-pip.py`
 - Build Dependencies `./build.sh`
   - This will update your machine and install the needed dependencies
-  - You will need to instert your passcode as it calls sudo
+  - You will need to insert your passcode as it calls sudo
   - After the dependencies finish downloading, restart vscode to allow the changes to be applied
 
 # TO RUN
