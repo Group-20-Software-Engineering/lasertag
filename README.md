@@ -22,7 +22,7 @@ Repository dedicated to developing the software to run a game utilizing the Phot
 - Programmer061703--------------Blake Williams            
 - m-thursday--------------------Max Thursday
 - chinamanryan------------------Ryan Cheng
-- noahnewton10------------------noahnewton
+- noahnewton10------------------Noah Newton
 - JosephFolenV------------------JosephFolen
 - unclejeffaimgumin-------------Kevin Zheng
 - landonr7----------------------Landon Reynolds
