@@ -35,6 +35,9 @@ def circles(screen, color):
     b = random.randrange(699) + 1
     pygame.draw.circle(screen, color,(a,b), 2)
 
+def write():
+        x = 1
+
 def setup():
     url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
     key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
@@ -218,21 +221,29 @@ def setup():
                             
                             if (inputField == 0):
                                 fetchId = (supabase.table('player').select("id").eq('id', userInput).execute())
+                                fetchCn = (supabase.table('player').select("*").eq('id', userInput).execute())
                                 print("fetchId = " + str(fetchId))
                                 ID_data = fetchId.data
-                                key = "none"
+                                Cn_data = fetchCn.data
+                                key1 = "none"
                                 if (ID_data):
-                                    key = ID_data[0]['id']
+                                    key1 = ID_data[0]['id']
+                                    key2 = Cn_data[0]['codename']
                                     print ("outside if statement. key = " + str(key) + " userInput = " + userInput)
-                                    if (userInput == str(key)):
+                                    if (userInput == str(key1)):
+                                        addedCodeName = str(key2)
                                         print("ID already exists, please input a new ID.") 
-                                        idWords = "ID already exists, please input a new ID."
+                                        addedID = str(key1)                          
+                                        print(addedID)
+                                        print(addedCodeName)
+                                        idWords = "     ID found, please input a Machine Code."
                                         userInput = ""
+                                        inputField = 2
                                         #print("Welcome back {codeName}")
                                         #supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()  
                                         print("inside if statement " + " userInput = " + userInput + " key = " + str(key))
                                     
-                                elif ((userInput != str(key)) and (userInput != "")):                           
+                                elif ((userInput != str(key)) and (userInput != "") and (inputField == 0)):                           
                                     print("Welcome to the battlefield, enter your codename.")
                                     idWords = "Please Enter Code Name. Press Enter Key to Submit"
                                     
@@ -269,6 +280,23 @@ def setup():
                                 
                                 else:
                                     print("No data found.")
+
+                            if (inputField == 2) and (userInput == ""):
+                                while(event.key != pygame.K_RETURN):
+                                    if event.type == pygame.KEYUP:
+                                        if event.key == pygame.K_BACKSPACE:
+                                            userInput = userInput[:-1]
+                                    if event.type == pygame.QUIT:
+                                        exitProgram = True
+                                        inEntryScreen = False
+                                    if event.key == pygame.K_MINUS:
+                                        RedTeam.redPlayers.clear()
+                                        GreenTeam.greenPlayers.clear()
+                                    if event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
+                                        exitProgram = True
+                                        inEntryScreen = False
+                                    else:
+                                        userInput += event.unicode
 
                             if (inputField == 2) and (userInput != ""):
                                 
