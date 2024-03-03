@@ -35,6 +35,9 @@ def circles(screen, color):
     b = random.randrange(699) + 1
     pygame.draw.circle(screen, color,(a,b), 2)
 
+def write():
+        x = 1
+
 def setup():
     url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
     key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
@@ -218,21 +221,29 @@ def setup():
                             
                             if (inputField == 0):
                                 fetchId = (supabase.table('player').select("id").eq('id', userInput).execute())
+                                fetchCn = (supabase.table('player').select("*").eq('id', userInput).execute())
                                 print("fetchId = " + str(fetchId))
                                 ID_data = fetchId.data
-                                key = "none"
+                                Cn_data = fetchCn.data
+                                key1 = "none"
                                 if (ID_data):
-                                    key = ID_data[0]['id']
+                                    key1 = ID_data[0]['id']
+                                    key2 = Cn_data[0]['codename']
                                     print ("outside if statement. key = " + str(key) + " userInput = " + userInput)
-                                    if (userInput == str(key)):
+                                    if (userInput == str(key1)):
+                                        addedCodeName = str(key2)
                                         print("ID already exists, please input a new ID.") 
-                                        idWords = "ID already exists, please input a new ID."
+                                        addedID = str(key1)                          
+                                        print(addedID)
+                                        print(addedCodeName)
+                                        idWords = "     ID found, please input a Machine Code."
                                         userInput = ""
+                                        inputField = 2
                                         #print("Welcome back {codeName}")
                                         #supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()  
                                         print("inside if statement " + " userInput = " + userInput + " key = " + str(key))
                                     
-                                elif ((userInput != str(key)) and (userInput != "")):                           
+                                elif ((userInput != str(key)) and (userInput != "") and (inputField == 0)):                           
                                     print("Welcome to the battlefield, enter your codename.")
                                     idWords = "Please Enter Code Name. Press Enter Key to Submit"
                                     
@@ -270,84 +281,57 @@ def setup():
                                 else:
                                     print("No data found.")
 
-                        if (inputField == 2) and (userInput != ""):
-                            
-                            listNotEmpty = True
-                            if (int(userInput) % 2 != 0):
-                                newPlayer = RedTeam(addedID, addedCodeName, userInput)
-                                RedTeam.redPlayers.append(newPlayer)
-                            if (int(userInput) % 2 == 0):
-                                newPlayer = GreenTeam(addedID, addedCodeName, userInput)
-                                GreenTeam.greenPlayers.append(newPlayer)
-                            userInput = "Hardware/" + userInput
-                            send_udp_packet(userInput)
-                            idWords = "Please Enter Player ID. Press Enter Key to Submit"
-                            inputField = 0
-                            userInput = ""
+                            if (inputField == 2) and (userInput == ""):
+                                while(event.key != pygame.K_RETURN):
+                                    if event.type == pygame.KEYUP:
+                                        if event.key == pygame.K_BACKSPACE:
+                                            userInput = userInput[:-1]
+                                    if event.type == pygame.QUIT:
+                                        exitProgram = True
+                                        inEntryScreen = False
+                                    if event.key == pygame.K_MINUS:
+                                        RedTeam.redPlayers.clear()
+                                        GreenTeam.greenPlayers.clear()
+                                    if event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
+                                        exitProgram = True
+                                        inEntryScreen = False
+                                    else:
+                                        userInput += event.unicode
 
-
-
-
-                            #CodeName_to_be_displayed = supabase.table('player').select("codename").eq('id', addedID).execute()
-                            # for row in range(16):
-                            #     RowGreenRect = []
-                            #     for col in range(2):
-                            #         x = col * rectWidth + screen.get_width() / 2
-                            #         y = row * rectHeight + 44
-                            #         rect = pygame.Rect(x, y, rectWidth, rectHeight)
-                            #         pygame.draw.rect(screen, BLACK, rect, 1)
-                            #         pygame.draw.rect(screen, GREEN, rect.inflate(-2, -2))
-                                    
-                            #         if row == 0 and col == 0:
-                            #             textWords = "ID"
-                            #         if row == 0 and col == 1:
-                            #             textWords = "CodeName"
-                            #         if row == 1 and col == 0 :
-                            #             textWords = "Stuff"
-                            #         if row == 1 and col == 1:
-                            #             textWords = "Stuff"
-                            #         text = coolFont.render(textWords, True, WHITE)
-                            #         text_rect = text.get_rect(center=rect.center)
-                            #         # Blit text onto the screen
-                            #         screen.blit(text, text_rect)
-                            #     GreenTable.append(RowGreenRect)
+                            if (inputField == 2) and (userInput != ""):
                                 
+                                listNotEmpty = True
+                                if (int(userInput) % 2 != 0):
+                                    newPlayer = RedTeam(addedID, addedCodeName, userInput)
+                                    RedTeam.redPlayers.append(newPlayer)
+                                if (int(userInput) % 2 == 0):
+                                    newPlayer = GreenTeam(addedID, addedCodeName, userInput)
+                                    GreenTeam.greenPlayers.append(newPlayer)
+                                userInput = "Hardware/" + userInput
+                                send_udp_packet(userInput)
+                                idWords = "Please Enter Player ID. Press Enter Key to Submit"
+                                inputField = 0
+                                userInput = ""           
+            if active:
+                InputBoxColor = InputColorActive
+            else:
+                InputBoxColor = InputColorPassive
+            idText = inputBoxFont.render(idWords, True, YELLOW) # Input Box Message
+            screen.blit(idText,(screen.get_width()/2 - screen.get_width()/3, screen.get_height()/2 +275))
+            deleteStartText = inputBoxFont.render("'-' To Clear the Players '+' To Start Game", True, WHITE)
+            screen.blit(deleteStartText,(screen.get_width()/2 - screen.get_width()/3.5, screen.get_height()/2 +250))
+            redText = inputBoxFont.render("Red Team", True, RED) # Red Team
+            screen.blit(redText,(screen.get_width()/4 - screen.get_width()/18, 12))
+            redText = inputBoxFont.render("Green Team", True, GREEN) # Green Team
+            screen.blit(redText,(screen.get_width() - screen.get_width()/4 - screen.get_width()/14, 12))
+            pygame.draw.rect(screen, InputBoxColor, inputBox)
+            textSurface = coolFont.render(userInput, True, YELLOW)
+            screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
+            inputBox.w = max(screen.get_width()/2, textSurface.get_width()+10)
+            pygame.display.update()      
+        pygame.display.flip()
 
-
-                        
-            #if userInput == 'exists':
-                #idNamePairFound = True
-                #display welcome text with registered codename - potental option to change existing codename
-                #ask for users machine code
-                #start game button
-                     
-        if active:
-            InputBoxColor = InputColorActive
-        else:
-            InputBoxColor = InputColorPassive
-        idText = inputBoxFont.render(idWords, True, YELLOW) # Input Box Message
-        screen.blit(idText,(screen.get_width()/2 - screen.get_width()/3, screen.get_height()/2 +275))
-        deleteStartText = inputBoxFont.render("'-' To Clear the Players '+' To Start Game", True, WHITE)
-        screen.blit(deleteStartText,(screen.get_width()/2 - screen.get_width()/3.5, screen.get_height()/2 +250))
-        redText = inputBoxFont.render("Red Team", True, RED) # Red Team
-        screen.blit(redText,(screen.get_width()/4 - screen.get_width()/18, 12))
-        redText = inputBoxFont.render("Green Team", True, GREEN) # Green Team
-        screen.blit(redText,(screen.get_width() - screen.get_width()/4 - screen.get_width()/14, 12))
-        pygame.draw.rect(screen, InputBoxColor, inputBox)
-        textSurface = coolFont.render(userInput, True, YELLOW)
-        screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
-        inputBox.w = max(screen.get_width()/2, textSurface.get_width()+10)
-        pygame.display.update()
-        # random ass pseudocode blabber
-        # if (idNamePairFound == True): go to next id selection
-        # elif (idNamePairFound == False): do nameText instead of idText, "Name Not Found. Please Enter Player Name", prompt again, pair it up
-        # have a button underneath to start game, activates next part inPlayerScoreboard, have two tables of teams and scores and shit
-        # at end have exitProgram = True
-            
-
-                    
-    pygame.display.flip()
-    clock.tick(60)
+        clock.tick(60)
 
 
 
