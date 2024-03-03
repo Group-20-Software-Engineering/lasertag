@@ -230,7 +230,25 @@ def setup():
                                     key1 = ID_data[0]['id']
                                     key2 = Cn_data[0]['codename']
                                     print ("outside if statement. key = " + str(key) + " userInput = " + userInput)
+                                    
                                     if (userInput == str(key1)):
+                                        # used to check if id is in table already
+                                        rLength = len(RedTeam.redPlayers)
+                                        gLength = len(GreenTeam.greenPlayers)
+                                        for i in range(rLength):
+                                            if(RedTeam.redPlayers[i].id == str(key1)):
+                                                inputField = 0
+                                                idWords = "Please Enter Player ID. Press Enter Key to Submit"
+                                                userInput = ""
+                                                # break
+                                        for k in range(gLength):
+                                            if(GreenTeam.greenPlayers[k].id == str(key1)):
+                                                inputField = 0
+                                                idWords = "Please Enter Player ID. Press Enter Key to Submit"
+                                                userInput = ""
+                                                # break
+
+                                        # if not in the table finds codename and prompts for machine code
                                         addedCodeName = str(key2)
                                         print("ID already exists, please input a new ID.") 
                                         addedID = str(key1)                          
@@ -241,7 +259,7 @@ def setup():
                                         inputField = 2
                                         #print("Welcome back {codeName}")
                                         #supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()  
-                                        print("inside if statement " + " userInput = " + userInput + " key = " + str(key))
+                                        print("inside if statement " + " userInput = " + userInput + " key = " + str(key1))
                                     
                                 elif ((userInput != str(key)) and (userInput != "") and (inputField == 0)):                           
                                     print("Welcome to the battlefield, enter your codename.")
@@ -299,19 +317,34 @@ def setup():
                                         userInput += event.unicode
 
                             if (inputField == 2) and (userInput != ""):
-                                
-                                listNotEmpty = True
-                                if (int(userInput) % 2 != 0):
-                                    newPlayer = RedTeam(addedID, addedCodeName, userInput)
-                                    RedTeam.redPlayers.append(newPlayer)
-                                if (int(userInput) % 2 == 0):
-                                    newPlayer = GreenTeam(addedID, addedCodeName, userInput)
-                                    GreenTeam.greenPlayers.append(newPlayer)
-                                userInput = "Hardware/" + userInput
-                                send_udp_packet(userInput)
-                                idWords = "Please Enter Player ID. Press Enter Key to Submit"
-                                inputField = 0
-                                userInput = ""           
+                                rLength = len(RedTeam.redPlayers)
+                                gLength = len(GreenTeam.greenPlayers)
+                                for i in range(rLength):
+                                    if(RedTeam.redPlayers[i].id == addedID):
+                                        inputField = 0
+                                        idWords = "Please Enter Player ID. Press Enter Key to Submit"
+                                        userInput = ""
+                                        # break
+                                for k in range(gLength):
+                                    if(GreenTeam.greenPlayers[k].id == addedID):
+                                        inputField = 0
+                                        idWords = "Please Enter Player ID. Press Enter Key to Submit"
+                                        userInput = ""
+                                        # break
+                                if (inputField != 0):
+                                    listNotEmpty = True
+                                    if (int(userInput) % 2 != 0):
+                                        newPlayer = RedTeam(addedID, addedCodeName, userInput)
+                                        RedTeam.redPlayers.append(newPlayer)
+                                    if (int(userInput) % 2 == 0):
+                                        newPlayer = GreenTeam(addedID, addedCodeName, userInput)
+                                        GreenTeam.greenPlayers.append(newPlayer)
+                                    userInput = "Hardware/" + userInput
+                                    send_udp_packet(userInput)
+                                    idWords = "Please Enter Player ID. Press Enter Key to Submit"
+                                    inputField = 0
+                                    userInput = ""        
+
             if active:
                 InputBoxColor = InputColorActive
             else:
