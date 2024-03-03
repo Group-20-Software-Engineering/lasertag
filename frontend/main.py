@@ -230,36 +230,40 @@ def setup():
                                     key1 = ID_data[0]['id']
                                     key2 = Cn_data[0]['codename']
                                     print ("outside if statement. key = " + str(key) + " userInput = " + userInput)
-                                    
+
                                     if (userInput == str(key1)):
+
                                         # used to check if id is in table already
                                         rLength = len(RedTeam.redPlayers)
                                         gLength = len(GreenTeam.greenPlayers)
+                                        print(rLength)
+                                        print(gLength)
                                         for i in range(rLength):
                                             if(RedTeam.redPlayers[i].id == str(key1)):
                                                 inputField = 0
-                                                idWords = "Please Enter Player ID. Press Enter Key to Submit"
+                                                idWords = "               ID in table. Please Enter New ID"
                                                 userInput = ""
                                                 # break
                                         for k in range(gLength):
                                             if(GreenTeam.greenPlayers[k].id == str(key1)):
                                                 inputField = 0
-                                                idWords = "Please Enter Player ID. Press Enter Key to Submit"
+                                                idWords = "               ID in table. Please Enter New ID"
                                                 userInput = ""
                                                 # break
 
-                                        # if not in the table finds codename and prompts for machine code
-                                        addedCodeName = str(key2)
-                                        print("ID already exists, please input a new ID.") 
-                                        addedID = str(key1)                          
-                                        print(addedID)
-                                        print(addedCodeName)
-                                        idWords = "     ID found, please input a Machine Code."
-                                        userInput = ""
-                                        inputField = 2
-                                        #print("Welcome back {codeName}")
-                                        #supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()  
-                                        print("inside if statement " + " userInput = " + userInput + " key = " + str(key1))
+                                        if (userInput != ""):
+                                            # if not in the table finds codename and prompts for machine code
+                                            addedCodeName = str(key2)
+                                            print("ID already exists, please input a new ID.") 
+                                            addedID = str(key1)                          
+                                            print(addedID)
+                                            print(addedCodeName)
+                                            idWords = "         ID found, please input a Machine Code."
+                                            userInput = ""
+                                            inputField = 2
+                                            #print("Welcome back {codeName}")
+                                            #supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()  
+                                            print("inside if statement " + " userInput = " + userInput + " key = " + str(key1))
                                     
                                 elif ((userInput != str(key)) and (userInput != "") and (inputField == 0)):                           
                                     print("Welcome to the battlefield, enter your codename.")
