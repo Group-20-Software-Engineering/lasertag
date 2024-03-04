@@ -328,12 +328,14 @@ def setup():
                                         inputField = 0
                                         idWords = "Please Enter Player ID. Press Enter Key to Submit"
                                         userInput = ""
+                                        
                                         # break
                                 for k in range(gLength):
                                     if(GreenTeam.greenPlayers[k].id == addedID):
                                         inputField = 0
                                         idWords = "Please Enter Player ID. Press Enter Key to Submit"
                                         userInput = ""
+                                        
                                         # break
                                 if (inputField != 0):
                                     listNotEmpty = True
@@ -343,7 +345,8 @@ def setup():
                                     if (int(userInput) % 2 == 0):
                                         newPlayer = GreenTeam(addedID, addedCodeName, userInput)
                                         GreenTeam.greenPlayers.append(newPlayer)
-                                    userInput = "Hardware/" + userInput
+                                    userInput = "Hardware/" + userInput + "/" + addedID
+                                    
                                     send_udp_packet(userInput)
                                     idWords = "Please Enter Player ID. Press Enter Key to Submit"
                                     inputField = 0
