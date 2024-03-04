@@ -4,7 +4,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-
+#include <unordered_map>
 //Bind server receive port 7501 do not bind 7500 broadcast but still create it
 //127.0.0.1
 
@@ -62,8 +62,15 @@ int main() {
             responseMessage = "Hello, client! Looks like the game is over.";
         }
         else if (strncmp(buffer, "Hardware/", 9) == 0) {
-            char* id = buffer + 9; // Get the ID part of the message
-            std::cout << "Received Hardware ID: " << id << std::endl;
+            // char* id = buffer + 9; // Get the ID part of the message
+            // std::cout << "Received Hardware ID: " << id << std::endl;
+
+            int machineID,playerID;
+            sscanf(buffer, "Hardware/%d/%d", &machineID, &playerID);
+            std::cout << "Received Hardware ID: " << machineID << " Player ID: " << playerID << std::endl;
+            char broadcastMessage[100];
+            sprintf(broadcastMessage, "Hardware/%d/%d", machineID, playerID);
+            
 
             // Broadcast the ID to all clients right now it only echos back to the client
             //sendto(socketFD, id, strlen(id), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
@@ -73,8 +80,10 @@ int main() {
             broadcastAddress.sin_port = htons(BROADCAST_PORT);
             broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-            sendto(socketFD, id, strlen(id), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
+            sendto(socketFD, broadcastMessage, strlen(broadcastMessage), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
         } 
+
+        
 
         sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
 
