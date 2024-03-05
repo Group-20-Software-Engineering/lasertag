@@ -229,15 +229,14 @@ def setup():
                         elif (event.key == pygame.K_RETURN):
                             
                             if (inputField == 0):
-                                fetchId = (supabase.table('player').select("id").eq('id', userInput).execute())
-                                fetchCn = (supabase.table('player').select("*").eq('id', userInput).execute())
-                                print("fetchId = " + str(fetchId))
-                                ID_data = fetchId.data
-                                Cn_data = fetchCn.data
+                                # fetchId = (supabase.table('player').select("id").eq('id', userInput).execute())
+                                fetchData = (supabase.table('player').select("*").eq('id', userInput).execute())
+                                print("fetchData = " + str(fetchData))
+                                data = fetchData.data
                                 key1 = "none"
-                                if (ID_data):
-                                    key1 = ID_data[0]['id']
-                                    key2 = Cn_data[0]['codename']
+                                if (data):
+                                    key1 = data[0]['id']
+                                    key2 = data[0]['codename']
                                     print ("outside if statement. key = " + str(key) + " userInput = " + userInput)
 
                                     if (userInput == str(key1)):
