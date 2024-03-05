@@ -7,13 +7,6 @@ import textwrap
 import os
 from send import send_udp_packet
 
-from supabase import create_client, Client 
-
-url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
-key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
-
-supabase: Client = create_client(url, key)
-
 pygame.init()
 pygame.key.set_repeat(500, 100)
 coolFontName = "8-bit.ttf"

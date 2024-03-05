@@ -11,6 +11,11 @@ from send import send_udp_packet
 
 from supabase import create_client, Client 
 
+url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
+key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
+
+supabase: Client = create_client(url, key)
+
 def proceedToPlayerEntry():
     pygame.mixer.quit()
     pygame.mixer.init()
@@ -92,6 +97,9 @@ def setup():
     addedID = ''
     addedCodeName = ''
     machineCode = ''
+
+
+
     class RedTeam:
             def __init__(red, id, codename, machineCode):
                 red.id = id
@@ -104,6 +112,7 @@ def setup():
             green.codename = codename
             green.machineCode = machineCode
         greenPlayers = []
+
     listNotEmpty = False
     textWords = ''
     playMusic()
@@ -298,7 +307,7 @@ def setup():
                                     codename = data[0]['codename']
                                     id = data[0]['id']
                                     print(codename)
-                                    print (id)
+                                    print(id)
                                 
                                 else:
                                     print("No data found.")

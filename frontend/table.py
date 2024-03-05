@@ -26,3 +26,14 @@ def table():
                 # Blit text onto the screen
                 screen.blit(text, text_rect)
             RedTable.append(RowRedRect)
+
+""" This is for putting rows of database into array (work in progess)
+count: int = supabase.from('player').select('*', { count: 'exact', head: true })
+codename_list: Dict[str, RedTeam] = [] 
+
+def retrieved_codenames():
+    for player <= count:
+        response = supabase.from('player').select("*").execute()
+        player = response.dumps(codename_list, separators=(',', ':'))
+        codename_list
+"""
