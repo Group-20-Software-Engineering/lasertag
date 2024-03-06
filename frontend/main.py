@@ -105,7 +105,10 @@ def setup():
     addedCodeName = ''
     machineCode = ''
 
-
+    #Character limit for codenames
+    def character_lim(codename):
+        while len(codename) > 12:
+            error_lim = "Please enter a codename 12 characters or less."
 
     class RedTeam:
             def __init__(red, id, codename, machineCode):
@@ -238,6 +241,9 @@ def setup():
                                 elif ((userInput != str(key)) and (userInput != "") and (inputField == 0)):                           
                                     print("Welcome to the battlefield, enter your codename.")
                                     idWords = "Please Enter Code Name. Press Enter Key to Submit"
+
+                                    #Character limit for codenames
+                                    character_lim(codename):
                                     
                                     if ((userInput != "") and (inputField == 0)):
                                         addPlayer = supabase.table('player').insert({ 'id': userInput}).execute()
