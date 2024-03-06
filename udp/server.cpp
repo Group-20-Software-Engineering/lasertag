@@ -12,6 +12,14 @@ const int PORT = 7501;
 const int BROADCAST_PORT = 7500;
 const int BUFFER_SIZE = 1024;
 
+
+void printMapContents(const std::unordered_map<int, int>& map) {
+    for (const auto& pair : map) {
+        std::cout << "Machine ID: " << pair.first << ", Player ID: " << pair.second << std::endl;
+    }
+}
+
+
 int main() {
     int socketFD = socket(AF_INET, SOCK_DGRAM, 0);
     if (socketFD == -1) {
@@ -41,6 +49,9 @@ int main() {
 
     std::cout << "UDP Server is listening on port " << PORT << std::endl;
 
+    std::unordered_map<int, int> machineToPlayerMap;
+
+
     char buffer[BUFFER_SIZE];
     while (true) {
         struct sockaddr_in clientAddress;
@@ -63,11 +74,13 @@ int main() {
         }
         else if (strncmp(buffer, "Hardware/", 9) == 0) {
             char* id = buffer + 9; // Get the ID part of the message
-            std::cout << "Received Hardware ID: " << id << std::endl;
 
             int machineID,playerID;
             sscanf(buffer, "Hardware/%d/%d", &machineID, &playerID);
-            std::cout << "Received Hardware ID: " << machineID << " Player ID: " << playerID << std::endl;
+            machineToPlayerMap[machineID] = playerID; 
+            printMapContents(machineToPlayerMap); 
+            
+         
 
             // Broadcast the ID to all clients right now it only echos back to the client
             //sendto(socketFD, id, strlen(id), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
@@ -77,7 +90,12 @@ int main() {
             broadcastAddress.sin_port = htons(BROADCAST_PORT);
             broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-            sendto(socketFD, id, strlen(id), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
+            //Converts machineID to a char so it can be broadcasted
+            char idBuffer[32];
+            snprintf(idBuffer, sizeof(idBuffer),"%d",machineID);
+
+
+            sendto(socketFD, idBuffer, strlen(idBuffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
         } 
 
         
