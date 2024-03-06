@@ -243,7 +243,7 @@ def setup():
                                     idWords = "Please Enter Code Name. Press Enter Key to Submit"
 
                                     #Character limit for codenames
-                                    character_lim(codename):
+                                    character_lim(codename)
                                     
                                     if ((userInput != "") and (inputField == 0)):
                                         addPlayer = supabase.table('player').insert({ 'id': userInput}).execute()
