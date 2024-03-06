@@ -5,6 +5,7 @@ import time
 import pygame
 import textwrap
 #import playaction as playaction
+from playerEntryScreenTables import drawLeftTable, drawRightTable
 
 import os
 from send import send_udp_packet
@@ -15,6 +16,12 @@ url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
 key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
 
 supabase: Client = create_client(url, key)
+
+# def drawRect(row, col, x, y, rectWidth, rectHeight, screen, borderColor, fillColor) -> pygame.Rect:
+#     rect = pygame.Rect(x, y, rectWidth, rectHeight)
+#     pygame.draw.rect(screen, borderColor, rect, 1)
+#     pygame.draw.rect(screen, fillColor, rect.inflate(-2, -2))
+#     return rect
 
 def proceedToPlayerEntry():
     pygame.mixer.quit()
@@ -148,59 +155,15 @@ def setup():
         while ((exitIntroScreen == True) and (inEntryScreen == True)):
             pygame.key.set_repeat(500, 25) #set up repeat entry from key holding
             screen.fill(BLACK)
-            rectWidth = 900/4
-            rectHeight = 580/16
+            # rectWidth = 900/4
+            # rectHeight = 580/16
             redRects = [[None] * 2 for _ in range(16)]
             greenRects = [[None] * 2 for _ in range(16)]
 
-            for row in range(15):
-                RowRedRect = []
+            drawLeftTable(RedTable, listNotEmpty, RedTeam, coolFont, screen, BLACK, RED, WHITE, textWords)
 
-                for col in range(2):
-                    x = col * rectWidth
-                    y = row * rectHeight + 44
-                    rect = pygame.Rect(x, y, rectWidth, rectHeight)
-                    pygame.draw.rect(screen, BLACK, rect, 1)
-                    pygame.draw.rect(screen, RED, rect.inflate(-2, -2))
-                    RowRedRect.append(rect)
-                    if (len(RedTeam.redPlayers) == 0):
-                        pass
-                    elif (listNotEmpty == True):
-                        if col == 0 and row < len(RedTeam.redPlayers):
-                            textWords = RedTeam.redPlayers[row].id
-                        if col == 1 and row < len(RedTeam.redPlayers):
-                            textWords = RedTeam.redPlayers[row].codename
-                        if row >= len(RedTeam.redPlayers):
-                            textWords = " "
-                    text = coolFont.render(textWords, True, WHITE)
-                    text_rect = text.get_rect(center=rect.center)
-                    # Blit text onto the screen
-                    screen.blit(text, text_rect)
-                    
-                RedTable.append(RowRedRect)
-            for row in range(15):
-                RowGreenRect = []
-                for col in range(2):
-                    x = col * rectWidth + screen.get_width() / 2
-                    y = row * rectHeight + 44
-                    rect = pygame.Rect(x, y, rectWidth, rectHeight)
-                    pygame.draw.rect(screen, BLACK, rect, 1)
-                    pygame.draw.rect(screen, GREEN, rect.inflate(-2, -2))
-                    if (len(GreenTeam.greenPlayers) == 0):
-                        pass
-                    elif (listNotEmpty == True):
-                        if col == 0 and row < len(GreenTeam.greenPlayers):
-                            textWords = GreenTeam.greenPlayers[row].id
-                        if col == 1 and row < len(GreenTeam.greenPlayers):
-                            textWords = GreenTeam.greenPlayers[row].codename
-                        if row >= len(GreenTeam.greenPlayers):
-                            textWords = " "
-                    text = coolFont.render(textWords, True, WHITE)
-                    text_rect = text.get_rect(center=rect.center)
-                    # Blit text onto the screen
-                    screen.blit(text, text_rect)
-                    
-                GreenTable.append(RowGreenRect)
+            drawRightTable(GreenTable, listNotEmpty, GreenTeam, coolFont, screen, BLACK, GREEN, WHITE, textWords)
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exitProgram = True
@@ -229,7 +192,6 @@ def setup():
                         elif (event.key == pygame.K_RETURN):
                             
                             if (inputField == 0):
-                                # fetchId = (supabase.table('player').select("id").eq('id', userInput).execute())
                                 fetchData = (supabase.table('player').select("*").eq('id', userInput).execute())
                                 print("fetchData = " + str(fetchData))
                                 data = fetchData.data
