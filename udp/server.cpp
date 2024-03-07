@@ -131,11 +131,19 @@ int main() {
         } 
 
         // Else-if block to handle "id/id" format
-        else if (sscanf(buffer, "%d/%d", &shooterID, &killedID) == 2) {
-            std::cout << "Shooter ID: " << shooterID << ", Killed ID: " << killedID << std::endl;
-            pipeInsert(shooterID); //Inserts the shooterID into the pipe
-        }
-
+       else if (sscanf(buffer, "%d/%d", &shooterID, &killedID) == 2) {
+            
+            auto shooterIt = machineToPlayerMap.find(shooterID);
+                if (shooterIt != machineToPlayerMap.end()) {
+                        // Found the shooter's playerID in the map
+                        int playerShooterID = shooterIt->second;
+                        std::cout << "Shooter ID (machine): " << shooterID << ", Player ID: " << playerShooterID << std::endl;
+                        
+                        pipeInsert(playerShooterID);
+             } else {
+                std::cerr << "Shooter machine ID " << shooterID << " not found in player map." << std::endl;
+            }
+}
         
 
         sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
