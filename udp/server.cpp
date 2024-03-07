@@ -5,12 +5,20 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <unordered_map>
+#include <fstream>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <cerrno>
+#include <cstring>
 //Bind server receive port 7501 do not bind 7500 broadcast but still create it
 //127.0.0.1
 
 const int PORT = 7501;
 const int BROADCAST_PORT = 7500;
 const int BUFFER_SIZE = 1024;
+int shooterID, killedID;
 
 
 void printMapContents(const std::unordered_map<int, int>& map) {
@@ -18,6 +26,31 @@ void printMapContents(const std::unordered_map<int, int>& map) {
         std::cout << "Machine ID: " << pair.first << ", Player ID: " << pair.second << std::endl;
     }
 }
+
+int pipeInsert(int machineID) {
+    const char* pipePath = "pipe";
+
+    // Open the named pipe in non-blocking write-only mode
+    int fd = open(pipePath, O_WRONLY | O_NONBLOCK);
+    if (fd == -1) {
+        std::cerr << "Error opening pipe: " << std::strerror(errno) << std::endl;
+        return 1; // Failure
+    }
+
+    // Convert machineID to a string and write to the pipe
+    std::string message = std::to_string(machineID) + "\n";
+    ssize_t bytesWritten = write(fd, message.c_str(), message.length());
+
+    if (bytesWritten == -1) {
+        std::cerr << "Error writing to pipe: " << std::strerror(errno) << std::endl;
+        close(fd); 
+        return 1;
+    }
+
+    close(fd); 
+    return 0; 
+}
+
 
 
 int main() {
@@ -73,7 +106,7 @@ int main() {
             responseMessage = "Hello, client! Looks like the game is over.";
         }
         else if (strncmp(buffer, "Hardware/", 9) == 0) {
-            char* id = buffer + 9; // Get the ID part of the message
+           
 
             int machineID,playerID;
             sscanf(buffer, "Hardware/%d/%d", &machineID, &playerID);
@@ -96,6 +129,12 @@ int main() {
 
             sendto(socketFD, idBuffer, strlen(idBuffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
         } 
+
+        // Else-if block to handle "id/id" format
+        else if (sscanf(buffer, "%d/%d", &shooterID, &killedID) == 2) {
+            std::cout << "Shooter ID: " << shooterID << ", Killed ID: " << killedID << std::endl;
+            pipeInsert(shooterID); //Inserts the shooterID into the pipe
+        }
 
         
 
