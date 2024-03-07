@@ -83,7 +83,6 @@ int main() {
          
 
             // Broadcast the ID to all clients right now it only echos back to the client
-            //sendto(socketFD, id, strlen(id), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
             struct sockaddr_in broadcastAddress;
             memset(&broadcastAddress, 0, sizeof(broadcastAddress));
             broadcastAddress.sin_family = AF_INET;
