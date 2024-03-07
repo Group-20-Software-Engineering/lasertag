@@ -45,9 +45,9 @@ def pipeRemove():
         print(f"Error: {e}")
 
 
-def main():
-    while True:  # Fix: Change `true` to `True`
-        pipeRemove()
+# def main():
+#     while True:  # Fix: Change `true` to `True`
+#         pipeRemove()
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
