@@ -47,7 +47,8 @@ def pipeRemove():
 
 # def main():
 #     send_udp_packet("Hardware/22/33")
-#     while True:  # Fix: Change `true` to `True`
+#     send_udp_packet("Hardware/11/6")
+#     while True:  
 #         pipeRemove()
 
 # if __name__ == "__main__":

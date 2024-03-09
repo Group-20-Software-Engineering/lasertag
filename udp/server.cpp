@@ -27,7 +27,7 @@ void printMapContents(const std::unordered_map<int, int>& map) {
     }
 }
 
-int pipeInsert(int machineID) {
+int pipeInsert(int shooterID, int killedID) {
     const char* pipePath = "pipe";
 
     // Open the named pipe in non-blocking write-only mode
@@ -37,8 +37,9 @@ int pipeInsert(int machineID) {
         return 1; // Failure
     }
 
-    // Convert machineID to a string and write to the pipe
-    std::string message = std::to_string(machineID) + "\n";
+    // Convert shooterID and killedID to a string and write to the pipe
+    // Format: "shooterID/killedID\n"
+    std::string message = std::to_string(shooterID) + "/" + std::to_string(killedID) + "\n";
     ssize_t bytesWritten = write(fd, message.c_str(), message.length());
 
     if (bytesWritten == -1) {
@@ -50,6 +51,7 @@ int pipeInsert(int machineID) {
     close(fd); 
     return 0; 
 }
+
 
 
 
@@ -131,19 +133,28 @@ int main() {
         } 
 
         // Else-if block to handle "id/id" format
-       else if (sscanf(buffer, "%d/%d", &shooterID, &killedID) == 2) {
-            
-            auto shooterIt = machineToPlayerMap.find(shooterID);
-                if (shooterIt != machineToPlayerMap.end()) {
-                        // Found the shooter's playerID in the map
-                        int playerShooterID = shooterIt->second;
-                        std::cout << "Shooter ID (machine): " << shooterID << ", Player ID: " << playerShooterID << std::endl;
-                        
-                        pipeInsert(playerShooterID);
-             } else {
-                std::cerr << "Shooter machine ID " << shooterID << " not found in player map." << std::endl;
+    // Else-if block to handle "id/id" format
+        else if (sscanf(buffer, "%d/%d", &shooterID, &killedID) == 2) {
+            auto shooterEntry = machineToPlayerMap.find(shooterID);
+            auto killedEntry = machineToPlayerMap.find(killedID);
+                if (shooterEntry != machineToPlayerMap.end() && killedEntry != machineToPlayerMap.end()) {
+                    // Found both shooter's and killed's playerID in the map
+                    int playerShooterID = shooterEntry->second;
+                    int playerKilledID = killedEntry->second;
+                    std::cout << "Shooter Player ID: " << playerShooterID << ", Killed Player ID: " << playerKilledID << std::endl;
+                    
+                    // Send both player IDs through the pipe
+                    pipeInsert(playerShooterID, playerKilledID);
+                } else {
+                    if (shooterEntry == machineToPlayerMap.end()) {
+                        std::cerr << "Shooter machine ID " << shooterID << " not found in player map." << std::endl;
+                    }
+                    if (killedEntry == machineToPlayerMap.end()) {
+                        std::cerr << "Killed machine ID " << killedID << " not found in player map." << std::endl;
+                    }
+                }
             }
-}
+
         
 
         sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
