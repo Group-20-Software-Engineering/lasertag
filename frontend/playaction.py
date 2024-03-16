@@ -66,6 +66,14 @@ while not done:
     pygame.draw.rect(screen, BLACK, rect.inflate(-2, -2))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            redPlayer.clear()
+            greenPlayer.clear()
+            jsonObject = json.dumps(playRedPlayers)
+            with open("redPlayers.json", "w") as outfile:
+                outfile.write(jsonObject)
+            jsonObject = json.dumps(playGreenPlayers)
+            with open("greenPlayers.json", "w") as outfile:
+                outfile.write(jsonObject)
             done = True
     for row in range(15):
         RowRedRect = []
