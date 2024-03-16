@@ -38,8 +38,8 @@ timer30sec = 0
 timer6min = 1
 timerState = timer30sec
 totalTime = 30
-rectWidth = 896/4
-rectHeight = 325/16
+rectWidth = 885/4
+rectHeight = 310/16
 RedTable = []
 GreenTable = []
 startTime = pygame.time.get_ticks()
@@ -58,6 +58,12 @@ def drawRect(row, col, x, y, rectWidth, rectHeight, screen, borderColor, fillCol
     return rect
 while not done:
     screen.fill(BLACK)
+    rect = pygame.Rect(0, 75, 448, 300)
+    pygame.draw.rect(screen, RED, rect, 1)
+    pygame.draw.rect(screen, BLACK, rect.inflate(-2, -2))
+    rect = pygame.Rect(screen.get_width() / 2 + 2, 75, 448, 300)
+    pygame.draw.rect(screen, GREEN, rect, 1)
+    pygame.draw.rect(screen, BLACK, rect.inflate(-2, -2))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
@@ -65,9 +71,9 @@ while not done:
         RowRedRect = []
 
         for col in range(2):
-            x = col * rectWidth #determine x coordinate for each rectangle
-            y = row * rectHeight + 70 #determine y coordinate for each rectangle
-            rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, RED, BLACK) #draw red rectangle
+            x = col * rectWidth + 3 #determine x coordinate for each rectangle
+            y = row * rectHeight + 78 #determine y coordinate for each rectangle
+            rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw red rectangle
             RowRedRect.append(rect)
             if col == 0 and row < len(redPlayer):
                 textWords = jsonRedObject[row]
@@ -84,9 +90,9 @@ while not done:
     for row in range(15):
         RowGreenRect = []
         for col in range(2):
-            x = col * rectWidth + screen.get_width() / 2 #determine x coordinate for each rectangle
-            y = row * rectHeight + 70 #determine y coordinate for each rectangle
-            rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, GREEN, BLACK) #draw green rectangle
+            x = col * rectWidth + 3 + screen.get_width() / 2 #determine x coordinate for each rectangle
+            y = row * rectHeight + 78 #determine y coordinate for each rectangle
+            rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw green rectangle
             if col == 0 and row < len(greenPlayer):
                 textWords = jsonGreenObject[row]
             if col == 1 and row < len(greenPlayer):
@@ -119,12 +125,8 @@ while not done:
     timer = countDownFont.render(timeText, True, WHITE)
     countDownBoxRect = timer.get_rect(center=countDownBox.center)
     screen.blit(timer, countDownBoxRect)
-    # rect = pygame.Rect(0, 75, 448, 300)
-    # pygame.draw.rect(screen, RED, rect, 1)
-    # pygame.draw.rect(screen, pygame.SRCALPHA, rect.inflate(-2, -2))
-    # rect = pygame.Rect(screen.get_width() / 2 + 2, 75, 448, 300)
-    # pygame.draw.rect(screen, GREEN, rect, 1)
-    # pygame.draw.rect(screen, BLACK, rect.inflate(-2, -2))
+    
+
     rect = pygame.Rect(0, 378, 900, 320)
     pygame.draw.rect(screen, BLUE, rect, 1)
     pygame.draw.rect(screen, BLACK, rect.inflate(-2, -2))
