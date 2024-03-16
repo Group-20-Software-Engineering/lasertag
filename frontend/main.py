@@ -4,19 +4,37 @@ import random
 import time
 import pygame
 import textwrap
+import json
 #import playaction as playaction
 from playerEntryScreenTables import drawLeftTable, drawRightTable
+
 
 import os
 from send import send_udp_packet
 
 from supabase import create_client, Client 
-
+pygame.init() #start the game
 url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
 key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
 
 supabase: Client = create_client(url, key)
+class RedTeam:
+    def __init__(red, id, codename, machineCode):
+        red.id = id
+        red.codename = codename
+        red.machineCode = machineCode
+    redPlayers = []
+        
+        
+class GreenTeam:
+    def __init__(green, id, codename, machineCode):
+        green.id = id
+        green.codename = codename
+        green.machineCode = machineCode
+    greenPlayers = []
 
+playRedPlayers = []
+playGreenPlayers = []
 # def drawRect(row, col, x, y, rectWidth, rectHeight, screen, borderColor, fillColor) -> pygame.Rect:
 #     rect = pygame.Rect(x, y, rectWidth, rectHeight)
 #     pygame.draw.rect(screen, borderColor, rect, 1)
@@ -54,7 +72,7 @@ def setup():
     url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
     key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
     supabase: Client = create_client(url, key)
-    pygame.init() #start the game
+    
     pygame.key.set_repeat(500, 25) #set up repeat entry from key holding
     currentDir = os.getcwd() #establish working directory
     coolFontName = "8-bit.ttf" #cool font
@@ -98,31 +116,20 @@ def setup():
     start = time.time()
     RedTable = []
     GreenTable = []
+    
     id = ''
     codename = ''
     numPlayers = 1
     addedID = ''
     addedCodeName = ''
     machineCode = ''
-
+    redPlayerCount = 0
     #Character limit for codenames
     def character_lim(codename):
         while len(codename) > 12:
             error_lim = "Please enter a codename 12 characters or less."
 
-    class RedTeam:
-            def __init__(red, id, codename, machineCode):
-                red.id = id
-                red.codename = codename
-                red.machineCode = machineCode
-            redPlayers = []
-    class GreenTeam:
-        def __init__(green, id, codename, machineCode):
-            green.id = id
-            green.codename = codename
-            green.machineCode = machineCode
-        greenPlayers = []
-
+    
     listNotEmpty = False
     textWords = ''
     playMusic()
@@ -183,7 +190,14 @@ def setup():
                     elif event.key == pygame.K_MINUS:
                         RedTeam.redPlayers.clear()
                         GreenTeam.greenPlayers.clear()
-
+                        playRedPlayers.clear()
+                        playGreenPlayers.clear()
+                        jsonObject = json.dumps(playRedPlayers)
+                        with open("redPlayers.json", "w") as outfile:
+                            outfile.write(jsonObject)
+                        jsonObject = json.dumps(playGreenPlayers)
+                        with open("greenPlayers.json", "w") as outfile:
+                            outfile.write(jsonObject)
                     elif event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
                         exitProgram = True
                         inEntryScreen = False
@@ -290,6 +304,14 @@ def setup():
                                     if event.key == pygame.K_MINUS:
                                         RedTeam.redPlayers.clear()
                                         GreenTeam.greenPlayers.clear()
+                                        playRedPlayers.clear()
+                                        playGreenPlayers.clear()
+                                        jsonObject = json.dumps(playRedPlayers)
+                                        with open("redPlayers.json", "w") as outfile:
+                                            outfile.write(jsonObject)
+                                        jsonObject = json.dumps(playGreenPlayers)
+                                        with open("greenPlayers.json", "w") as outfile:
+                                            outfile.write(jsonObject)
                                     if event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
                                         exitProgram = True
                                         inEntryScreen = False
@@ -318,9 +340,17 @@ def setup():
                                     if (int(userInput) % 2 != 0):
                                         newPlayer = RedTeam(addedID, addedCodeName, userInput)
                                         RedTeam.redPlayers.append(newPlayer)
+                                        playRedPlayers.append(addedCodeName)
+                                        jsonObject = json.dumps(playRedPlayers)
+                                        with open("redPlayers.json", "w") as outfile:
+                                            outfile.write(jsonObject)
                                     if (int(userInput) % 2 == 0):
                                         newPlayer = GreenTeam(addedID, addedCodeName, userInput)
                                         GreenTeam.greenPlayers.append(newPlayer)
+                                        playGreenPlayers.append(addedCodeName)
+                                        jsonObject = json.dumps(playGreenPlayers)
+                                        with open("greenPlayers.json", "w") as outfile:
+                                            outfile.write(jsonObject)
                                     userInput = "Hardware/" + userInput + "/" + addedID
                                     
                                     send_udp_packet(userInput)
