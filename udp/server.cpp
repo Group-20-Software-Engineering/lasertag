@@ -5,12 +5,55 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <unordered_map>
+#include <fstream>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <cerrno>
+#include <cstring>
 //Bind server receive port 7501 do not bind 7500 broadcast but still create it
 //127.0.0.1
 
 const int PORT = 7501;
 const int BROADCAST_PORT = 7500;
 const int BUFFER_SIZE = 1024;
+int shooterID, killedID;
+
+
+void printMapContents(const std::unordered_map<int, int>& map) {
+    for (const auto& pair : map) {
+        std::cout << "Machine ID: " << pair.first << ", Player ID: " << pair.second << std::endl;
+    }
+}
+
+int pipeInsert(int shooterID, int killedID) {
+    const char* pipePath = "pipe";
+
+    // Open the named pipe in non-blocking write-only mode
+    int fd = open(pipePath, O_WRONLY | O_NONBLOCK);
+    if (fd == -1) {
+        std::cerr << "Error opening pipe: " << std::strerror(errno) << std::endl;
+        return 1; // Failure
+    }
+
+    // Convert shooterID and killedID to a string and write to the pipe
+    // Format: "shooterID/killedID\n"
+    std::string message = std::to_string(shooterID) + "/" + std::to_string(killedID) + "\n";
+    ssize_t bytesWritten = write(fd, message.c_str(), message.length());
+
+    if (bytesWritten == -1) {
+        std::cerr << "Error writing to pipe: " << std::strerror(errno) << std::endl;
+        close(fd); 
+        return 1;
+    }
+
+    close(fd); 
+    return 0; 
+}
+
+
+
 
 int main() {
     int socketFD = socket(AF_INET, SOCK_DGRAM, 0);
@@ -41,6 +84,9 @@ int main() {
 
     std::cout << "UDP Server is listening on port " << PORT << std::endl;
 
+    std::unordered_map<int, int> machineToPlayerMap;
+
+
     char buffer[BUFFER_SIZE];
     while (true) {
         struct sockaddr_in clientAddress;
@@ -62,26 +108,52 @@ int main() {
             responseMessage = "Hello, client! Looks like the game is over.";
         }
         else if (strncmp(buffer, "Hardware/", 9) == 0) {
-            // char* id = buffer + 9; // Get the ID part of the message
-            // std::cout << "Received Hardware ID: " << id << std::endl;
+           
 
             int machineID,playerID;
             sscanf(buffer, "Hardware/%d/%d", &machineID, &playerID);
-            std::cout << "Received Hardware ID: " << machineID << " Player ID: " << playerID << std::endl;
-            char broadcastMessage[100];
-            sprintf(broadcastMessage, "Hardware/%d/%d", machineID, playerID);
+            machineToPlayerMap[machineID] = playerID; 
+            printMapContents(machineToPlayerMap); 
             
+         
 
             // Broadcast the ID to all clients right now it only echos back to the client
-            //sendto(socketFD, id, strlen(id), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
             struct sockaddr_in broadcastAddress;
             memset(&broadcastAddress, 0, sizeof(broadcastAddress));
             broadcastAddress.sin_family = AF_INET;
             broadcastAddress.sin_port = htons(BROADCAST_PORT);
             broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-            sendto(socketFD, broadcastMessage, strlen(broadcastMessage), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
+            //Converts machineID to a char so it can be broadcasted
+            char idBuffer[32];
+            snprintf(idBuffer, sizeof(idBuffer),"%d",machineID);
+
+
+            sendto(socketFD, idBuffer, strlen(idBuffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
         } 
+
+        // Else-if block to handle "id/id" format
+    // Else-if block to handle "id/id" format
+        else if (sscanf(buffer, "%d/%d", &shooterID, &killedID) == 2) {
+            auto shooterEntry = machineToPlayerMap.find(shooterID);
+            auto killedEntry = machineToPlayerMap.find(killedID);
+                if (shooterEntry != machineToPlayerMap.end() && killedEntry != machineToPlayerMap.end()) {
+                    // Found both shooter's and killed's playerID in the map
+                    int playerShooterID = shooterEntry->second;
+                    int playerKilledID = killedEntry->second;
+                    std::cout << "Shooter Player ID: " << playerShooterID << ", Killed Player ID: " << playerKilledID << std::endl;
+                    
+                    // Send both player IDs through the pipe
+                    pipeInsert(playerShooterID, playerKilledID);
+                } else {
+                    if (shooterEntry == machineToPlayerMap.end()) {
+                        std::cerr << "Shooter machine ID " << shooterID << " not found in player map." << std::endl;
+                    }
+                    if (killedEntry == machineToPlayerMap.end()) {
+                        std::cerr << "Killed machine ID " << killedID << " not found in player map." << std::endl;
+                    }
+                }
+            }
 
         
 

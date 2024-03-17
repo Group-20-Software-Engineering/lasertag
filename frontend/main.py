@@ -4,12 +4,42 @@ import random
 import time
 import pygame
 import textwrap
+import json
 #import playaction as playaction
+from playerEntryScreenTables import drawLeftTable, drawRightTable
+
 
 import os
 from send import send_udp_packet
 
 from supabase import create_client, Client 
+pygame.init() #start the game
+url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
+key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
+
+supabase: Client = create_client(url, key)
+class RedTeam:
+    def __init__(red, id, codename, machineCode):
+        red.id = id
+        red.codename = codename
+        red.machineCode = machineCode
+    redPlayers = []
+        
+        
+class GreenTeam:
+    def __init__(green, id, codename, machineCode):
+        green.id = id
+        green.codename = codename
+        green.machineCode = machineCode
+    greenPlayers = []
+
+playRedPlayers = []
+playGreenPlayers = []
+# def drawRect(row, col, x, y, rectWidth, rectHeight, screen, borderColor, fillColor) -> pygame.Rect:
+#     rect = pygame.Rect(x, y, rectWidth, rectHeight)
+#     pygame.draw.rect(screen, borderColor, rect, 1)
+#     pygame.draw.rect(screen, fillColor, rect.inflate(-2, -2))
+#     return rect
 
 def proceedToPlayerEntry():
     pygame.mixer.quit()
@@ -19,7 +49,7 @@ def proceedToPlayerEntry():
     pygame.mixer.music.play(-1)
 
 def playMusic():
-    pygame.mixer.music.load("music.wav")
+    pygame.mixer.music.load("Tank!.wav")
     pygame.mixer.music.play(-1)
 
 
@@ -27,8 +57,10 @@ def rocketAndText(screen, title, defFont, coolFont, y):
     rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n"
     blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 25 - y), defFont)
     screen.blit(title,(screen.get_width()/2 - title.get_width()/2, screen.get_height() - y))
-    storyText = "\n\n      In a world where the Joestars\n         are now fighting in space!\n      You will now join the Joestars\n  Against the evil laser Stand Users\n       (which aren't actually lasers\n        but simpler infrared lights\n                  emitted as beams)\n                            KILL.\n\n      But your enemies are not weak...\n    They have their own unique stands\n            with powerful abilities.\n Dio has upgraded all his laser stand\n    users to FREEZE you upon damage.\n\n                  But do not fear!!!\n        As your uncle Jotaro Kujo\n With his stand STARRRR PLATINUM.\n            Has done the same to your\n                  laser stands too.\n\n         Do not be too overconfident.\n As when you reading this amazing text\n  Dio hired Sigma from Overwatch 2 D:\n                  With the power of\n        ''WHAT IS THAT MELODY?!?!''\n        Sigma fluxxed 99.99 percent\n             of the Joestar family.\n\nSo now it's up to you and your friends.\n      Oh wait you don't have friends...\n No worries, as your Jotaro will still\n  be with you on this massive journey.\n\n      WHAT ARE YOU WAITING FOR!!!\n    GO NOW BEFORE THE TIMER ENDS\n    GET THE WIN FOR THE JOESTARS\n        DO NOT LET THE ENEMY WIN\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n                     What? NANI!\n   Did you find an easter egg yet??\n          Why are you still here?\n           What are you DOING!!!!\n            Why are we still here\n                 Just to suffer...\n                     BYEEEEEEE\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDo you not want to help the Joestars??\n  Well then, I would like to introduce\n          the sponsor of this project         \n                    RAID- wait what\n                    no no no... I mean\n                   OUR PET MASCOT        \n                       SHIPLEY!!!!!!!\n     for keeping team 20 sane for the\n                past few sprints :3     \n   Now you guys can go taste freedom\n    Thanks for reading this TedTalk."
-    blit_text(screen, storyText, (screen.get_width()/2 - title.get_width()/2 - 40,screen.get_height() + title.get_height() - y), coolFont)
+    songText = "                       (Epic bass music)\n\n\n\n\n\n\n\n\n\n                  (Epic bongo cat sounds)\n\n\n\n\n\n\n\n\n\n\n\n\n        I think it's time we blow this scene\n       Get everybody and the stuff together\n                            Okay, 3, 2, 1\n                             LET'S JAM"
+    blit_text(screen, songText, (screen.get_width()/2 - title.get_width()/2 - 80,screen.get_height() + title.get_height() - y), coolFont)
+    storyText = "\n\n      In a world where the Joestars\n         are now fighting in space!\n      You will now join the Joestars\n  Against the evil laser Stand Users\n       (which aren't actually lasers\n        but simpler infrared lights\n                  emitted as beams)\n\n      But your enemies are not weak...\n    They have their own unique stands\n            with powerful abilities.\n Dio has upgraded all his laser stand\n    users to FREEZE you upon damage.\n\n                  But do not fear!!!\n        As your uncle Jotaro Kujo\n With his stand STARRRR PLATINUM.\n            Has done the same to your\n                  laser stands too.\n\n         Do not be too overconfident.\n As when you reading this amazing text\n  Dio hired Sigma from Overwatch 2 D:\n                  With the power of\n        ''WHAT IS THAT MELODY?!?!''\n        Sigma fluxxed 99.99 percent\n             of the Joestar family.\n\nSo now it's up to you and your friends.\n      Oh wait you don't have friends...\n No worries, as your Jotaro will still\n  be with you on this massive journey.\n\n      WHAT ARE YOU WAITING FOR!!!\n    GO NOW BEFORE THE TIMER ENDS\n    GET THE WIN FOR THE JOESTARS\n        DO NOT LET THE ENEMY WIN\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n                     What? NANI!\n   Did you find an easter egg yet??\n          Why are you still here?\n           What are you DOING!!!!\n            Why are we still here\n                 Just to suffer...\n                     BYEEEEEEE\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDo you not want to help the Joestars??\n  Well then, I would like to introduce\n          the sponsor of this project         \n                    RAID- wait what\n                    no no no... I mean\n                   OUR PET MASCOT        \n                       SHIPLEY!!!!!!!\n     for keeping team 20 sane for the\n                past few sprints :3     \n   Now you guys can go taste freedom\n    Thanks for reading this TedTalk."
+    blit_text(screen, storyText, (screen.get_width()/2 - title.get_width()/2 - 40,screen.get_height() + title.get_height() - y + 1080), coolFont)
         
 def circles(screen, color):
     a = random.randrange(899) + 1
@@ -42,7 +74,7 @@ def setup():
     url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
     key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
     supabase: Client = create_client(url, key)
-    pygame.init() #start the game
+    
     pygame.key.set_repeat(500, 25) #set up repeat entry from key holding
     currentDir = os.getcwd() #establish working directory
     coolFontName = "8-bit.ttf" #cool font
@@ -86,24 +118,20 @@ def setup():
     start = time.time()
     RedTable = []
     GreenTable = []
+    
     id = ''
     codename = ''
     numPlayers = 1
     addedID = ''
     addedCodeName = ''
     machineCode = ''
-    class RedTeam:
-            def __init__(red, id, codename, machineCode):
-                red.id = id
-                red.codename = codename
-                red.machineCode = machineCode
-            redPlayers = []
-    class GreenTeam:
-        def __init__(green, id, codename, machineCode):
-            green.id = id
-            green.codename = codename
-            green.machineCode = machineCode
-        greenPlayers = []
+    redPlayerCount = 0
+    #Character limit for codenames
+    def character_lim(codename):
+        while len(codename) > 12:
+            error_lim = "Please enter a codename 12 characters or less."
+
+    
     listNotEmpty = False
     textWords = ''
     playMusic()
@@ -119,7 +147,7 @@ def setup():
         end = time.time()
         total = end - start
         #If the time runs out, or the user skips through the intro screen, proceed to player entry screen.
-        if (total > 150 or y > 6000):
+        if (total > 180 or y > 7000):
             proceedToPlayerEntry()
             inEntryScreen = True
             exitIntroScreen = True
@@ -139,59 +167,15 @@ def setup():
         while ((exitIntroScreen == True) and (inEntryScreen == True)):
             pygame.key.set_repeat(500, 25) #set up repeat entry from key holding
             screen.fill(BLACK)
-            rectWidth = 900/4
-            rectHeight = 580/16
+            # rectWidth = 900/4
+            # rectHeight = 580/16
             redRects = [[None] * 2 for _ in range(16)]
             greenRects = [[None] * 2 for _ in range(16)]
 
-            for row in range(15):
-                RowRedRect = []
+            drawLeftTable(RedTable, listNotEmpty, RedTeam, coolFont, screen, BLACK, RED, WHITE, textWords)
 
-                for col in range(2):
-                    x = col * rectWidth
-                    y = row * rectHeight + 44
-                    rect = pygame.Rect(x, y, rectWidth, rectHeight)
-                    pygame.draw.rect(screen, BLACK, rect, 1)
-                    pygame.draw.rect(screen, RED, rect.inflate(-2, -2))
-                    RowRedRect.append(rect)
-                    if (len(RedTeam.redPlayers) == 0):
-                        pass
-                    elif (listNotEmpty == True):
-                        if col == 0 and row < len(RedTeam.redPlayers):
-                            textWords = RedTeam.redPlayers[row].id
-                        if col == 1 and row < len(RedTeam.redPlayers):
-                            textWords = RedTeam.redPlayers[row].codename
-                        if row >= len(RedTeam.redPlayers):
-                            textWords = " "
-                    text = coolFont.render(textWords, True, WHITE)
-                    text_rect = text.get_rect(center=rect.center)
-                    # Blit text onto the screen
-                    screen.blit(text, text_rect)
-                    
-                RedTable.append(RowRedRect)
-            for row in range(15):
-                RowGreenRect = []
-                for col in range(2):
-                    x = col * rectWidth + screen.get_width() / 2
-                    y = row * rectHeight + 44
-                    rect = pygame.Rect(x, y, rectWidth, rectHeight)
-                    pygame.draw.rect(screen, BLACK, rect, 1)
-                    pygame.draw.rect(screen, GREEN, rect.inflate(-2, -2))
-                    if (len(GreenTeam.greenPlayers) == 0):
-                        pass
-                    elif (listNotEmpty == True):
-                        if col == 0 and row < len(GreenTeam.greenPlayers):
-                            textWords = GreenTeam.greenPlayers[row].id
-                        if col == 1 and row < len(GreenTeam.greenPlayers):
-                            textWords = GreenTeam.greenPlayers[row].codename
-                        if row >= len(GreenTeam.greenPlayers):
-                            textWords = " "
-                    text = coolFont.render(textWords, True, WHITE)
-                    text_rect = text.get_rect(center=rect.center)
-                    # Blit text onto the screen
-                    screen.blit(text, text_rect)
-                    
-                GreenTable.append(RowGreenRect)
+            drawRightTable(GreenTable, listNotEmpty, GreenTeam, coolFont, screen, BLACK, GREEN, WHITE, textWords)
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exitProgram = True
@@ -208,7 +192,14 @@ def setup():
                     elif event.key == pygame.K_MINUS:
                         RedTeam.redPlayers.clear()
                         GreenTeam.greenPlayers.clear()
-
+                        playRedPlayers.clear()
+                        playGreenPlayers.clear()
+                        jsonObject = json.dumps(playRedPlayers)
+                        with open("redPlayers.json", "w") as outfile:
+                            outfile.write(jsonObject)
+                        jsonObject = json.dumps(playGreenPlayers)
+                        with open("greenPlayers.json", "w") as outfile:
+                            outfile.write(jsonObject)
                     elif event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
                         exitProgram = True
                         inEntryScreen = False
@@ -220,15 +211,13 @@ def setup():
                         elif (event.key == pygame.K_RETURN):
                             
                             if (inputField == 0):
-                                fetchId = (supabase.table('player').select("id").eq('id', userInput).execute())
-                                fetchCn = (supabase.table('player').select("*").eq('id', userInput).execute())
-                                print("fetchId = " + str(fetchId))
-                                ID_data = fetchId.data
-                                Cn_data = fetchCn.data
+                                fetchData = (supabase.table('player').select("*").eq('id', userInput).execute())
+                                print("fetchData = " + str(fetchData))
+                                data = fetchData.data
                                 key1 = "none"
-                                if (ID_data):
-                                    key1 = ID_data[0]['id']
-                                    key2 = Cn_data[0]['codename']
+                                if (data):
+                                    key1 = data[0]['id']
+                                    key2 = data[0]['codename']
                                     print ("outside if statement. key = " + str(key) + " userInput = " + userInput)
 
                                     if (userInput == str(key1)):
@@ -268,6 +257,9 @@ def setup():
                                 elif ((userInput != str(key)) and (userInput != "") and (inputField == 0)):                           
                                     print("Welcome to the battlefield, enter your codename.")
                                     idWords = "Please Enter Code Name. Press Enter Key to Submit"
+
+                                    #Character limit for codenames
+                                    character_lim(codename)
                                     
                                     if ((userInput != "") and (inputField == 0)):
                                         addPlayer = supabase.table('player').insert({ 'id': userInput}).execute()
@@ -298,7 +290,7 @@ def setup():
                                     codename = data[0]['codename']
                                     id = data[0]['id']
                                     print(codename)
-                                    print (id)
+                                    print(id)
                                 
                                 else:
                                     print("No data found.")
@@ -314,6 +306,14 @@ def setup():
                                     if event.key == pygame.K_MINUS:
                                         RedTeam.redPlayers.clear()
                                         GreenTeam.greenPlayers.clear()
+                                        playRedPlayers.clear()
+                                        playGreenPlayers.clear()
+                                        jsonObject = json.dumps(playRedPlayers)
+                                        with open("redPlayers.json", "w") as outfile:
+                                            outfile.write(jsonObject)
+                                        jsonObject = json.dumps(playGreenPlayers)
+                                        with open("greenPlayers.json", "w") as outfile:
+                                            outfile.write(jsonObject)
                                     if event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
                                         exitProgram = True
                                         inEntryScreen = False
@@ -342,9 +342,17 @@ def setup():
                                     if (int(userInput) % 2 != 0):
                                         newPlayer = RedTeam(addedID, addedCodeName, userInput)
                                         RedTeam.redPlayers.append(newPlayer)
+                                        playRedPlayers.append(addedCodeName)
+                                        jsonObject = json.dumps(playRedPlayers)
+                                        with open("redPlayers.json", "w") as outfile:
+                                            outfile.write(jsonObject)
                                     if (int(userInput) % 2 == 0):
                                         newPlayer = GreenTeam(addedID, addedCodeName, userInput)
                                         GreenTeam.greenPlayers.append(newPlayer)
+                                        playGreenPlayers.append(addedCodeName)
+                                        jsonObject = json.dumps(playGreenPlayers)
+                                        with open("greenPlayers.json", "w") as outfile:
+                                            outfile.write(jsonObject)
                                     userInput = "Hardware/" + userInput + "/" + addedID
                                     
                                     send_udp_packet(userInput)
