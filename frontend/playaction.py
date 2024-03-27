@@ -162,24 +162,10 @@ while not done:
             playerToAwardTen = eventQueue.get()
             for currRed in redPlayer:
                 if currRed == playerToAwardTen:
-                    redPlayerScores[currRed] = redPlayerScores[currRed] + 10
+                    redPlayerScores[currRed] += 10
             for currGreen in greenPlayer:
                 if currGreen == playerToAwardTen:
                     greenPlayerScores[currGreen] += 10
-    # for currRed in redPlayer:
-    #     if currRed == playerToAwardTen:
-    #         redPlayerScores[currRed] += 10
-    # for currGreen in greenPlayer:
-    #     if currGreen == playerToAwardTen:
-    #         greenPlayerScores[currGreen] += 10
-    
-    # updatePlayAction(redPlayer, greenPlayer, rectWidth, rectHeight, screen, coolFont, rect, RedTable, GreenTable)
-    
-    #Print the scores
-    # for r in redPlayer:
-    #     print(f"Red player #{r}\'s score is {redPlayerScores[r]}")
-    # for g in greenPlayer:
-    #     print(f"Green player #{g}\'s score is {greenPlayerScores[g]}")
 
     drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, jsonRedObject, redPlayer, redPlayerScores)
     drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, jsonGreenObject, greenPlayer, greenPlayerScores)
