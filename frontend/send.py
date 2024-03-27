@@ -45,11 +45,11 @@ def pipeRemove():
         print(f"Error: {e}")
 
 
-# def main():
-#     send_udp_packet("Hardware/22/33")
-#     send_udp_packet("Hardware/11/6")
-#     while True:  
-#         pipeRemove()
+def main():
+    send_udp_packet("Hardware/22/YEET")
+    send_udp_packet("Hardware/11/YAGA")
+    while True:  
+        pipeRemove()
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()

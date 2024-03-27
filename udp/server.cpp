@@ -12,6 +12,7 @@
 #include <sys/types.h>
 #include <cerrno>
 #include <cstring>
+#include <string>
 //Bind server receive port 7501 do not bind 7500 broadcast but still create it
 //127.0.0.1
 
@@ -21,36 +22,33 @@ const int BUFFER_SIZE = 1024;
 int shooterID, killedID;
 
 
-void printMapContents(const std::unordered_map<int, int>& map) {
+void printMapContents(const std::unordered_map<int, std::string>& map) {
     for (const auto& pair : map) {
         std::cout << "Machine ID: " << pair.first << ", Player ID: " << pair.second << std::endl;
     }
 }
 
-int pipeInsert(int shooterID, int killedID) {
+int pipeInsert(const std::string& shooterCodename, const std::string& killedCodename) {
     const char* pipePath = "pipe";
-
-    // Open the named pipe in non-blocking write-only mode
     int fd = open(pipePath, O_WRONLY | O_NONBLOCK);
     if (fd == -1) {
         std::cerr << "Error opening pipe: " << std::strerror(errno) << std::endl;
         return 1; // Failure
     }
 
-    // Convert shooterID and killedID to a string and write to the pipe
-    // Format: "shooterID/killedID\n"
-    std::string message = std::to_string(shooterID) + "/" + std::to_string(killedID) + "\n";
+    // Format the message with codenames instead of IDs
+    std::string message = shooterCodename + "/" + killedCodename + "\n";
     ssize_t bytesWritten = write(fd, message.c_str(), message.length());
-
     if (bytesWritten == -1) {
         std::cerr << "Error writing to pipe: " << std::strerror(errno) << std::endl;
-        close(fd); 
+        close(fd);
         return 1;
     }
 
-    close(fd); 
-    return 0; 
+    close(fd);
+    return 0;
 }
+
 
 
 
@@ -84,7 +82,7 @@ int main() {
 
     std::cout << "UDP Server is listening on port " << PORT << std::endl;
 
-    std::unordered_map<int, int> machineToPlayerMap;
+    std::unordered_map<int, std::string> machineToPlayerMap;
 
 
     char buffer[BUFFER_SIZE];
@@ -109,11 +107,20 @@ int main() {
         }
         else if (strncmp(buffer, "Hardware/", 9) == 0) {
            
+             int machineID;
+            char playerCodenameBuffer[128]; // Make sure the buffer is large enough for the codename
+            sscanf(buffer, "Hardware/%d/%s", &machineID, playerCodenameBuffer);
+            std::string playerCodename(playerCodenameBuffer);
+            machineToPlayerMap[machineID] = playerCodename;
+            printMapContents(machineToPlayerMap);
+            
 
-            int machineID,playerID;
-            sscanf(buffer, "Hardware/%d/%d", &machineID, &playerID);
-            machineToPlayerMap[machineID] = playerID; 
-            printMapContents(machineToPlayerMap); 
+
+
+            // std::string playerCodename;
+            // sscanf(buffer, "Hardware/%d/%s", &machineID, &playerCodename);
+            // machineToPlayerMap[machineID] = playerCodename; 
+            // printMapContents(machineToPlayerMap); 
             
          
 
@@ -135,25 +142,27 @@ int main() {
         // Else-if block to handle "id/id" format
     // Else-if block to handle "id/id" format
         else if (sscanf(buffer, "%d/%d", &shooterID, &killedID) == 2) {
-            auto shooterEntry = machineToPlayerMap.find(shooterID);
-            auto killedEntry = machineToPlayerMap.find(killedID);
-                if (shooterEntry != machineToPlayerMap.end() && killedEntry != machineToPlayerMap.end()) {
-                    // Found both shooter's and killed's playerID in the map
-                    int playerShooterID = shooterEntry->second;
-                    int playerKilledID = killedEntry->second;
-                    std::cout << "Shooter Player ID: " << playerShooterID << ", Killed Player ID: " << playerKilledID << std::endl;
-                    
-                    // Send both player IDs through the pipe
-                    pipeInsert(playerShooterID, playerKilledID);
-                } else {
-                    if (shooterEntry == machineToPlayerMap.end()) {
-                        std::cerr << "Shooter machine ID " << shooterID << " not found in player map." << std::endl;
-                    }
-                    if (killedEntry == machineToPlayerMap.end()) {
-                        std::cerr << "Killed machine ID " << killedID << " not found in player map." << std::endl;
-                    }
-                }
-            }
+    auto shooterEntry = machineToPlayerMap.find(shooterID);
+    auto killedEntry = machineToPlayerMap.find(killedID);
+    if (shooterEntry != machineToPlayerMap.end() && killedEntry != machineToPlayerMap.end()) {
+        // Found both shooter's and killed's player codenames in the map
+        const std::string& playerShooterCodename = shooterEntry->second;
+        const std::string& playerKilledCodename = killedEntry->second;
+        std::cout << "Shooter Player Codename: " << playerShooterCodename << ", Killed Player Codename: " << playerKilledCodename << std::endl;
+        
+        // Assuming pipeInsert function needs to be updated to handle std::string instead of int
+        // You will need to adjust the pipeInsert function accordingly if it is supposed to accept player codenames as strings.
+        pipeInsert(playerShooterCodename, playerKilledCodename);
+    } else {
+        if (shooterEntry == machineToPlayerMap.end()) {
+            std::cerr << "Shooter machine ID " << shooterID << " not found in player map." << std::endl;
+        }
+        if (killedEntry == machineToPlayerMap.end()) {
+            std::cerr << "Killed machine ID " << killedID << " not found in player map." << std::endl;
+        }
+    }
+}
+
 
         
 
