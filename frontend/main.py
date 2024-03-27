@@ -354,7 +354,7 @@ def setup():
                                             jsonObject = json.dumps(playGreenPlayers)
                                             with open("greenPlayers.json", "w") as outfile:
                                                 outfile.write(jsonObject)
-                                        userInput = "Hardware/" + userInput + "/" + addedID
+                                        userInput = "Hardware/" + userInput + "/" + addedCodeName
                                         
                                         send_udp_packet(userInput)
                                         idWords = "Please Enter Player ID. Press Enter Key to Submit"
