@@ -8,15 +8,16 @@ import os
 from send import send_udp_packet, pipeRemove
 import json
 import threading
+import queue
 from main import *
 
-def pipeRemoveThread() -> str:
+def pipeRemoveThread(queue):
     while(True):
         pipeBlob = pipeRemove()
         parts = pipeBlob.split('/')
         playerToAwardTen = parts[0]
-        print(playerToAwardTen)
-        return playerToAwardTen
+        print(f"Player to award ten: {playerToAwardTen}")
+        queue.put(playerToAwardTen) 
 
 
 def updatePlayAction(playerToAwardTen, redPlayer, greenPlayer, rectWidth, rectHeight, screen, coolFont, rect, RedTable, GreenTable):
@@ -76,8 +77,17 @@ def drawRect(row, col, x, y, rectWidth, rectHeight, screen, borderColor, fillCol
     pygame.draw.rect(screen, fillColor, rect.inflate(-2, -2))
     return rect
 
-playerToAwardTen = threading.Thread(target=pipeRemoveThread)
-playerToAwardTen.start()
+#Create a queue for communication between threads. 
+#We need this to pass the gameplay events to the main program.
+eventQueue = queue.Queue()
+
+#Continuously read events from the pipe in a separate thread
+pipeRemover = threading.Thread(target=pipeRemoveThread, args=(eventQueue,))
+pipeRemover.start()
+
+#Wait for the pipeRemover thread to finish, then get the result
+# pipeRemover.join()
+playerToAwardTen = ""
 pygame.key.set_repeat(500, 100)
 coolFontName = "8-bit.ttf"
 defFontName = "freesansbold.ttf"
@@ -147,7 +157,15 @@ while not done:
             with open("greenPlayers.json", "w") as outfile:
                 outfile.write(jsonObject)
             done = True
-    
+
+    if not eventQueue.empty():
+            playerToAwardTen = eventQueue.get()
+            for currRed in redPlayer:
+                if currRed == playerToAwardTen:
+                    redPlayerScores[currRed] = redPlayerScores[currRed] + 10
+            for currGreen in greenPlayer:
+                if currGreen == playerToAwardTen:
+                    greenPlayerScores[currGreen] += 10
     # for currRed in redPlayer:
     #     if currRed == playerToAwardTen:
     #         redPlayerScores[currRed] += 10
@@ -156,12 +174,7 @@ while not done:
     #         greenPlayerScores[currGreen] += 10
     
     # updatePlayAction(redPlayer, greenPlayer, rectWidth, rectHeight, screen, coolFont, rect, RedTable, GreenTable)
-    for currRed in redPlayer:
-        if currRed == playerToAwardTen:
-            redPlayerScores[currRed] = redPlayerScores[currRed] + 10
-    for currGreen in greenPlayer:
-        if currGreen == playerToAwardTen:
-            greenPlayerScores[currGreen] += 10
+    
     #Print the scores
     # for r in redPlayer:
     #     print(f"Red player #{r}\'s score is {redPlayerScores[r]}")
