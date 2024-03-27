@@ -10,7 +10,7 @@ from playerEntryScreenTables import drawLeftTable, drawRightTable
 
 
 import os
-from send import send_udp_packet
+from send import send_udp_packet, pipeRemove
 
 from supabase import create_client, Client 
 pygame.init() #start the game

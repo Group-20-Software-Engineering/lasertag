@@ -13,6 +13,8 @@
 #include <cerrno>
 #include <cstring>
 #include <string>
+#include <stdio.h>
+#include <limits.h>
 //Bind server receive port 7501 do not bind 7500 broadcast but still create it
 //127.0.0.1
 
@@ -28,8 +30,8 @@ void printMapContents(const std::unordered_map<int, std::string>& map) {
     }
 }
 
-int pipeInsert(const std::string& shooterCodename, const std::string& killedCodename) {
-    const char* pipePath = "pipe";
+int pipeInsert(const std::string& shooterCodename, const std::string& killedCodename, char* pipePath) {
+    //const char* pipePath = "pipe";
     int fd = open(pipePath, O_WRONLY | O_NONBLOCK);
     if (fd == -1) {
         std::cerr << "Error opening pipe: " << std::strerror(errno) << std::endl;
@@ -54,6 +56,29 @@ int pipeInsert(const std::string& shooterCodename, const std::string& killedCode
 
 
 int main() {
+    const char* pipe = new char[5]; //For concatenation later
+    pipe = "/udp/pipe"; 
+    char  pathBuffer[PATH_MAX];
+    //Get the current dir and store in buffer
+    if (getcwd(pathBuffer, sizeof(pathBuffer)) != NULL) {
+        printf("Current working directory : %s\n", pathBuffer);
+    } else {
+        perror("getcwd() error");
+    }
+    //Calculate total length of final concatenated path, plus one for null terminator :)
+    int total_length = strlen(pathBuffer) + strlen(pipe) + 1;
+    //Allocate the memory
+    char* pipePath = new char[total_length];
+    //Copy the current working directory
+    strcpy(pipePath, pathBuffer);
+    //Append "pipe"
+    strcat(pipePath, pipe);
+    //Free the allocated memory
+    // delete[] pipe;
+    // delete[] pathBuffer;
+    //Print the result
+    std::cout << "Pipe path is: " << pipePath <<std::endl;
+
     int socketFD = socket(AF_INET, SOCK_DGRAM, 0);
     if (socketFD == -1) {
         std::cerr << "Error creating socket" << std::endl;
@@ -152,7 +177,7 @@ int main() {
         
         // Assuming pipeInsert function needs to be updated to handle std::string instead of int
         // You will need to adjust the pipeInsert function accordingly if it is supposed to accept player codenames as strings.
-        pipeInsert(playerShooterCodename, playerKilledCodename);
+        pipeInsert(playerShooterCodename, playerKilledCodename, pipePath);
     } else {
         if (shooterEntry == machineToPlayerMap.end()) {
             std::cerr << "Shooter machine ID " << shooterID << " not found in player map." << std::endl;

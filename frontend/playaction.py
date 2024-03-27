@@ -5,12 +5,79 @@ import pygame
 import textwrap
 pygame.init()
 import os
-from send import send_udp_packet
+from send import send_udp_packet, pipeRemove
 import json
+import threading
 from main import *
 
+def pipeRemoveThread() -> str:
+    while(True):
+        pipeBlob = pipeRemove()
+        parts = pipeBlob.split('/')
+        playerToAwardTen = parts[0]
+        print(playerToAwardTen)
+        return playerToAwardTen
 
 
+def updatePlayAction(playerToAwardTen, redPlayer, greenPlayer, rectWidth, rectHeight, screen, coolFont, rect, RedTable, GreenTable):
+    for currRed in redPlayer:
+        if currRed == playerToAwardTen:
+            redPlayerScores[currRed] += 10
+    for currGreen in greenPlayer:
+        if currGreen == playerToAwardTen:
+            greenPlayerScores[currGreen] += 10
+    drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable)
+    drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable)
+
+def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, jsonRedObject, redPlayer, redPlayerScores):
+    for row in range(15):
+        RowRedRect = []
+        for col in range(2):
+            x = col * rectWidth + 3 #determine x coordinate for each rectangle
+            y = row * rectHeight + 78 #determine y coordinate for each rectangle
+            rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw red rectangle
+            RowRedRect.append(rect)
+            if col == 0 and row < len(redPlayer):
+                textWords = jsonRedObject[row] #red player name
+            if col == 1 and row < len(redPlayer):
+                textWords = str(redPlayerScores[redPlayer[row]]) #score of that particular red player
+            if row >= len(redPlayer):
+                textWords = " "
+            text = coolFont.render(textWords, True, WHITE)
+            text_rect = text.get_rect(center=rect.center)
+            # Blit text onto the screen
+            screen.blit(text, text_rect)
+            
+        RedTable.append(RowRedRect)
+
+def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, jsonGreenObject, greenPlayer, greenPlayerScores):
+    for row in range(15):
+        RowGreenRect = []
+        for col in range(2):
+            x = col * rectWidth + 3 + screen.get_width() / 2 #determine x coordinate for each rectangle
+            y = row * rectHeight + 78 #determine y coordinate for each rectangle
+            rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw green rectangle
+            if col == 0 and row < len(greenPlayer):
+                textWords = jsonGreenObject[row] #green player name
+            if col == 1 and row < len(greenPlayer):
+                textWords = str(greenPlayerScores[greenPlayer[row]])
+            if row >= len(greenPlayer):
+                textWords = " "
+            text = coolFont.render(textWords, True, WHITE)
+            text_rect = text.get_rect(center=rect.center)
+            # Blit text onto the screen
+            screen.blit(text, text_rect)
+            
+        GreenTable.append(RowGreenRect)
+    
+def drawRect(row, col, x, y, rectWidth, rectHeight, screen, borderColor, fillColor) -> pygame.Rect:
+    rect = pygame.Rect(x, y, rectWidth, rectHeight)
+    pygame.draw.rect(screen, borderColor, rect, 1)
+    pygame.draw.rect(screen, fillColor, rect.inflate(-2, -2))
+    return rect
+
+playerToAwardTen = threading.Thread(target=pipeRemoveThread)
+playerToAwardTen.start()
 pygame.key.set_repeat(500, 100)
 coolFontName = "8-bit.ttf"
 defFontName = "freesansbold.ttf"
@@ -51,11 +118,16 @@ redPlayer = []
 greenPlayer = []
 redPlayer = jsonRedObject
 greenPlayer = jsonGreenObject
-def drawRect(row, col, x, y, rectWidth, rectHeight, screen, borderColor, fillColor) -> pygame.Rect:
-    rect = pygame.Rect(x, y, rectWidth, rectHeight)
-    pygame.draw.rect(screen, borderColor, rect, 1)
-    pygame.draw.rect(screen, fillColor, rect.inflate(-2, -2))
-    return rect
+
+redPlayerScores = {}
+greenPlayerScores = {}
+
+#Initialize the scores to 0
+for currRed in redPlayer:
+    redPlayerScores[currRed] = 0
+for currGreen in greenPlayer:
+    greenPlayerScores[currGreen] = 0
+
 while not done:
     screen.fill(BLACK)
     rect = pygame.Rect(0, 75, 448, 300)
@@ -75,44 +147,30 @@ while not done:
             with open("greenPlayers.json", "w") as outfile:
                 outfile.write(jsonObject)
             done = True
-    for row in range(15):
-        RowRedRect = []
+    
+    # for currRed in redPlayer:
+    #     if currRed == playerToAwardTen:
+    #         redPlayerScores[currRed] += 10
+    # for currGreen in greenPlayer:
+    #     if currGreen == playerToAwardTen:
+    #         greenPlayerScores[currGreen] += 10
+    
+    # updatePlayAction(redPlayer, greenPlayer, rectWidth, rectHeight, screen, coolFont, rect, RedTable, GreenTable)
+    for currRed in redPlayer:
+        if currRed == playerToAwardTen:
+            redPlayerScores[currRed] = redPlayerScores[currRed] + 10
+    for currGreen in greenPlayer:
+        if currGreen == playerToAwardTen:
+            greenPlayerScores[currGreen] += 10
+    #Print the scores
+    # for r in redPlayer:
+    #     print(f"Red player #{r}\'s score is {redPlayerScores[r]}")
+    # for g in greenPlayer:
+    #     print(f"Green player #{g}\'s score is {greenPlayerScores[g]}")
 
-        for col in range(2):
-            x = col * rectWidth + 3 #determine x coordinate for each rectangle
-            y = row * rectHeight + 78 #determine y coordinate for each rectangle
-            rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw red rectangle
-            RowRedRect.append(rect)
-            if col == 0 and row < len(redPlayer):
-                textWords = jsonRedObject[row]
-            if col == 1 and row < len(redPlayer):
-                textWords = "0"
-            if row >= len(redPlayer):
-                textWords = " "
-            text = coolFont.render(textWords, True, WHITE)
-            text_rect = text.get_rect(center=rect.center)
-            # Blit text onto the screen
-            screen.blit(text, text_rect)
-            
-        RedTable.append(RowRedRect)
-    for row in range(15):
-        RowGreenRect = []
-        for col in range(2):
-            x = col * rectWidth + 3 + screen.get_width() / 2 #determine x coordinate for each rectangle
-            y = row * rectHeight + 78 #determine y coordinate for each rectangle
-            rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw green rectangle
-            if col == 0 and row < len(greenPlayer):
-                textWords = jsonGreenObject[row]
-            if col == 1 and row < len(greenPlayer):
-                textWords = "0"
-            if row >= len(greenPlayer):
-                textWords = " "
-            text = coolFont.render(textWords, True, WHITE)
-            text_rect = text.get_rect(center=rect.center)
-            # Blit text onto the screen
-            screen.blit(text, text_rect)
-            
-        GreenTable.append(RowGreenRect)
+    drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, jsonRedObject, redPlayer, redPlayerScores)
+    drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, jsonGreenObject, greenPlayer, greenPlayerScores)
+
     currentTime = (pygame.time.get_ticks() - startTime) / 1000
     if timerState == timer30sec and currentTime >= totalTime:
         timerState = timer6min
