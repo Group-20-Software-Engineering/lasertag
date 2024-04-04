@@ -12,6 +12,7 @@ Repository dedicated to developing the software to run a game utilizing the Phot
 
 # TO RUN
 - Run code `./run.sh`
+- Press the `-` button to scroll faster on the Splash Screen
 - After Splash Screen enter Player ID, Followed by Codename, followed by Machine ID *in that order*
 
 
