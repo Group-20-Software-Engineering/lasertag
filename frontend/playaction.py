@@ -77,6 +77,16 @@ def drawRect(row, col, x, y, rectWidth, rectHeight, screen, borderColor, fillCol
     pygame.draw.rect(screen, fillColor, rect.inflate(-2, -2))
     return rect
 
+def playCountdownMusic():
+    pygame.mixer.quit()
+    pygame.mixer.init()
+    track_number = random.randint(1, 8)  # Randomly select a track number between 1 and 8
+    track_name = f"photon_tracks/Track{track_number:02d}.mp3"
+    print(track_name)
+    pygame.mixer.music.load(track_name)
+    pygame.mixer.music.set_volume(1)
+    pygame.mixer.music.play(-1)
+
 #Create a queue for communication between threads. 
 #We need this to pass the gameplay events to the main program.
 eventQueue = queue.Queue()
@@ -111,10 +121,12 @@ countDownBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/18, screen.
 done = False
 redplayerCount = 0
 
+counterStartTimer = False
+halfSpeedCountdown = True
 timer30sec = 0
 timer6min = 1
 timerState = timer30sec
-totalTime = 30
+totalTime = 40
 rectWidth = 885/4
 rectHeight = 310/16
 RedTable = []
@@ -128,6 +140,8 @@ redPlayer = []
 greenPlayer = []
 redPlayer = jsonRedObject
 greenPlayer = jsonGreenObject
+
+# playCountdownMusic()
 
 redPlayerScores = {}
 greenPlayerScores = {}
@@ -171,13 +185,23 @@ while not done:
     drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, jsonGreenObject, greenPlayer, greenPlayerScores)
 
     currentTime = (pygame.time.get_ticks() - startTime) / 1000
+    if currentTime >= 22 and not counterStartTimer:
+        playCountdownMusic()
+        counterStartTimer = True
+        # startTime = pygame.time.get_ticks() - (currentTime * 0.75) * 1000  # Adjust the starting time for the half-speed countdown
+    if halfSpeedCountdown:
+        countdownSpeed = 0.75
+    else:
+        countdownSpeed = 1
     if timerState == timer30sec and currentTime >= totalTime:
         timerState = timer6min
         totalTime = 360
+        halfSpeedCountdown = False
         startTime = pygame.time.get_ticks()
     elif timerState == timer6min and currentTime >= totalTime:
         done = True
     remainingTime = max(0, totalTime - currentTime)
+    remainingTime *= countdownSpeed
     minutes = int(remainingTime) // 60
     seconds = int(remainingTime) % 60
     timeText = f"{minutes:02d}:{seconds:02d}"
@@ -190,7 +214,6 @@ while not done:
     timer = countDownFont.render(timeText, True, WHITE)
     countDownBoxRect = timer.get_rect(center=countDownBox.center)
     screen.blit(timer, countDownBoxRect)
-    
 
     rect = pygame.Rect(0, 378, 900, 320)
     pygame.draw.rect(screen, BLUE, rect, 1)
