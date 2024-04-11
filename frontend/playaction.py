@@ -11,65 +11,88 @@ import threading
 import queue
 from main import *
 
+
+def sortPlayerScores(playerScores, result_queue):
+    while True:
+        with lock:
+            sortedPlayerScores = dict(sorted(playerScores.items(), key=lambda item: item[1]))
+        print(f'sortPlayerScores put {sortedPlayerScores} to result queue: {result_queue}')
+        result_queue.put(sortedPlayerScores)
+        time.sleep(1)  # Sort every 1 second
+
+# def scoring(eventQueue, redPlayer, redPlayerScores, greenPlayer, greenPlayerScores):
+#     if not eventQueue.empty():
+#             playerToAwardTen = eventQueue.get()
+#             for currRed in redPlayer:
+#                 if currRed == playerToAwardTen:
+#                     redPlayerScores[currRed] += 10
+#             for currGreen in greenPlayer:
+#                 if currGreen == playerToAwardTen:
+#                     greenPlayerScores[currGreen] += 10
+
 def pipeRemoveThread(queue):
     while(True):
         pipeBlob = pipeRemove()
         parts = pipeBlob.split('/')
         playerToAwardTen = parts[0]
         print(f"Player to award ten: {playerToAwardTen}")
-        queue.put(playerToAwardTen) 
+        queue.put(playerToAwardTen)
 
-
-def updatePlayAction(playerToAwardTen, redPlayer, greenPlayer, rectWidth, rectHeight, screen, coolFont, rect, RedTable, GreenTable):
-    for currRed in redPlayer:
-        if currRed == playerToAwardTen:
-            redPlayerScores[currRed] += 10
-    for currGreen in greenPlayer:
-        if currGreen == playerToAwardTen:
-            greenPlayerScores[currGreen] += 10
-    drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable)
-    drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable)
-
+red_lock = threading.Lock()
 def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, jsonRedObject, redPlayer, redPlayerScores):
-    for row in range(15):
-        RowRedRect = []
-        for col in range(2):
-            x = col * rectWidth + 3 #determine x coordinate for each rectangle
-            y = row * rectHeight + 78 #determine y coordinate for each rectangle
-            rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw red rectangle
-            RowRedRect.append(rect)
-            if col == 0 and row < len(redPlayer):
-                textWords = jsonRedObject[row] #red player name
-            if col == 1 and row < len(redPlayer):
-                textWords = str(redPlayerScores[redPlayer[row]]) #score of that particular red player
-            if row >= len(redPlayer):
-                textWords = " "
-            text = coolFont.render(textWords, True, WHITE)
-            text_rect = text.get_rect(center=rect.center)
-            # Blit text onto the screen
-            screen.blit(text, text_rect)
-            
-        RedTable.append(RowRedRect)
+    red_lock.acquire()
+    try:
+        for row in range(15):
+            RowRedRect = []
+            for col in range(2):
+                x = col * rectWidth + 3 #determine x coordinate for each rectangle
+                y = row * rectHeight + 78 #determine y coordinate for each rectangle
+                rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw red rectangle
+                RowRedRect.append(rect)
+                if col == 0 and row < len(redPlayer):
+                    textWords = jsonRedObject[row] #red player name
+                if col == 1 and row < len(redPlayer):
+                    textWords = str(redPlayerScores[redPlayer[row]]) #score of that particular red player
+                if row >= len(redPlayer):
+                    textWords = " "
+                text = coolFont.render(textWords, True, WHITE)
+                text_rect = text.get_rect(center=rect.center)
+                # Blit text onto the screen
+                screen.blit(text, text_rect)
+                
+            RedTable.append(RowRedRect)
+        pass
+    finally:
+        # Release the lock
+        red_lock.release()
 
+green_lock = threading.Lock()
 def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, jsonGreenObject, greenPlayer, greenPlayerScores):
-    for row in range(15):
-        RowGreenRect = []
-        for col in range(2):
-            x = col * rectWidth + 3 + screen.get_width() / 2 #determine x coordinate for each rectangle
-            y = row * rectHeight + 78 #determine y coordinate for each rectangle
-            rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw green rectangle
-            if col == 0 and row < len(greenPlayer):
-                textWords = jsonGreenObject[row] #green player name
-            if col == 1 and row < len(greenPlayer):
-                textWords = str(greenPlayerScores[greenPlayer[row]])
-            if row >= len(greenPlayer):
-                textWords = " "
-            text = coolFont.render(textWords, True, WHITE)
-            text_rect = text.get_rect(center=rect.center)
-            # Blit text onto the screen
-            screen.blit(text, text_rect)
-            
-        GreenTable.append(RowGreenRect)
+    green_lock.acquire()
+    try:
+        for row in range(15):
+            RowGreenRect = []
+            for col in range(2):
+                x = col * rectWidth + 3 + screen.get_width() / 2 #determine x coordinate for each rectangle
+                y = row * rectHeight + 78 #determine y coordinate for each rectangle
+                rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw green rectangle
+                if col == 0 and row < len(greenPlayer):
+                    textWords = jsonGreenObject[row] #green player name
+                if col == 1 and row < len(greenPlayer):
+                    textWords = str(greenPlayerScores[greenPlayer[row]])
+                if row >= len(greenPlayer):
+                    textWords = " "
+                text = coolFont.render(textWords, True, WHITE)
+                text_rect = text.get_rect(center=rect.center)
+                # Blit text onto the screen
+                screen.blit(text, text_rect)
+                
+            GreenTable.append(RowGreenRect)
+        pass
+    finally:
+        # Release the lock
+        green_lock.release()
+
     
 def drawRect(row, col, x, y, rectWidth, rectHeight, screen, borderColor, fillColor) -> pygame.Rect:
     rect = pygame.Rect(x, y, rectWidth, rectHeight)
@@ -94,6 +117,8 @@ eventQueue = queue.Queue()
 #Continuously read events from the pipe in a separate thread
 pipeRemover = threading.Thread(target=pipeRemoveThread, args=(eventQueue,))
 pipeRemover.start()
+
+
 
 #Wait for the pipeRemover thread to finish, then get the result
 # pipeRemover.join()
@@ -146,6 +171,19 @@ greenPlayer = jsonGreenObject
 redPlayerScores = {}
 greenPlayerScores = {}
 
+lock = threading.Lock() #Lock to ensure score dicts are not sorted while the scores are being updated
+
+
+# redResultQueue = queue.Queue()
+# greenResultQueue = queue.Queue()
+
+# redScoreSorter = threading.Thread(target=sortPlayerScores, args=(redPlayerScores, redResultQueue))
+# redScoreSorter.start()
+
+# greenScoreSorter = threading.Thread(target=sortPlayerScores, args=(greenPlayerScores, greenResultQueue))
+# greenScoreSorter.start()
+
+
 #Initialize the scores to 0
 for currRed in redPlayer:
     redPlayerScores[currRed] = 0
@@ -181,9 +219,27 @@ while not done:
                 if currGreen == playerToAwardTen:
                     greenPlayerScores[currGreen] += 10
 
-    drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, jsonRedObject, redPlayer, redPlayerScores)
-    drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, jsonGreenObject, greenPlayer, greenPlayerScores)
+    sorted_red_scores = dict(sorted(redPlayerScores.items(), key=lambda item: item[1]))
+    sorted_red_scores_keys = list(sorted_red_scores.keys())
 
+    sorted_green_scores = dict(sorted(greenPlayerScores.items(), key=lambda item: item[1]))
+    sorted_green_scores_keys = list(sorted_green_scores.keys())
+            
+    # if not redResultQueue.empty():
+    #     sorted_red_scores = redResultQueue.get() #grab the sorted dicts after score update
+            
+    # if not greenResultQueue.empty():
+    #     sorted_green_scores = greenResultQueue.get()
+
+
+    print("Sorted Red Player Scores:", sorted_red_scores)
+    print("Sorted Green Player Scores:", sorted_green_scores)
+
+    drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, jsonRedObject, sorted_red_scores_keys, sorted_red_scores)
+    drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, jsonGreenObject, sorted_green_scores_keys, sorted_green_scores)
+
+    # redScoreSorter.join()
+    # greenScoreSorter.join()
     currentTime = (pygame.time.get_ticks() - startTime) / 1000
     if currentTime >= 22 and not counterStartTimer:
         playCountdownMusic()
