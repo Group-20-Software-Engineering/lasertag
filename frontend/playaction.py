@@ -285,6 +285,7 @@ while not done:
         halfSpeedCountdown = False
         startTime = pygame.time.get_ticks()
     elif timerState == timer6min and currentTime >= totalTime:
+        
         entryCondition = True
         redPlayer.clear()
         greenPlayer.clear()
