@@ -285,7 +285,7 @@ while not done:
         halfSpeedCountdown = False
         startTime = pygame.time.get_ticks()
     elif timerState == timer6min and currentTime >= totalTime:
-        
+
         entryCondition = True
         redPlayer.clear()
         greenPlayer.clear()
@@ -356,8 +356,7 @@ while not done:
                     with open("greenPlayers.json", "w") as outfile:
                         outfile.write(jsonObject)
                 elif event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
-                    exitProgram = True
-                    inEntryScreen = False
+                    entryCondition = False
                     
                 else:
                     if (event.key != pygame.K_RETURN):
@@ -516,7 +515,8 @@ while not done:
                                     inputField = 0
                                     userInput = ""    
                         else:
-                            idWords = "Please Enter an ID no more than 10 characters"           
+                            idWords = "Please Enter an ID no more than 10 characters"
+
 
 def main():
     print("Hello World")
