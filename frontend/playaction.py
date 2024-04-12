@@ -47,14 +47,16 @@ def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, j
     try:
         for row in range(15):
             RowRedRect = []
-            for col in range(2):
+            for col in range(3):
                 x = col * rectWidth + 3 #determine x coordinate for each rectangle
                 y = row * rectHeight + 78 #determine y coordinate for each rectangle
                 rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw red rectangle
                 RowRedRect.append(rect)
                 if col == 0 and row < len(redPlayer):
-                    textWords = jsonRedObject[row] #red player name
+                    textWords = "B"
                 if col == 1 and row < len(redPlayer):
+                    textWords = jsonRedObject[row] #red player name
+                if col == 2 and row < len(redPlayer):
                     textWords = str(redPlayerScores[redPlayer[row]]) #score of that particular red player
                 if row >= len(redPlayer):
                     textWords = " "
@@ -75,13 +77,15 @@ def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable
     try:
         for row in range(15):
             RowGreenRect = []
-            for col in range(2):
-                x = col * rectWidth + 3 + screen.get_width() / 2 #determine x coordinate for each rectangle
+            for col in range(3):
+                x = col * rectWidth + 3 + screen.get_width()/2 #determine x coordinate for each rectangle
                 y = row * rectHeight + 78 #determine y coordinate for each rectangle
                 rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw green rectangle
                 if col == 0 and row < len(greenPlayer):
-                    textWords = jsonGreenObject[row] #green player name
+                    textWords = "B"
                 if col == 1 and row < len(greenPlayer):
+                    textWords = jsonGreenObject[row] #green player name
+                if col == 2 and row < len(greenPlayer):
                     textWords = str(greenPlayerScores[greenPlayer[row]])
                 if row >= len(greenPlayer):
                     textWords = " "
@@ -155,7 +159,7 @@ timer30sec = 0
 timer6min = 1
 timerState = timer30sec
 totalTime = 40
-rectWidth = 885/4
+rectWidth = 885/6
 rectHeight = 310/16
 RedTable = []
 GreenTable = []
