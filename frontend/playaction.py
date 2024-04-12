@@ -11,13 +11,22 @@ import threading
 import queue
 from main import *
 
-def pipeRemoveThread(queue):
+def drawKillFeed(killFeed, rect, screen, coolFont):
+    # for i in range(len(killFeed)):
+    textWords = str(killFeed)
+    text = coolFont.render(textWords, True, WHITE)
+    text_rect = text.get_rect(center=rect.center)
+    screen.blit(text, text_rect)
+    return
+
+def pipeRemoveThread(queue, killFeed):
     while(True):
         pipeBlob = pipeRemove()
         parts = pipeBlob.split('/')
         playerToAwardTen = parts[0]
         print(f"Player to award ten: {playerToAwardTen}")
         queue.put(playerToAwardTen)
+        killFeed.append(pipeBlob)
 
 def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, redPlayer, redPlayerScores):
     
@@ -82,8 +91,11 @@ def playCountdownMusic():
 #We need this to pass the gameplay events to the main program.
 eventQueue = queue.Queue()
 
+#List to store the full events from the pipe
+killFeed = []
+
 #Continuously read events from the pipe in a separate thread
-pipeRemover = threading.Thread(target=pipeRemoveThread, args=(eventQueue,))
+pipeRemover = threading.Thread(target=pipeRemoveThread, args=(eventQueue, killFeed))
 pipeRemover.start()
 
 playerToAwardTen = ""
@@ -152,6 +164,7 @@ while not done:
     rect = pygame.Rect(screen.get_width() / 2 + 2, 75, 448, 300)
     pygame.draw.rect(screen, GREEN, rect, 1)
     pygame.draw.rect(screen, BLACK, rect.inflate(-2, -2))
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             redPlayer.clear()
@@ -225,18 +238,26 @@ while not done:
     seconds = int(remainingTime) % 60
     timeText = f"{minutes:02d}:{seconds:02d}"
 
+    #Red & Green team text rendering
     redText = DisplayBoxFont.render("Red Team", True, RED) # Red Team
     screen.blit(redText,(screen.get_width()/4 - screen.get_width()/18, 12))
     greenText = DisplayBoxFont.render("Green Team", True, GREEN) # Green Team
     screen.blit(greenText,(screen.get_width() - screen.get_width()/4 - screen.get_width()/14, 12))
+    
+    #Timer rendering
     pygame.draw.rect(screen, BLUE, countDownBox)
     timer = countDownFont.render(timeText, True, WHITE)
     countDownBoxRect = timer.get_rect(center=countDownBox.center)
     screen.blit(timer, countDownBoxRect)
 
-    rect = pygame.Rect(0, 378, 900, 320)
-    pygame.draw.rect(screen, BLUE, rect, 1)
-    pygame.draw.rect(screen, BLACK, rect.inflate(-2, -2))
+    #Kill feed rendering
+    killFeedBox = pygame.Rect(0, 378, 900, 320)
+    pygame.draw.rect(screen, BLUE, killFeedBox, 1)
+    pygame.draw.rect(screen, BLACK, killFeedBox.inflate(-2, -2))
+    killFeedWords = str(killFeed)
+    killFeedText = coolFont.render(killFeedWords, True, WHITE)
+    killFeedBoxRect = killFeedText.get_rect(center=killFeedBox.center)
+    screen.blit(killFeedText, killFeedBoxRect)
     pygame.display.flip()
     clock.tick(60)
 
