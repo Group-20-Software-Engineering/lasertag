@@ -220,26 +220,30 @@ while not done:
                     greenPlayerScores[currGreen] += 10
 
     sorted_red_scores = dict(sorted(redPlayerScores.items(), key=lambda item: item[1]))
+    
     sorted_red_scores_keys = list(sorted_red_scores.keys())
+    sorted_red_scores_keys.reverse()
+    print(f'sorted_red_scores_keys: {sorted_red_scores_keys}')
+
+    sorted_red_scores_values = list(sorted_red_scores.values())
+    sorted_red_scores_values.reverse()
+    print(f'sorted_red_scores_values: {sorted_red_scores_values}')
+
 
     sorted_green_scores = dict(sorted(greenPlayerScores.items(), key=lambda item: item[1]))
+    
     sorted_green_scores_keys = list(sorted_green_scores.keys())
-            
-    # if not redResultQueue.empty():
-    #     sorted_red_scores = redResultQueue.get() #grab the sorted dicts after score update
-            
-    # if not greenResultQueue.empty():
-    #     sorted_green_scores = greenResultQueue.get()
-
-
-    print("Sorted Red Player Scores:", sorted_red_scores)
-    print("Sorted Green Player Scores:", sorted_green_scores)
+    sorted_green_scores_keys.reverse()
+    print(f'sorted_green_scores_keys: {sorted_green_scores_keys}')
+    
+    sorted_green_scores_values = list(sorted_green_scores.values())
+    sorted_green_scores_values.reverse()
+    print(f'sorted_green_scores_values: {sorted_green_scores_values}')
+    
 
     drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, jsonRedObject, sorted_red_scores_keys, sorted_red_scores)
     drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, jsonGreenObject, sorted_green_scores_keys, sorted_green_scores)
 
-    # redScoreSorter.join()
-    # greenScoreSorter.join()
     currentTime = (pygame.time.get_ticks() - startTime) / 1000
     if currentTime >= 22 and not counterStartTimer:
         playCountdownMusic()
