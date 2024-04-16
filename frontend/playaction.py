@@ -41,8 +41,10 @@ def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, r
                 rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw red rectangle
                 RowRedRect.append(rect)
                 if col == 0 and row < len(redPlayer):
-                    textWords = redPlayer[row] #red player name
+                    textWords = "B"
                 if col == 1 and row < len(redPlayer):
+                    textWords = redPlayer[row] #red player name
+                if col == 2 and row < len(redPlayer):
                     textWords = str(redPlayerScores[redPlayer[row]]) #score of that particular red player
                 if row >= len(redPlayer):
                     textWords = " "
@@ -61,8 +63,10 @@ def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable
                 y = row * rectHeight + 78 #determine y coordinate for each rectangle
                 rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw green rectangle
                 if col == 0 and row < len(greenPlayer):
-                    textWords = greenPlayer[row] #green player name
+                    textWords = "B"
                 if col == 1 and row < len(greenPlayer):
+                    textWords = greenPlayer[row] #green player name
+                if col == 2 and row < len(greenPlayer):
                     textWords = str(greenPlayerScores[greenPlayer[row]])
                 if row >= len(greenPlayer):
                     textWords = " "
