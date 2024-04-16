@@ -1,309 +1,160 @@
-import sys
+import json
 import random
 import time
 import pygame
-import textwrap
-pygame.init()
-import os
-from send import send_udp_packet, pipeRemove
 import json
-import threading
-import queue
-from main import *
-import main
+
+#import playaction as playaction
 from playerEntryScreenTables import drawLeftTable, drawRightTable
 
 
-def drawKillFeed(killFeed, rect, screen, coolFont):
-    # for i in range(len(killFeed)):
-    textWords = str(killFeed)
-    text = coolFont.render(textWords, True, WHITE)
-    text_rect = text.get_rect(center=rect.center)
-    screen.blit(text, text_rect)
-    return
+import os
+from send import send_udp_packet, pipeRemove
 
-def pipeRemoveThread(queue, killFeed):
-    while(True):
-        pipeBlob = pipeRemove()
-        parts = pipeBlob.split('/')
-        playerToAwardTen = parts[0]
-        print(f"Player to award ten: {playerToAwardTen}")
-        queue.put(playerToAwardTen)
-        killFeed.append(pipeBlob)
+from supabase import create_client, Client 
+pygame.init() #start the game
+url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
+key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
 
-def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, redPlayer, redPlayerScores):
-    
-        for row in range(15):
-            RowRedRect = []
-            for col in range(3):
-                x = col * rectWidth + 3 #determine x coordinate for each rectangle
-                y = row * rectHeight + 78 #determine y coordinate for each rectangle
-                rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw red rectangle
-                RowRedRect.append(rect)
-                if col == 0 and row < len(redPlayer):
-                    textWords = redPlayer[row] #red player name
-                if col == 1 and row < len(redPlayer):
-                    textWords = str(redPlayerScores[redPlayer[row]]) #score of that particular red player
-                if row >= len(redPlayer):
-                    textWords = " "
-                text = coolFont.render(textWords, True, WHITE)
-                text_rect = text.get_rect(center=rect.center)
-                # Blit text onto the screen
-                screen.blit(text, text_rect)
-                
-            RedTable.append(RowRedRect)
+supabase: Client = create_client(url, key)
 
-def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, greenPlayer, greenPlayerScores):
-        for row in range(15):
-            RowGreenRect = []
-            for col in range(3):
-                x = col * rectWidth + 3 + screen.get_width()/2 #determine x coordinate for each rectangle
-                y = row * rectHeight + 78 #determine y coordinate for each rectangle
-                rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw green rectangle
-                if col == 0 and row < len(greenPlayer):
-                    textWords = greenPlayer[row] #green player name
-                if col == 1 and row < len(greenPlayer):
-                    textWords = str(greenPlayerScores[greenPlayer[row]])
-                if row >= len(greenPlayer):
-                    textWords = " "
-                text = coolFont.render(textWords, True, WHITE)
-                text_rect = text.get_rect(center=rect.center)
-                # Blit text onto the screen
-                screen.blit(text, text_rect)
-                
-            GreenTable.append(RowGreenRect)
+class RedTeam:
+    def __init__(red, id, codename, machineCode):
+        red.id = id
+        red.codename = codename
+        red.machineCode = machineCode
+    redPlayers = []
+        
+class GreenTeam:
+    def __init__(green, id, codename, machineCode):
+        green.id = id
+        green.codename = codename
+        green.machineCode = machineCode
+    greenPlayers = []
 
-    
-def drawRect(row, col, x, y, rectWidth, rectHeight, screen, borderColor, fillColor) -> pygame.Rect:
-    rect = pygame.Rect(x, y, rectWidth, rectHeight)
-    pygame.draw.rect(screen, borderColor, rect, 1)
-    pygame.draw.rect(screen, fillColor, rect.inflate(-2, -2))
-    return rect
+playRedPlayers = []
+playGreenPlayers = []
 
-def playCountdownMusic():
-    pygame.mixer.quit()
-    pygame.mixer.init()
-    track_number = random.randint(1, 8)  # Randomly select a track number between 1 and 8
-    track_name = f"photon_tracks/Track{track_number:02d}.mp3"
-    print(track_name)
-    pygame.mixer.music.load(track_name)
-    pygame.mixer.music.set_volume(1)
+def blit_text(surface, text, pos, font, color=pygame.Color('yellow')):
+    words = [word.split(' ') for word in text.splitlines()]
+    space = font.size(' ')[0]
+    max_width, max_height = surface.get_size()
+    x, y = pos
+    for line in words:
+        for word in line:
+            word_surface = font.render(word, 0, color)
+            word_width, word_height = word_surface.get_size()
+            if x + word_width >= max_width:
+                x = pos[0]
+                y += word_height
+            surface.blit(word_surface, (x, y))
+            x += word_width + space
+        x = pos[0]
+        y += word_height
+
+# def drawRect(row, col, x, y, rectWidth, rectHeight, screen, borderColor, fillColor) -> pygame.Rect:
+#     rect = pygame.Rect(x, y, rectWidth, rectHeight)
+#     pygame.draw.rect(screen, borderColor, rect, 1)
+#     pygame.draw.rect(screen, fillColor, rect.inflate(-2, -2))
+#     return rect
+
+# def proceedToPlayerEntry():
+#     pygame.mixer.quit()
+#     pygame.mixer.init()
+#     pygame.mixer.music.load("player_entry.wav")
+#     pygame.mixer.music.set_volume(1)
+#     pygame.mixer.music.play(-1)
+
+def playMusic():
+    pygame.mixer.music.load("Tank!.wav")
     pygame.mixer.music.play(-1)
 
-#Create a queue for communication between threads. 
-#We need this to pass the gameplay events to the main program.
-eventQueue = queue.Queue()
 
-#List to store the full events from the pipe
-killFeed = []
+# def rocketAndText(screen, title, defFont, coolFont, y):
+#     rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n"
+#     blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 25 - y), defFont)
+#     screen.blit(title,(screen.get_width()/2 - title.get_width()/2, screen.get_height() - y))
+#     songText = "                       (Epic bass music)\n\n\n\n\n\n\n\n\n\n                  (Epic bongo cat sounds)\n\n\n\n\n\n\n\n\n\n\n\n\n        I think it's time we blow this scene\n       Get everybody and the stuff together\n                            Okay, 3, 2, 1\n                             LET'S JAM"
+#     blit_text(screen, songText, (screen.get_width()/2 - title.get_width()/2 - 80,screen.get_height() + title.get_height() - y), coolFont)
+#     storyText = "\n\n      In a world where the Joestars\n         are now fighting in space!\n      You will now join the Joestars\n  Against the evil laser Stand Users\n       (which aren't actually lasers\n        but simpler infrared lights\n                  emitted as beams)\n\n      But your enemies are not weak...\n    They have their own unique stands\n            with powerful abilities.\n Dio has upgraded all his laser stand\n    users to FREEZE you upon damage.\n\n                  But do not fear!!!\n        As your uncle Jotaro Kujo\n With his stand STARRRR PLATINUM.\n            Has done the same to your\n                  laser stands too.\n\n         Do not be too overconfident.\n As when you reading this amazing text\n  Dio hired Sigma from Overwatch 2 D:\n                  With the power of\n        ''WHAT IS THAT MELODY?!?!''\n        Sigma fluxxed 99.99 percent\n             of the Joestar family.\n\nSo now it's up to you and your friends.\n      Oh wait you don't have friends...\n No worries, as your Jotaro will still\n  be with you on this massive journey.\n\n      WHAT ARE YOU WAITING FOR!!!\n    GO NOW BEFORE THE TIMER ENDS\n    GET THE WIN FOR THE JOESTARS\n        DO NOT LET THE ENEMY WIN\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n                     What? NANI!\n   Did you find an easter egg yet??\n          Why are you still here?\n           What are you DOING!!!!\n            Why are we still here\n                 Just to suffer...\n                     BYEEEEEEE\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDo you not want to help the Joestars??\n  Well then, I would like to introduce\n          the sponsor of this project         \n                    RAID- wait what\n                    no no no... I mean\n                   OUR PET MASCOT        \n                       SHIPLEY!!!!!!!\n     for keeping team 20 sane for the\n                past few sprints :3     \n   Now you guys can go taste freedom\n    Thanks for reading this TedTalk."
+#     blit_text(screen, storyText, (screen.get_width()/2 - title.get_width()/2 - 40,screen.get_height() + title.get_height() - y + 1080), coolFont)
+        
+def circles(screen, color):
+    a = random.randrange(899) + 1
+    b = random.randrange(699) + 1
+    pygame.draw.circle(screen, color,(a,b), 2)
 
-#Continuously read events from the pipe in a separate thread
-pipeRemover = threading.Thread(target=pipeRemoveThread, args=(eventQueue, killFeed))
-pipeRemover.start()
+def write():
+        x = 1
 
-playerToAwardTen = ""
-pygame.key.set_repeat(500, 100)
-coolFontName = "8-bit.ttf"
-defFontName = "freesansbold.ttf"
-coolFont = pygame.font.Font(coolFontName, 12)
-countDownFont = pygame.font.Font(coolFontName, 18)
-DisplayBoxFont = pygame.font.Font(coolFontName, 14) 
-defFont = pygame.font.Font(defFontName, 24)
-
-WHITE = (255, 255, 255)
-BLUE = (0, 71, 171)
-BLACK = (0, 0, 0)
-YELLOW = (255, 255, 0)
-RED = (125, 19, 19)
-GREEN = (32, 87, 60)
-clock = pygame.time.Clock()
-size = (900,700)
-
-pygame.display.set_caption("Photon -1: The Sequel (Laser Boogaloo)")
-screen = pygame.display.set_mode(size)
-countDownBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/18, screen.get_height()/40,100,40)
-done = False
-redplayerCount = 0
-
-counterStartTimer = False
-halfSpeedCountdown = True
-timer30sec = 0
-timer6min = 1
-timerState = timer30sec
-totalTime = 40
-rectWidth = 885/6
-rectHeight = 310/16
-RedTable = []
-GreenTable = []
-startTime = pygame.time.get_ticks()
-with open('redPlayers.json', 'r') as openfile:
-    jsonRedObject = json.load(openfile)
-with open('greenPlayers.json', 'r') as openfile:
-    jsonGreenObject = json.load(openfile)
-redPlayer = []
-greenPlayer = []
-redPlayer = jsonRedObject
-greenPlayer = jsonGreenObject
-
-# playCountdownMusic()
-
-redPlayerScores = {}
-greenPlayerScores = {}
-
-lock = threading.Lock() #Lock to ensure score dicts are not sorted while the scores are being updated
-
-InputColorActive = pygame.Color('lightskyblue3')
-InputColorPassive = pygame.Color('chartreuse4')
-InputBoxColor = InputColorPassive
-active = False
-inputField = 0
-numPlayers = 0
-idWords = "Please Enter Player ID. Press Enter Key to Submit"
-inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_height()/2 + 300, screen.get_width()/2, 40)
-start = time.time()
-RedTable = []
-GreenTable = []
-
-id = ''
-codename = ''
-numPlayers = 1
-addedID = ''
-addedCodeName = ''
-entryCondition = False
-
-def character_lim(codename):
-    while len(codename) > 12:
-        error_lim = "Please enter a codename 12 characters or less."
-
-
-listNotEmpty = False
-textWords = ''
-
-
-#Initialize the scores to 0
-for currRed in redPlayer:
-    redPlayerScores[currRed] = 0
-for currGreen in greenPlayer:
-    greenPlayerScores[currGreen] = 0
-
-while not done:
-    screen.fill(BLACK)
-    rect = pygame.Rect(0, 75, 448, 300)
-    pygame.draw.rect(screen, RED, rect, 1)
-    pygame.draw.rect(screen, BLACK, rect.inflate(-2, -2))
-    rect = pygame.Rect(screen.get_width() / 2 + 2, 75, 448, 300)
-    pygame.draw.rect(screen, GREEN, rect, 1)
-    pygame.draw.rect(screen, BLACK, rect.inflate(-2, -2))
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            redPlayer.clear()
-            greenPlayer.clear()
-            jsonObject = json.dumps(playRedPlayers)
-            with open("redPlayers.json", "w") as outfile:
-                outfile.write(jsonObject)
-            jsonObject = json.dumps(playGreenPlayers)
-            with open("greenPlayers.json", "w") as outfile:
-                outfile.write(jsonObject)
-            done = True
-
-    if not eventQueue.empty():
-            playerToAwardTen = eventQueue.get()
-            for currRed in redPlayer:
-                if currRed == playerToAwardTen:
-                    redPlayerScores[currRed] += 10
-            for currGreen in greenPlayer:
-                if currGreen == playerToAwardTen:
-                    greenPlayerScores[currGreen] += 10
-
-    #Sort the redPlayerScores dict
-    sorted_red_scores = dict(sorted(redPlayerScores.items(), key=lambda item: item[1]))
+def setup():
+    url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
+    key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
+    supabase: Client = create_client(url, key)
     
-    #Create a reversed list of the sorted keys
-    sorted_red_scores_keys = list(sorted_red_scores.keys())
-    sorted_red_scores_keys.reverse()
-    print(f'sorted_red_scores_keys: {sorted_red_scores_keys}')
-
-    #Create a reversed list of the sorted values
-    sorted_red_scores_values = list(sorted_red_scores.values())
-    sorted_red_scores_values.reverse()
-    print(f'sorted_red_scores_values: {sorted_red_scores_values}')
-
-    #Sort the greenPlayerScores dict
-    sorted_green_scores = dict(sorted(greenPlayerScores.items(), key=lambda item: item[1]))
+    pygame.key.set_repeat(500, 25) #set up repeat entry from key holding
+    currentDir = os.getcwd() #establish working directory
+    coolFontName = "8-bit.ttf" #cool font
+    defFontName = "freesansbold.ttf" #default font
+    coolFont = pygame.font.Font(coolFontName, 18)
+    inputBoxFont = pygame.font.Font(coolFontName, 14) 
+    defFont = pygame.font.Font(defFontName, 24)
+    WHITE = (255, 255, 255)
+    BLUE = (0, 71, 171)
+    BLACK = (0, 0, 0)
+    YELLOW = (255, 255, 0)
+    RED = (125, 19, 19)
+    GREEN = (32, 87, 60)
+    exitProgram = False
+    exitIntroScreen = False
+    inEntryScreen = False
+    inPlayScreen = False
+    idNamePairFound = True
+    clock = pygame.time.Clock()
+    size = (900,700)
+    screen = pygame.display.set_mode(size)
+    image_path = "logo.jpg"
+    center = screen.get_rect().center
+    pygame.display.set_caption("Photon")
+    title = pygame.image.load(image_path).convert()
+    title = pygame.transform.scale(title, (500,242)) 
+    y = 0
+    i = 1
+    userInput = ''
+    codeName = ''
+    red_Id = []
+    red_Code = []
+    InputColorActive = pygame.Color('lightskyblue3')
+    InputColorPassive = pygame.Color('chartreuse4')
+    InputBoxColor = InputColorPassive
+    active = False
+    inputField = 0
+    numPlayers = 0
+    idWords = "Please Enter Player ID. Press Enter Key to Submit"
+    inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_height()/2 + 300, screen.get_width()/2, 40)
+    start = time.time()
+    RedTable = []
+    GreenTable = []
     
-    #Create a reversed list of the sorted keys
-    sorted_green_scores_keys = list(sorted_green_scores.keys())
-    sorted_green_scores_keys.reverse()
-    print(f'sorted_green_scores_keys: {sorted_green_scores_keys}')
+    id = ''
+    codename = ''
+    numPlayers = 1
+    addedID = ''
+    addedCodeName = ''
+    machineCode = ''
+    redPlayerCount = 0
     
-    #Create a reversed list of the sorted values
-    sorted_green_scores_values = list(sorted_green_scores.values())
-    sorted_green_scores_values.reverse()
-    print(f'sorted_green_scores_values: {sorted_green_scores_values}')
+    #Character limit for codenames
+    def character_lim(codename):
+        while len(codename) > 12:
+            error_lim = "Please enter a codename 12 characters or less."
+
     
+    listNotEmpty = False
+    textWords = ''
+    playMusic()
 
-    drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, sorted_red_scores_keys, sorted_red_scores)
-    drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, sorted_green_scores_keys, sorted_green_scores)
-
-    currentTime = (pygame.time.get_ticks() - startTime) / 1000
-    if currentTime >= 22 and not counterStartTimer:
-        playCountdownMusic()
-        counterStartTimer = True
-        # startTime = pygame.time.get_ticks() - (currentTime * 0.75) * 1000  # Adjust the starting time for the half-speed countdown
-    if halfSpeedCountdown:
-        countdownSpeed = 0.75
-    else:
-        countdownSpeed = 1
-    if timerState == timer30sec and currentTime >= totalTime:
-        timerState = timer6min
-        totalTime = 5
-        halfSpeedCountdown = False
-        startTime = pygame.time.get_ticks()
-    elif timerState == timer6min and currentTime >= totalTime:
-
-        entryCondition = True
-        redPlayer.clear()
-        greenPlayer.clear()
-        jsonObject = json.dumps(playRedPlayers)
-        with open("redPlayers.json", "w") as outfile:
-            outfile.write(jsonObject)
-        jsonObject = json.dumps(playGreenPlayers)
-        with open("greenPlayers.json", "w") as outfile:
-            outfile.write(jsonObject)
-        # done = True
-    remainingTime = max(0, totalTime - currentTime)
-    remainingTime *= countdownSpeed
-    minutes = int(remainingTime) // 60
-    seconds = int(remainingTime) % 60
-    timeText = f"{minutes:02d}:{seconds:02d}"
-
-    #Red & Green team text rendering
-    redText = DisplayBoxFont.render("Red Team", True, RED) # Red Team
-    screen.blit(redText,(screen.get_width()/4 - screen.get_width()/18, 12))
-    greenText = DisplayBoxFont.render("Green Team", True, GREEN) # Green Team
-    screen.blit(greenText,(screen.get_width() - screen.get_width()/4 - screen.get_width()/14, 12))
-    
-    #Timer rendering
-    pygame.draw.rect(screen, BLUE, countDownBox)
-    timer = countDownFont.render(timeText, True, WHITE)
-    countDownBoxRect = timer.get_rect(center=countDownBox.center)
-    screen.blit(timer, countDownBoxRect)
-
-    #Kill feed rendering
-    killFeedBox = pygame.Rect(0, 378, 900, 320)
-    pygame.draw.rect(screen, BLUE, killFeedBox, 1)
-    pygame.draw.rect(screen, BLACK, killFeedBox.inflate(-2, -2))
-    killFeedWords = str(killFeed)
-    killFeedText = coolFont.render(killFeedWords, True, WHITE)
-    killFeedBoxRect = killFeedText.get_rect(center=killFeedBox.center)
-    screen.blit(killFeedText, killFeedBoxRect)
-    pygame.display.flip()
-    clock.tick(60)
-
-    if entryCondition:
-        screen.fill(BLACK)
-    while entryCondition:
+    while not exitProgram:
         pygame.key.set_repeat(500, 25) #set up repeat entry from key holding
         screen.fill(BLACK)
         # rectWidth = 900/4
@@ -318,7 +169,6 @@ while not done:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exitProgram = True
-                inEntryScreen = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if inputBox.collidepoint(event.pos):
                     active = True
@@ -500,13 +350,3 @@ while not done:
                                     userInput = ""    
                         else:
                             idWords = "Please Enter an ID no more than 10 characters"
-
-
-def main():
-    print("Hello World")
-    
-
-
-        
-if __name__ == "__main__":
-    main()
