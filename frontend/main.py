@@ -8,23 +8,18 @@ import json
 #import playaction as playaction
 from playerEntryScreenTables import drawLeftTable, drawRightTable
 
-
 import os
 from send import send_udp_packet, pipeRemove
 
 from supabase import create_client, Client 
 pygame.init() #start the game
-url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
-key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
 
-supabase: Client = create_client(url, key)
 class RedTeam:
     def __init__(red, id, codename, machineCode):
         red.id = id
         red.codename = codename
         red.machineCode = machineCode
     redPlayers = []
-        
         
 class GreenTeam:
     def __init__(green, id, codename, machineCode):
@@ -35,11 +30,6 @@ class GreenTeam:
 
 playRedPlayers = []
 playGreenPlayers = []
-# def drawRect(row, col, x, y, rectWidth, rectHeight, screen, borderColor, fillColor) -> pygame.Rect:
-#     rect = pygame.Rect(x, y, rectWidth, rectHeight)
-#     pygame.draw.rect(screen, borderColor, rect, 1)
-#     pygame.draw.rect(screen, fillColor, rect.inflate(-2, -2))
-#     return rect
 
 def proceedToPlayerEntry():
     pygame.mixer.quit()
@@ -118,7 +108,10 @@ def setup():
     start = time.time()
     RedTable = []
     GreenTable = []
-    
+
+    #list of machine codes
+    machine_codes = []
+
     id = ''
     codename = ''
     numPlayers = 1
@@ -126,11 +119,6 @@ def setup():
     addedCodeName = ''
     machineCode = ''
     redPlayerCount = 0
-    #Character limit for codenames
-    def character_lim(codename):
-        while len(codename) > 12:
-            error_lim = "Please enter a codename 12 characters or less."
-
     
     listNotEmpty = False
     textWords = ''
@@ -251,16 +239,11 @@ def setup():
                                                 idWords = "         ID found, please input a Machine Code."
                                                 userInput = ""
                                                 inputField = 2
-                                                #print("Welcome back {codeName}")
-                                                #supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()  
                                                 print("inside if statement " + " userInput = " + userInput + " key = " + str(key1))
                                         
                                     elif ((userInput != str(key)) and (userInput != "") and (inputField == 0)):                           
                                         print("Welcome to the battlefield, enter your codename.")
                                         idWords = "Please Enter Code Name. Press Enter Key to Submit"
-
-                                        #Character limit for codenames
-                                        character_lim(codename)
                                         
                                         if ((userInput != "") and (inputField == 0)):
                                             addPlayer = supabase.table('player').insert({ 'id': userInput}).execute()
@@ -340,6 +323,13 @@ def setup():
                                             # break
                                     if (inputField != 0):
                                         listNotEmpty = True
+
+                                    #checks for duplicate machine codes
+                                    if (userInput in machine_codes):
+                                        idWords = "            Please enter an unused machine ID."
+                                    else:
+                                        machine_codes.append(userInput)
+
                                         if (int(userInput) % 2 != 0):
                                             newPlayer = RedTeam(addedID, addedCodeName, userInput)
                                             RedTeam.redPlayers.append(newPlayer)
