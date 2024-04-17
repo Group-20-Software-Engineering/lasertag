@@ -148,6 +148,8 @@ redPlayer = []
 greenPlayer = []
 redPlayer = jsonRedObject
 greenPlayer = jsonGreenObject
+redTotalScore = 0
+greenTotalScore = 0
 
 # playCountdownMusic()
 
@@ -190,6 +192,7 @@ for currRed in redPlayer:
 for currGreen in greenPlayer:
     greenPlayerScores[currGreen] = 0
 
+
 while not done:
     screen.fill(BLACK)
     rect = pygame.Rect(0, 75, 448, 300)
@@ -216,9 +219,11 @@ while not done:
             for currRed in redPlayer:
                 if currRed == playerToAwardTen:
                     redPlayerScores[currRed] += 10
+                    redTotalScore = redTotalScore + 10
             for currGreen in greenPlayer:
                 if currGreen == playerToAwardTen:
                     greenPlayerScores[currGreen] += 10
+                    greenTotalScore = greenTotalScore + 10
 
     #Sort the redPlayerScores dict
     sorted_red_scores = dict(sorted(redPlayerScores.items(), key=lambda item: item[1]))
@@ -232,6 +237,7 @@ while not done:
     sorted_red_scores_values = list(sorted_red_scores.values())
     sorted_red_scores_values.reverse()
     print(f'sorted_red_scores_values: {sorted_red_scores_values}')
+    
 
     #Sort the greenPlayerScores dict
     sorted_green_scores = dict(sorted(greenPlayerScores.items(), key=lambda item: item[1]))
@@ -245,7 +251,7 @@ while not done:
     sorted_green_scores_values = list(sorted_green_scores.values())
     sorted_green_scores_values.reverse()
     print(f'sorted_green_scores_values: {sorted_green_scores_values}')
-    
+   
 
     drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, sorted_red_scores_keys, sorted_red_scores)
     drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, sorted_green_scores_keys, sorted_green_scores)
@@ -284,9 +290,17 @@ while not done:
 
     #Red & Green team text rendering
     redText = DisplayBoxFont.render("Red Team", True, RED) # Red Team
+    redTeamScoreText = DisplayBoxFont.render("Red Team Score: ", True, RED) 
+    redTotalScoreDisplay = DisplayBoxFont.render(str(redTotalScore), True, WHITE)
     screen.blit(redText,(screen.get_width()/4 - screen.get_width()/18, 12))
+    screen.blit(redTeamScoreText,(screen.get_width()/15 - screen.get_width()/18, 40))
+    screen.blit(redTotalScoreDisplay, (screen.get_width()/3 - screen.get_width()/20, 40))
     greenText = DisplayBoxFont.render("Green Team", True, GREEN) # Green Team
+    greenTeamScoreText = DisplayBoxFont.render("Green Team Score: ", True, GREEN) 
+    greenTotalScoreDisplay = DisplayBoxFont.render(str(greenTotalScore), True, WHITE)
     screen.blit(greenText,(screen.get_width() - screen.get_width()/4 - screen.get_width()/14, 12))
+    screen.blit(greenTeamScoreText,(screen.get_width() - screen.get_width()/2.35, 40))
+    screen.blit(greenTotalScoreDisplay, (screen.get_width() - screen.get_width()/18, 40))
     
     #Timer rendering
     pygame.draw.rect(screen, BLUE, countDownBox)
