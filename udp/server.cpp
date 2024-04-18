@@ -39,7 +39,7 @@ int pipeInsert(const std::string& shooterCodename, const std::string& killedCode
     }
 
     // Format the message with codenames instead of IDs
-    std::string message = shooterCodename + "/" + killedCodename + "\n";
+    std::string message = shooterCodename + ":" + killedCodename + "\n";
     ssize_t bytesWritten = write(fd, message.c_str(), message.length());
     if (bytesWritten == -1) {
         std::cerr << "Error writing to pipe: " << std::strerror(errno) << std::endl;

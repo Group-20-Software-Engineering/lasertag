@@ -14,6 +14,7 @@ import main
 from playerEntryScreenTables import drawLeftTable, drawRightTable
 
 
+should_continue = True
 def drawKillFeed(killFeed, rect, screen, coolFont):
     # for i in range(len(killFeed)):
     textWords = str(killFeed)
@@ -23,13 +24,21 @@ def drawKillFeed(killFeed, rect, screen, coolFont):
     return
 
 def pipeRemoveThread(queue, killFeed):
-    while(True):
-        pipeBlob = pipeRemove()
-        parts = pipeBlob.split('/')
-        playerToAwardTen = parts[0]
-        print(f"Player to award ten: {playerToAwardTen}")
-        queue.put(playerToAwardTen)
-        killFeed.append(pipeBlob)
+    global should_continue
+    while should_continue:
+        try:
+            pipeBlob = pipeRemove()  # Timeout after 1 second
+            if pipeBlob:
+                parts = pipeBlob.split(':')
+                playerToAwardTen = parts[0]
+                print(f"Player to award ten: {playerToAwardTen}")
+                queue.put(playerToAwardTen)
+                killFeed.append(pipeBlob)
+            else:
+                continue  # Continue checking the while condition
+        except TimeoutError:
+            continue
+
 
 def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, redPlayer, redPlayerScores):
     
