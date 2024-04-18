@@ -1,21 +1,21 @@
 import json
+import sys
 import random
 import time
 import pygame
+import textwrap
 import json
-
 #import playaction as playaction
 from playerEntryScreenTables import drawLeftTable, drawRightTable
-
 
 import os
 from send import send_udp_packet, pipeRemove
 
 from supabase import create_client, Client 
 pygame.init() #start the game
+
 url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
 key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
-
 supabase: Client = create_client(url, key)
 
 class RedTeam:
@@ -35,49 +35,26 @@ class GreenTeam:
 playRedPlayers = []
 playGreenPlayers = []
 
-def blit_text(surface, text, pos, font, color=pygame.Color('yellow')):
-    words = [word.split(' ') for word in text.splitlines()]
-    space = font.size(' ')[0]
-    max_width, max_height = surface.get_size()
-    x, y = pos
-    for line in words:
-        for word in line:
-            word_surface = font.render(word, 0, color)
-            word_width, word_height = word_surface.get_size()
-            if x + word_width >= max_width:
-                x = pos[0]
-                y += word_height
-            surface.blit(word_surface, (x, y))
-            x += word_width + space
-        x = pos[0]
-        y += word_height
-
-# def drawRect(row, col, x, y, rectWidth, rectHeight, screen, borderColor, fillColor) -> pygame.Rect:
-#     rect = pygame.Rect(x, y, rectWidth, rectHeight)
-#     pygame.draw.rect(screen, borderColor, rect, 1)
-#     pygame.draw.rect(screen, fillColor, rect.inflate(-2, -2))
-#     return rect
-
-# def proceedToPlayerEntry():
-#     pygame.mixer.quit()
-#     pygame.mixer.init()
-#     pygame.mixer.music.load("player_entry.wav")
-#     pygame.mixer.music.set_volume(1)
-#     pygame.mixer.music.play(-1)
+def proceedToPlayerEntry():
+    pygame.mixer.quit()
+    pygame.mixer.init()
+    pygame.mixer.music.load("player_entry.wav")
+    pygame.mixer.music.set_volume(1)
+    pygame.mixer.music.play(-1)
 
 def playMusic():
     pygame.mixer.music.load("Tank!.wav")
     pygame.mixer.music.play(-1)
 
 
-# def rocketAndText(screen, title, defFont, coolFont, y):
-#     rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n"
-#     blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 25 - y), defFont)
-#     screen.blit(title,(screen.get_width()/2 - title.get_width()/2, screen.get_height() - y))
-#     songText = "                       (Epic bass music)\n\n\n\n\n\n\n\n\n\n                  (Epic bongo cat sounds)\n\n\n\n\n\n\n\n\n\n\n\n\n        I think it's time we blow this scene\n       Get everybody and the stuff together\n                            Okay, 3, 2, 1\n                             LET'S JAM"
-#     blit_text(screen, songText, (screen.get_width()/2 - title.get_width()/2 - 80,screen.get_height() + title.get_height() - y), coolFont)
-#     storyText = "\n\n      In a world where the Joestars\n         are now fighting in space!\n      You will now join the Joestars\n  Against the evil laser Stand Users\n       (which aren't actually lasers\n        but simpler infrared lights\n                  emitted as beams)\n\n      But your enemies are not weak...\n    They have their own unique stands\n            with powerful abilities.\n Dio has upgraded all his laser stand\n    users to FREEZE you upon damage.\n\n                  But do not fear!!!\n        As your uncle Jotaro Kujo\n With his stand STARRRR PLATINUM.\n            Has done the same to your\n                  laser stands too.\n\n         Do not be too overconfident.\n As when you reading this amazing text\n  Dio hired Sigma from Overwatch 2 D:\n                  With the power of\n        ''WHAT IS THAT MELODY?!?!''\n        Sigma fluxxed 99.99 percent\n             of the Joestar family.\n\nSo now it's up to you and your friends.\n      Oh wait you don't have friends...\n No worries, as your Jotaro will still\n  be with you on this massive journey.\n\n      WHAT ARE YOU WAITING FOR!!!\n    GO NOW BEFORE THE TIMER ENDS\n    GET THE WIN FOR THE JOESTARS\n        DO NOT LET THE ENEMY WIN\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n                     What? NANI!\n   Did you find an easter egg yet??\n          Why are you still here?\n           What are you DOING!!!!\n            Why are we still here\n                 Just to suffer...\n                     BYEEEEEEE\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDo you not want to help the Joestars??\n  Well then, I would like to introduce\n          the sponsor of this project         \n                    RAID- wait what\n                    no no no... I mean\n                   OUR PET MASCOT        \n                       SHIPLEY!!!!!!!\n     for keeping team 20 sane for the\n                past few sprints :3     \n   Now you guys can go taste freedom\n    Thanks for reading this TedTalk."
-#     blit_text(screen, storyText, (screen.get_width()/2 - title.get_width()/2 - 40,screen.get_height() + title.get_height() - y + 1080), coolFont)
+def rocketAndText(screen, title, defFont, coolFont, y):
+    rocketText = "        !\n        !\n        ^\n      /    \\\n    /____\\\n    |=    =|\n    |        |\n    |        |\n    |        |\n    |        |\n    |        |\n   /|##!##|\\\n  / |##!##| \\\n /  |##!##|  \\\n |  / ^ | ^ \\  |\n | /   ( | )   \\ |\n |/    ( | )    \\|\n      ((   ))\n     ((  :  ))\n     ((  :  ))\n      ((   ))\n       (( ))\n        ( )\n         |\n         |\n         |\n         |\n"
+    blit_text(screen, rocketText, (screen.get_width()/2 - title.get_width()/2 + 185, 25 - y), defFont)
+    screen.blit(title,(screen.get_width()/2 - title.get_width()/2, screen.get_height() - y))
+    songText = "                       (Epic bass music)\n\n\n\n\n\n\n\n\n\n                  (Epic bongo cat sounds)\n\n\n\n\n\n\n\n\n\n\n\n\n        I think it's time we blow this scene\n       Get everybody and the stuff together\n                            Okay, 3, 2, 1\n                             LET'S JAM"
+    blit_text(screen, songText, (screen.get_width()/2 - title.get_width()/2 - 80,screen.get_height() + title.get_height() - y), coolFont)
+    storyText = "\n\n      In a world where the Joestars\n         are now fighting in space!\n      You will now join the Joestars\n  Against the evil laser Stand Users\n       (which aren't actually lasers\n        but simpler infrared lights\n                  emitted as beams)\n\n      But your enemies are not weak...\n    They have their own unique stands\n            with powerful abilities.\n Dio has upgraded all his laser stand\n    users to FREEZE you upon damage.\n\n                  But do not fear!!!\n        As your uncle Jotaro Kujo\n With his stand STARRRR PLATINUM.\n            Has done the same to your\n                  laser stands too.\n\n         Do not be too overconfident.\n As when you reading this amazing text\n  Dio hired Sigma from Overwatch 2 D:\n                  With the power of\n        ''WHAT IS THAT MELODY?!?!''\n        Sigma fluxxed 99.99 percent\n             of the Joestar family.\n\nSo now it's up to you and your friends.\n      Oh wait you don't have friends...\n No worries, as your Jotaro will still\n  be with you on this massive journey.\n\n      WHAT ARE YOU WAITING FOR!!!\n    GO NOW BEFORE THE TIMER ENDS\n    GET THE WIN FOR THE JOESTARS\n        DO NOT LET THE ENEMY WIN\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n                     What? NANI!\n   Did you find an easter egg yet??\n          Why are you still here?\n           What are you DOING!!!!\n            Why are we still here\n                 Just to suffer...\n                     BYEEEEEEE\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDo you not want to help the Joestars??\n  Well then, I would like to introduce\n          the sponsor of this project         \n                    RAID- wait what\n                    no no no... I mean\n                   OUR PET MASCOT        \n                       SHIPLEY!!!!!!!\n     for keeping team 20 sane for the\n                past few sprints :3     \n   Now you guys can go taste freedom\n    Thanks for reading this TedTalk."
+    blit_text(screen, storyText, (screen.get_width()/2 - title.get_width()/2 - 40,screen.get_height() + title.get_height() - y + 1080), coolFont)
         
 def circles(screen, color):
     a = random.randrange(899) + 1
@@ -88,10 +65,6 @@ def write():
         x = 1
 
 def setup():
-    url: str = "https://jmfukmeanfezxzgrsitj.supabase.co"
-    key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZnVrbWVhbmZlenh6Z3JzaXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcyNTEyMDMsImV4cCI6MjAyMjgyNzIwM30.r99dqev77H1YPfAudZ9xm5heBt-jR-dNDiuI8-xVuZk"
-    supabase: Client = create_client(url, key)
-    
     pygame.key.set_repeat(500, 25) #set up repeat entry from key holding
     currentDir = os.getcwd() #establish working directory
     coolFontName = "8-bit.ttf" #cool font
@@ -106,8 +79,7 @@ def setup():
     RED = (125, 19, 19)
     GREEN = (32, 87, 60)
     exitProgram = False
-    exitIntroScreen = False
-    inEntryScreen = False
+    inEntryScreen = True
     inPlayScreen = False
     idNamePairFound = True
     clock = pygame.time.Clock()
@@ -135,7 +107,10 @@ def setup():
     start = time.time()
     RedTable = []
     GreenTable = []
-    
+
+    #list of machine codes
+    machine_codes = []
+
     id = ''
     codename = ''
     numPlayers = 1
@@ -144,17 +119,10 @@ def setup():
     machineCode = ''
     redPlayerCount = 0
     
-    #Character limit for codenames
-    def character_lim(codename):
-        while len(codename) > 12:
-            error_lim = "Please enter a codename 12 characters or less."
-
-    
     listNotEmpty = False
     textWords = ''
-    playMusic()
 
-    while not exitProgram:
+    while (inEntryScreen == True):
         pygame.key.set_repeat(500, 25) #set up repeat entry from key holding
         screen.fill(BLACK)
         # rectWidth = 900/4
@@ -168,7 +136,7 @@ def setup():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                exitProgram = True
+                inEntryScreen = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if inputBox.collidepoint(event.pos):
                     active = True
@@ -190,7 +158,7 @@ def setup():
                     with open("greenPlayers.json", "w") as outfile:
                         outfile.write(jsonObject)
                 elif event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
-                    entryCondition = False
+                    inEntryScreen = False
                     
                 else:
                     if (event.key != pygame.K_RETURN):
@@ -239,16 +207,11 @@ def setup():
                                             idWords = "         ID found, please input a Machine Code."
                                             userInput = ""
                                             inputField = 2
-                                            #print("Welcome back {codeName}")
-                                            #supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()  
                                             print("inside if statement " + " userInput = " + userInput + " key = " + str(key1))
                                     
                                 elif ((userInput != str(key)) and (userInput != "") and (inputField == 0)):                           
                                     print("Welcome to the battlefield, enter your codename.")
                                     idWords = "Please Enter Code Name. Press Enter Key to Submit"
-
-                                    #Character limit for codenames
-                                    character_lim(codename)
                                     
                                     if ((userInput != "") and (inputField == 0)):
                                         addPlayer = supabase.table('player').insert({ 'id': userInput}).execute()
@@ -328,6 +291,13 @@ def setup():
                                         # break
                                 if (inputField != 0):
                                     listNotEmpty = True
+
+                                #checks for duplicate machine codes
+                                if (userInput in machine_codes):
+                                    idWords = "            Please enter an unused machine ID."
+                                else:
+                                    machine_codes.append(userInput)
+
                                     if (int(userInput) % 2 != 0):
                                         newPlayer = RedTeam(addedID, addedCodeName, userInput)
                                         RedTeam.redPlayers.append(newPlayer)
@@ -349,4 +319,64 @@ def setup():
                                     inputField = 0
                                     userInput = ""    
                         else:
-                            idWords = "Please Enter an ID no more than 10 characters"
+                            idWords = "Please Enter an ID no more than 10 characters"     
+
+        if active:
+            InputBoxColor = InputColorActive
+        else:
+            InputBoxColor = InputColorPassive
+        idText = inputBoxFont.render(idWords, True, YELLOW) # Input Box Message
+        screen.blit(idText,(screen.get_width()/2 - screen.get_width()/3, screen.get_height()/2 +275))
+        deleteStartText = inputBoxFont.render("'-' To Clear the Players '+' To Start Game", True, WHITE)
+        screen.blit(deleteStartText,(screen.get_width()/2 - screen.get_width()/3.5, screen.get_height()/2 +250))
+        redText = inputBoxFont.render("Red Team", True, RED) # Red Team
+        screen.blit(redText,(screen.get_width()/4 - screen.get_width()/18, 12))
+        redText = inputBoxFont.render("Green Team", True, GREEN) # Green Team
+        screen.blit(redText,(screen.get_width() - screen.get_width()/4 - screen.get_width()/14, 12))
+        pygame.draw.rect(screen, InputBoxColor, inputBox)
+        textSurface = coolFont.render(userInput, True, YELLOW)
+        screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
+        inputBox.w = max(screen.get_width()/2, textSurface.get_width()+10)
+        pygame.display.update()      
+    pygame.display.flip()
+
+    clock.tick(60)
+
+
+
+def blit_text(surface, text, pos, font, color=pygame.Color('yellow')):
+    words = [word.split(' ') for word in text.splitlines()]
+    space = font.size(' ')[0]
+    max_width, max_height = surface.get_size()
+    x, y = pos
+    for line in words:
+        for word in line:
+            word_surface = font.render(word, 0, color)
+            word_width, word_height = word_surface.get_size()
+            if x + word_width >= max_width:
+                x = pos[0]
+                y += word_height
+            surface.blit(word_surface, (x, y))
+            x += word_width + space
+        x = pos[0]
+        y += word_height
+
+
+def main():
+    print("Hello World")
+    setup()
+    
+    
+
+
+        
+if __name__ == "__main__":
+    main()
+
+
+
+
+#PHOTON
+#In a world where lasers (which aren't actually lasers but simpler infrared lights emitted as beams) KILL. 
+#But they don't kill you, more like they kill your frabricated health assigned to your player when you signed up for this game. 
+#EMBARK on a glorious journey of action, adventure, and space lasers. May your aim be true, good luck soldier.

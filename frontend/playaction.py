@@ -12,6 +12,8 @@ import queue
 from main import *
 import main
 from playerEntryScreenTables import drawLeftTable, drawRightTable
+from playentry import *
+
 
 
 

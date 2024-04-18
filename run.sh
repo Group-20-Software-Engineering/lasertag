@@ -25,6 +25,9 @@ directory="frontend"
 # Set the Python file name
 filename="main.py"
 
+# Set the Player Entry file name
+entry="playentry.py"
+
 # Set the play action file name
 playAction="playaction.py"
 
@@ -33,6 +36,8 @@ cd "$directory" || exit
 
 # Run the Python file
 python3 "$filename"
+
+python3 "$entry"
 
 python3 "$playAction"
 
