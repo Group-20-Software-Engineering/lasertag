@@ -301,11 +301,24 @@ while not done:
     seconds = int(remainingTime) % 60
     timeText = f"{minutes:02d}:{seconds:02d}"
     textFlashCount += 1
-    if textFlashCount % 4 == 0:
+ 
+    if redTotalScore > greenTotalScore:
+        if textFlashCount % 2 == 0:
+            redTotalScoreDisplay = DisplayBoxFont.render(str(redTotalScore), True, YELLOW)
+            greenTotalScoreDisplay = DisplayBoxFont.render(str(greenTotalScore), True, WHITE)
+        elif textFlashCount % 2 == 1:
+            redTotalScoreDisplay = DisplayBoxFont.render(str(redTotalScore), True, BLACK)
+            greenTotalScoreDisplay = DisplayBoxFont.render(str(greenTotalScore), True, WHITE)
+    else:
+        if textFlashCount % 2 == 0:
+            greenTotalScoreDisplay = DisplayBoxFont.render(str(greenTotalScore), True, YELLOW)
+            redTotalScoreDisplay = DisplayBoxFont.render(str(redTotalScore), True, WHITE)
+        elif textFlashCount % 2 == 1:
+            greenTotalScoreDisplay = DisplayBoxFont.render(str(greenTotalScore), True, BLACK)
+            redTotalScoreDisplay = DisplayBoxFont.render(str(redTotalScore), True, WHITE)
+    if redTotalScore == greenTotalScore:
         redTotalScoreDisplay = DisplayBoxFont.render(str(redTotalScore), True, WHITE)
-    elif textFlashCount % 4 != 0:
-        redTotalScoreDisplay = DisplayBoxFont.render(str(redTotalScore), True, BLACK)
-
+        greenTotalScoreDisplay = DisplayBoxFont.render(str(greenTotalScore), True, WHITE)
 
     #Red & Green team text rendering
     redText = DisplayBoxFont.render("Red Team", True, RED) # Red Team
@@ -316,7 +329,7 @@ while not done:
     screen.blit(redTotalScoreDisplay, (screen.get_width()/3 - screen.get_width()/20, 40))
     greenText = DisplayBoxFont.render("Green Team", True, GREEN) # Green Team
     greenTeamScoreText = DisplayBoxFont.render("Green Team Score: ", True, GREEN) 
-    greenTotalScoreDisplay = DisplayBoxFont.render(str(greenTotalScore), True, WHITE)
+
     screen.blit(greenText,(screen.get_width() - screen.get_width()/4 - screen.get_width()/14, 12))
     screen.blit(greenTeamScoreText,(screen.get_width() - screen.get_width()/2.35, 40))
     screen.blit(greenTotalScoreDisplay, (screen.get_width() - screen.get_width()/18, 40))
