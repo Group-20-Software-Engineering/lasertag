@@ -166,7 +166,7 @@ int main() {
 
         // Else-if block to handle "id/id" format
     // Else-if block to handle "id/id" format
-        else if (sscanf(buffer, "%d/%d", &shooterID, &killedID) == 2) {
+        else if (sscanf(buffer, "%d:%d", &shooterID, &killedID) == 2) {
     auto shooterEntry = machineToPlayerMap.find(shooterID);
     auto killedEntry = machineToPlayerMap.find(killedID);
     if (shooterEntry != machineToPlayerMap.end() && killedEntry != machineToPlayerMap.end()) {

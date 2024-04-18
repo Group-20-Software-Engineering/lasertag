@@ -14,6 +14,7 @@ import main
 from playerEntryScreenTables import drawLeftTable, drawRightTable
 
 
+
 should_continue = True
 def drawKillFeed(killFeed, rect, screen, coolFont):
     # for i in range(len(killFeed)):
@@ -224,6 +225,7 @@ while not done:
             with open("greenPlayers.json", "w") as outfile:
                 outfile.write(jsonObject)
             done = True
+            
 
     if not eventQueue.empty():
             playerToAwardTen = eventQueue.get()
