@@ -18,29 +18,53 @@ from playentry import *
 
 
 should_continue = True
-def drawKillFeed(killFeed, rect, screen, coolFont):
-    # for i in range(len(killFeed)):
-    textWords = str(killFeed)
-    text = coolFont.render(textWords, True, WHITE)
-    text_rect = text.get_rect(center=rect.center)
-    screen.blit(text, text_rect)
-    return
-
 def pipeRemoveThread(queue, killFeed):
     global should_continue
     while should_continue:
         try:
-            pipeBlob = pipeRemove()  # Timeout after 1 second
+            pipeBlob = pipeRemove()
             if pipeBlob:
                 parts = pipeBlob.split(':')
-                playerToAwardTen = parts[0]
-                print(f"Player to award ten: {playerToAwardTen}")
-                queue.put(playerToAwardTen)
-                killFeed.append(pipeBlob)
+                shooter = parts[0]
+                target = parts[1]
+                killFeed.append(f"{shooter} shot {target}")
+                queue.put(shooter)
             else:
-                continue  # Continue checking the while condition
+                continue
         except TimeoutError:
             continue
+
+def drawKillFeed(killFeed, rect, screen, coolFont):
+    startY = rect.top
+    lineHeight = 20
+    for i, entry in enumerate(killFeed):
+        text = coolFont.render(entry, True, WHITE)
+        text_rect = text.get_rect(topleft=(rect.left, startY + i * lineHeight))
+        screen.blit(text, text_rect)
+        
+# def drawKillFeed(killFeed, rect, screen, coolFont):
+#     # for i in range(len(killFeed)):
+#     textWords = str(killFeed)
+#     text = coolFont.render(textWords, True, WHITE)
+#     text_rect = text.get_rect(center=rect.center)
+#     screen.blit(text, text_rect)
+#     return
+
+# def pipeRemoveThread(queue, killFeed):
+#     global should_continue
+#     while should_continue:
+#         try:
+#             pipeBlob = pipeRemove()  # Timeout after 1 second
+#             if pipeBlob:
+#                 parts = pipeBlob.split(':')
+#                 playerToAwardTen = parts[0]
+#                 print(f"Player to award ten: {playerToAwardTen}")
+#                 queue.put(playerToAwardTen)
+#                 killFeed.append(pipeBlob)
+#             else:
+#                 continue  # Continue checking the while condition
+#         except TimeoutError:
+#             continue
 
 
 def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, redPlayer, redPlayerScores):
@@ -346,10 +370,13 @@ while not done:
     killFeedBox = pygame.Rect(0, 378, 900, 320)
     pygame.draw.rect(screen, BLUE, killFeedBox, 1)
     pygame.draw.rect(screen, BLACK, killFeedBox.inflate(-2, -2))
-    killFeedWords = str(killFeed)
-    killFeedText = coolFont.render(killFeedWords, True, WHITE)
-    killFeedBoxRect = killFeedText.get_rect(center=killFeedBox.center)
-    screen.blit(killFeedText, killFeedBoxRect)
+    killFeedWords = '\n'.join(killFeed)
+    startY = killFeedBox.top
+    lineHeight = 20
+    for i, entry in enumerate(killFeed):
+        text = coolFont.render(entry, True, WHITE)
+        text_rect = text.get_rect(topleft=(killFeedBox.left, startY + i * lineHeight))
+        screen.blit(text, text_rect)
     pygame.display.flip()
     clock.tick(60)
 

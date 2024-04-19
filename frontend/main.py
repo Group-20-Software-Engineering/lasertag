@@ -130,10 +130,13 @@ def setup():
         screen.fill(BLACK)
         for i in range(5):
             circles(screen, WHITE)
-        y = y + 1
         rocketAndText(screen, title, defFont, coolFont, y)
         end = time.time()
         total = end - start
+        if total > 27 and total < 75:
+            y = y + 0.6
+        else:
+            y = y + 1
         #If the time runs out, or the user skips through the intro screen, proceed to player entry screen.
         if (total > 180 or y > 7000):
             proceedToPlayerEntry()
