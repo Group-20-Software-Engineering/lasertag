@@ -20,7 +20,7 @@ Repository dedicated to developing the software to run a game utilizing the Phot
 
 
 # KOWN BUGS
-- On the PlayAction Screen, when the main screen exits, it freezes, Forcing a Forc Quit
+- On the PlayAction Screen, when the main screen exits, it freezes making the user force quit
 
 # Contributers 
 - Programmer061703--------------Blake Williams            
