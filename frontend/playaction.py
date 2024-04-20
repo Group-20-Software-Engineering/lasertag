@@ -67,7 +67,7 @@ def drawKillFeed(killFeed, rect, screen, coolFont):
 #             continue
 
 
-def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, redPlayer, redPlayerScores):
+def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, redPlayer, redPlayerScores, flash):
     
         for row in range(15):
             RowRedRect = []
