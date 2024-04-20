@@ -67,7 +67,7 @@ def drawKillFeed(killFeed, rect, screen, coolFont):
 #             continue
 
 
-def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, redPlayer, redPlayerScores, flash):
+def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, redPlayer, redPlayerScores, greenPlayer, greenPlayerScores, flash):
     
         for row in range(15):
             RowRedRect = []
@@ -89,11 +89,13 @@ def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, r
                     text = coolFont.render(textWords, True, WHITE)
                     text_rect = text.get_rect(center=rect.center)
                 if col == 2 and row == 0:
-                    if redPlayerScores[redPlayer[0]] != 0:
+                    redTopScore = redPlayerScores[redPlayer[0]]
+                    greenTopScore = greenPlayerScores[greenPlayer[0]]
+                    if redPlayerScores[redPlayer[0]] != 0 and (int(greenTopScore) < int(redTopScore)):
                         textWords = str(redPlayerScores[redPlayer[0]])
-                        if flash % 2 == 0:
+                        if flash % 60 < 30:
                             text = coolFont.render(textWords, True, WHITE)
-                        if flash % 2 == 1:
+                        if flash % 60 > 30:
                             text = coolFont.render(textWords, True, YELLOW)
                 if row >= len(redPlayer):
                     textWords = " "
@@ -105,7 +107,7 @@ def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, r
               
             RedTable.append(RowRedRect)
 
-def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, greenPlayer, greenPlayerScores, flash):
+def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, redPlayer, redPlayerScores, greenPlayer, greenPlayerScores, flash):
         for row in range(15):
             RowGreenRect = []
             for col in range(3):
@@ -125,11 +127,13 @@ def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable
                     text = coolFont.render(textWords, True, WHITE)
                     text_rect = text.get_rect(center=rect.center)
                 if col == 2 and row == 0:
-                    if greenPlayerScores[greenPlayer[0]] != 0:
+                    redTopScore = redPlayerScores[redPlayer[0]]
+                    greenTopScore = greenPlayerScores[greenPlayer[0]]
+                    if greenPlayerScores[greenPlayer[0]] != 0 and (int(greenTopScore) > int(redTopScore)):
                         textWords = str(greenPlayerScores[greenPlayer[0]])
-                        if flash % 2 == 0:
+                        if flash % 60 < 30:
                             text = coolFont.render(textWords, True, WHITE)
-                        if flash % 2 == 1:
+                        if flash % 60 > 30:
                             text = coolFont.render(textWords, True, YELLOW)
                 if row >= len(greenPlayer):
                     textWords = " "
@@ -320,8 +324,8 @@ while not done:
     #print(f'sorted_green_scores_values: {sorted_green_scores_values}')
    
     textFlashCount += 1
-    drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, sorted_red_scores_keys, sorted_red_scores, textFlashCount)
-    drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, sorted_green_scores_keys, sorted_green_scores, textFlashCount)
+    drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, sorted_red_scores_keys, sorted_red_scores, sorted_green_scores_keys, sorted_green_scores, textFlashCount)
+    drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, sorted_red_scores_keys, sorted_red_scores, sorted_green_scores_keys, sorted_green_scores, textFlashCount)
 
     currentTime = (pygame.time.get_ticks() - startTime) / 1000
     if currentTime >= 22 and not counterStartTimer:
@@ -357,17 +361,17 @@ while not done:
     
  
     if redTotalScore > greenTotalScore:
-        if textFlashCount % 2 == 0:
+        if textFlashCount % 60 < 30:
             redTotalScoreDisplay = DisplayBoxFont.render(str(redTotalScore), True, YELLOW)
             greenTotalScoreDisplay = DisplayBoxFont.render(str(greenTotalScore), True, WHITE)
-        elif textFlashCount % 2 == 1:
+        elif textFlashCount % 60 > 30:
             redTotalScoreDisplay = DisplayBoxFont.render(str(redTotalScore), True, BLACK)
             greenTotalScoreDisplay = DisplayBoxFont.render(str(greenTotalScore), True, WHITE)
     else:
-        if textFlashCount % 2 == 0:
+        if textFlashCount % 60 < 30:
             greenTotalScoreDisplay = DisplayBoxFont.render(str(greenTotalScore), True, YELLOW)
             redTotalScoreDisplay = DisplayBoxFont.render(str(redTotalScore), True, WHITE)
-        elif textFlashCount % 2 == 1:
+        elif textFlashCount % 60 > 30:
             greenTotalScoreDisplay = DisplayBoxFont.render(str(greenTotalScore), True, BLACK)
             redTotalScoreDisplay = DisplayBoxFont.render(str(redTotalScore), True, WHITE)
     if redTotalScore == greenTotalScore:
