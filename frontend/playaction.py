@@ -78,20 +78,34 @@ def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, r
                 RowRedRect.append(rect)
                 if col == 0 and row < len(redPlayer):
                     textWords = "B"
+                    text = coolFont.render(textWords, True, WHITE)
+                    text_rect = text.get_rect(center=rect.center)
                 if col == 1 and row < len(redPlayer):
                     textWords = redPlayer[row] #red player name
+                    text = coolFont.render(textWords, True, WHITE)
+                    text_rect = text.get_rect(center=rect.center)
                 if col == 2 and row < len(redPlayer):
                     textWords = str(redPlayerScores[redPlayer[row]]) #score of that particular red player
+                    text = coolFont.render(textWords, True, WHITE)
+                    text_rect = text.get_rect(center=rect.center)
+                if col == 2 and row == 0:
+                    if redPlayerScores[redPlayer[0]] != 0:
+                        textWords = str(redPlayerScores[redPlayer[0]])
+                        if flash % 2 == 0:
+                            text = coolFont.render(textWords, True, WHITE)
+                        if flash % 2 == 1:
+                            text = coolFont.render(textWords, True, YELLOW)
                 if row >= len(redPlayer):
                     textWords = " "
-                text = coolFont.render(textWords, True, WHITE)
-                text_rect = text.get_rect(center=rect.center)
+                    text = coolFont.render(textWords, True, WHITE)
+                    text_rect = text.get_rect(center=rect.center)
+                
                 # Blit text onto the screen
                 screen.blit(text, text_rect)
-                
+              
             RedTable.append(RowRedRect)
 
-def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, greenPlayer, greenPlayerScores):
+def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, greenPlayer, greenPlayerScores, flash):
         for row in range(15):
             RowGreenRect = []
             for col in range(3):
@@ -100,14 +114,28 @@ def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable
                 rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw green rectangle
                 if col == 0 and row < len(greenPlayer):
                     textWords = "B"
+                    text = coolFont.render(textWords, True, WHITE)
+                    text_rect = text.get_rect(center=rect.center)
                 if col == 1 and row < len(greenPlayer):
                     textWords = greenPlayer[row] #green player name
+                    text = coolFont.render(textWords, True, WHITE)
+                    text_rect = text.get_rect(center=rect.center)
                 if col == 2 and row < len(greenPlayer):
                     textWords = str(greenPlayerScores[greenPlayer[row]])
+                    text = coolFont.render(textWords, True, WHITE)
+                    text_rect = text.get_rect(center=rect.center)
+                if col == 2 and row == 0:
+                    if greenPlayerScores[greenPlayer[0]] != 0:
+                        textWords = str(greenPlayerScores[greenPlayer[0]])
+                        if flash % 2 == 0:
+                            text = coolFont.render(textWords, True, WHITE)
+                        if flash % 2 == 1:
+                            text = coolFont.render(textWords, True, YELLOW)
                 if row >= len(greenPlayer):
                     textWords = " "
-                text = coolFont.render(textWords, True, WHITE)
-                text_rect = text.get_rect(center=rect.center)
+                    text = coolFont.render(textWords, True, WHITE)
+                    text_rect = text.get_rect(center=rect.center)
+                
                 # Blit text onto the screen
                 screen.blit(text, text_rect)
                 
@@ -270,12 +298,12 @@ while not done:
     #Create a reversed list of the sorted keys
     sorted_red_scores_keys = list(sorted_red_scores.keys())
     sorted_red_scores_keys.reverse()
-    print(f'sorted_red_scores_keys: {sorted_red_scores_keys}')
+    #print(f'sorted_red_scores_keys: {sorted_red_scores_keys}')
 
     #Create a reversed list of the sorted values
     sorted_red_scores_values = list(sorted_red_scores.values())
     sorted_red_scores_values.reverse()
-    print(f'sorted_red_scores_values: {sorted_red_scores_values}')
+    #print(f'sorted_red_scores_values: {sorted_red_scores_values}')
     
 
     #Sort the greenPlayerScores dict
@@ -284,16 +312,16 @@ while not done:
     #Create a reversed list of the sorted keys
     sorted_green_scores_keys = list(sorted_green_scores.keys())
     sorted_green_scores_keys.reverse()
-    print(f'sorted_green_scores_keys: {sorted_green_scores_keys}')
+    #print(f'sorted_green_scores_keys: {sorted_green_scores_keys}')
     
     #Create a reversed list of the sorted values
     sorted_green_scores_values = list(sorted_green_scores.values())
     sorted_green_scores_values.reverse()
-    print(f'sorted_green_scores_values: {sorted_green_scores_values}')
+    #print(f'sorted_green_scores_values: {sorted_green_scores_values}')
    
-
-    drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, sorted_red_scores_keys, sorted_red_scores)
-    drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, sorted_green_scores_keys, sorted_green_scores)
+    textFlashCount += 1
+    drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, sorted_red_scores_keys, sorted_red_scores, textFlashCount)
+    drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable, sorted_green_scores_keys, sorted_green_scores, textFlashCount)
 
     currentTime = (pygame.time.get_ticks() - startTime) / 1000
     if currentTime >= 22 and not counterStartTimer:
@@ -326,7 +354,7 @@ while not done:
     minutes = int(remainingTime) // 60
     seconds = int(remainingTime) % 60
     timeText = f"{minutes:02d}:{seconds:02d}"
-    textFlashCount += 1
+    
  
     if redTotalScore > greenTotalScore:
         if textFlashCount % 2 == 0:
