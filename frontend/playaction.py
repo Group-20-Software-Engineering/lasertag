@@ -338,7 +338,7 @@ while not done:
         countdownSpeed = 1
     if timerState == timer30sec and currentTime >= totalTime:
         timerState = timer6min
-        totalTime = 5
+        totalTime = 360
         halfSpeedCountdown = False
         startTime = pygame.time.get_ticks()
     elif timerState == timer6min and currentTime >= totalTime:
@@ -398,7 +398,7 @@ while not done:
     countDownBoxRect = timer.get_rect(center=countDownBox.center)
     screen.blit(timer, countDownBoxRect)
 
-    #Kill feed rendering
+    #Kill feed rendering    
     killFeedBox = pygame.Rect(0, 378, 900, 320)
     pygame.draw.rect(screen, BLUE, killFeedBox, 1)
     pygame.draw.rect(screen, BLACK, killFeedBox.inflate(-2, -2))
