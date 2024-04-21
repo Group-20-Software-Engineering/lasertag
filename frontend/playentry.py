@@ -295,6 +295,7 @@ def setup():
                                 #checks for duplicate machine codes
                                 if (userInput in machine_codes):
                                     idWords = "            Please enter an unused machine ID."
+                                    userInput = ""
                                 else:
                                     machine_codes.append(userInput)
 
