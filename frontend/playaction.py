@@ -420,16 +420,39 @@ while not done:
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 5:  # Scroll down
             scroll_offset -= SCROLL_SPEED
 
+    # Define the maximum number of lines that can fit inside the kill feed box
+    MAX_LINES = int(kHeight / coolFont.get_height())
+
     # Render text
+    # y = 0
+    # for i, entry in enumerate(killFeed):
+    #     text = coolFont.render(entry, True, WHITE)
+    #     text_rect = text.get_rect(topleft=(killFeedBox.left, killFeedBox.top + y - scroll_offset))
+    #     screen.blit(text, text_rect)
+    #     y += text.get_height()
+
+    # Calculate the maximum scroll offset based on the height of the kill feed
     y = 0
+    max_scroll_offset = max(0, y - kHeight)
+
+    # If the scroll offset exceeds the maximum scroll offset, adjust it
+    if scroll_offset > max_scroll_offset:
+        scroll_offset = max_scroll_offset
+
+    # Render text
+    
     for i, entry in enumerate(killFeed):
         text = coolFont.render(entry, True, WHITE)
         text_rect = text.get_rect(topleft=(killFeedBox.left, killFeedBox.top + y - scroll_offset))
         screen.blit(text, text_rect)
         y += text.get_height()
 
-    # Calculate the maximum scroll offset based on the height of the kill feed
-    max_scroll_offset = max(0, y - kHeight)
+    # Adjust scroll offset when the maximum number of lines is reached
+    if len(killFeed) > MAX_LINES:
+        if y - scroll_offset <= kHeight:
+            scroll_offset = max(0, y - kHeight)
+        # Calculate the maximum scroll offset based on the height of the kill feed
+        max_scroll_offset = max(0, y - kHeight)
 
     # Limit scroll offset
     scroll_offset = max(0, min(scroll_offset, max_scroll_offset))
