@@ -182,6 +182,9 @@ countDownFont = pygame.font.Font(coolFontName, 18)
 DisplayBoxFont = pygame.font.Font(coolFontName, 14) 
 defFont = pygame.font.Font(defFontName, 24)
 
+
+scroll_offset = 0
+SCROLL_SPEED = 1
 WHITE = (255, 255, 255)
 BLUE = (0, 71, 171)
 BLACK = (0, 0, 0)
@@ -192,6 +195,8 @@ clock = pygame.time.Clock()
 size = (900,700)
 
 textFlashCount = 0
+
+
 
 pygame.display.set_caption("Photon -1: The Sequel (Laser Boogaloo)")
 screen = pygame.display.set_mode(size)
@@ -399,218 +404,55 @@ while not done:
     screen.blit(timer, countDownBoxRect)
 
     #Kill feed rendering    
+    # Define the size and position of the kill feed box
     killFeedBox = pygame.Rect(0, 378, 900, 320)
+    kWidth = 900
+    kHeight = 320
+
+    # Draw the kill feed box
     pygame.draw.rect(screen, BLUE, killFeedBox, 1)
     pygame.draw.rect(screen, BLACK, killFeedBox.inflate(-2, -2))
-    killFeedWords = '\n'.join(killFeed)
-    startY = killFeedBox.top
-    lineHeight = 20
+
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 4:  # Scroll up
+            scroll_offset += SCROLL_SPEED
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 5:  # Scroll down
+            scroll_offset -= SCROLL_SPEED
+
+    # Render text
+    y = 0
     for i, entry in enumerate(killFeed):
         text = coolFont.render(entry, True, WHITE)
-        text_rect = text.get_rect(topleft=(killFeedBox.left, startY + i * lineHeight))
+        text_rect = text.get_rect(topleft=(killFeedBox.left, killFeedBox.top + y - scroll_offset))
         screen.blit(text, text_rect)
+        y += text.get_height()
+
+    # Calculate the maximum scroll offset based on the height of the kill feed
+    max_scroll_offset = max(0, y - kHeight)
+
+    # Limit scroll offset
+    scroll_offset = max(0, min(scroll_offset, max_scroll_offset))
+
+    # Create a scroll bar
+    scrollbar_width = 20
+    scrollbar_rect = pygame.Rect(kWidth - scrollbar_width, killFeedBox.top, scrollbar_width, kHeight)
+    scrollbar_color = (150, 150, 150)
+    if killFeed:
+        scrollbar_handle_height = kHeight / len(killFeed)
+    else:
+        scrollbar_handle_height = kHeight 
+
+    # Draw scrollbar
+    pygame.draw.rect(screen, scrollbar_color, scrollbar_rect)
+    if max_scroll_offset > 0:
+        handle_y = scroll_offset / max_scroll_offset * (kHeight - scrollbar_handle_height)
+        handle_rect = pygame.Rect(kWidth - scrollbar_width, killFeedBox.top + handle_y, scrollbar_width, scrollbar_handle_height)
+        pygame.draw.rect(screen, (100, 100, 100), handle_rect)
+
+
     pygame.display.flip()
     clock.tick(60)
-
-    # if entryCondition:
-    #     screen.fill(BLACK)
-    # while entryCondition:
-    #     pygame.key.set_repeat(500, 25) #set up repeat entry from key holding
-    #     screen.fill(BLACK)
-    #     # rectWidth = 900/4
-    #     # rectHeight = 580/16
-    #     redRects = [[None] * 2 for _ in range(16)]
-    #     greenRects = [[None] * 2 for _ in range(16)]
-
-    #     drawLeftTable(RedTable, listNotEmpty, RedTeam, coolFont, screen, BLACK, RED, WHITE, textWords)
-
-    #     drawRightTable(GreenTable, listNotEmpty, GreenTeam, coolFont, screen, BLACK, GREEN, WHITE, textWords)
-
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.QUIT:
-    #             exitProgram = True
-    #             inEntryScreen = False
-    #         if event.type == pygame.MOUSEBUTTONDOWN:
-    #             if inputBox.collidepoint(event.pos):
-    #                 active = True
-    #             else:
-    #                 active = False
-    #         if event.type == pygame.KEYUP:
-    #             if event.key == pygame.K_BACKSPACE:
-    #                 userInput = userInput[:-1]
-
-    #             elif event.key == pygame.K_MINUS:
-    #                 RedTeam.redPlayers.clear()
-    #                 GreenTeam.greenPlayers.clear()
-    #                 playRedPlayers.clear()
-    #                 playGreenPlayers.clear()
-    #                 jsonObject = json.dumps(playRedPlayers)
-    #                 with open("redPlayers.json", "w") as outfile:
-    #                     outfile.write(jsonObject)
-    #                 jsonObject = json.dumps(playGreenPlayers)
-    #                 with open("greenPlayers.json", "w") as outfile:
-    #                     outfile.write(jsonObject)
-    #             elif event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
-    #                 entryCondition = False
-                    
-    #             else:
-    #                 if (event.key != pygame.K_RETURN):
-    #                     userInput += event.unicode
-                        
-    #                 elif (event.key == pygame.K_RETURN):
-                        
-    #                     if len(userInput) <= 10: 
-    #                         if (inputField == 0):
-    #                             fetchData = (supabase.table('player').select("*").eq('id', userInput).execute())
-    #                             print("fetchData = " + str(fetchData))
-    #                             data = fetchData.data
-    #                             key1 = "none"
-    #                             if (data):
-    #                                 key1 = data[0]['id']
-    #                                 key2 = data[0]['codename']
-    #                                 print ("outside if statement. key = " + str(key) + " userInput = " + userInput)
-
-    #                                 if (userInput == str(key1)):
-
-    #                                     # used to check if id is in table already
-    #                                     rLength = len(RedTeam.redPlayers)
-    #                                     gLength = len(GreenTeam.greenPlayers)
-    #                                     print(rLength)
-    #                                     print(gLength)
-    #                                     for i in range(rLength):
-    #                                         if(RedTeam.redPlayers[i].id == str(key1)):
-    #                                             inputField = 0
-    #                                             idWords = "               ID in table. Please Enter New ID"
-    #                                             userInput = ""
-    #                                             # break
-    #                                     for k in range(gLength):
-    #                                         if(GreenTeam.greenPlayers[k].id == str(key1)):
-    #                                             inputField = 0
-    #                                             idWords = "               ID in table. Please Enter New ID"
-    #                                             userInput = ""
-    #                                             # break
-
-    #                                     if (userInput != ""):
-    #                                         # if not in the table finds codename and prompts for machine code
-    #                                         addedCodeName = str(key2)
-    #                                         print("ID already exists, please input a new ID.") 
-    #                                         addedID = str(key1)                          
-    #                                         print(addedID)
-    #                                         print(addedCodeName)
-    #                                         idWords = "         ID found, please input a Machine Code."
-    #                                         userInput = ""
-    #                                         inputField = 2
-    #                                         #print("Welcome back {codeName}")
-    #                                         #supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()  
-    #                                         print("inside if statement " + " userInput = " + userInput + " key = " + str(key1))
-                                    
-    #                             elif ((userInput != str(key)) and (userInput != "") and (inputField == 0)):                           
-    #                                 print("Welcome to the battlefield, enter your codename.")
-    #                                 idWords = "Please Enter Code Name. Press Enter Key to Submit"
-
-    #                                 #Character limit for codenames
-    #                                 character_lim(codename)
-                                    
-    #                                 if ((userInput != "") and (inputField == 0)):
-    #                                     addPlayer = supabase.table('player').insert({ 'id': userInput}).execute()
-    #                                     inputField = 1
-    #                                     #set the addedID equal to the userInput
-    #                                     addedID = userInput
-    #                                     userInput = ""
-    #                                 elif ((userInput != "") and (inputField == 1)):
-    #                                     supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute() 
-
-    #                         if (inputField == 1) and (userInput != ""):
-    #                             supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()
-    #                             fetchCodeName = supabase.table('player').select("codename").eq('id', addedID).execute()
-    #                             print(fetchCodeName)
-    #                             addedCodeName = userInput
-    #                             inputField = 2
-    #                             idWords = "Please Enter Machine Code. Press Enter Key to Submit"
-    #                             userInput = ""
-    #                             numPlayers += 1
-    #                             #data_to_be_displayed = supabase.table('player').select("id").eq('id', addedID).execute()
-    #                             response = supabase.table('player').select("*").eq('id', addedID).execute()
-    #                             print(numPlayers)
-    #                             # Extract the data part of the response
-    #                             data = response.data
-
-    #                             #Assuming there's at least one result and you want the first one
-    #                             if data:
-    #                                 codename = data[0]['codename']
-    #                                 id = data[0]['id']
-    #                                 print(codename)
-    #                                 print(id)
-                                
-    #                             else:
-    #                                 print("No data found.")
-
-    #                         if (inputField == 2) and (userInput == ""):
-    #                             while(event.key != pygame.K_RETURN):
-    #                                 if event.type == pygame.KEYUP:
-    #                                     if event.key == pygame.K_BACKSPACE:
-    #                                         userInput = userInput[:-1]
-    #                                 if event.type == pygame.QUIT:
-    #                                     exitProgram = True
-    #                                     inEntryScreen = False
-    #                                 if event.key == pygame.K_MINUS:
-    #                                     RedTeam.redPlayers.clear()
-    #                                     GreenTeam.greenPlayers.clear()
-    #                                     playRedPlayers.clear()
-    #                                     playGreenPlayers.clear()
-    #                                     jsonObject = json.dumps(playRedPlayers)
-    #                                     with open("redPlayers.json", "w") as outfile:
-    #                                         outfile.write(jsonObject)
-    #                                     jsonObject = json.dumps(playGreenPlayers)
-    #                                     with open("greenPlayers.json", "w") as outfile:
-    #                                         outfile.write(jsonObject)
-    #                                 if event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
-    #                                     exitProgram = True
-    #                                     inEntryScreen = False
-    #                                 else:
-    #                                     userInput += event.unicode
-
-    #                         if (inputField == 2) and (userInput != ""):
-    #                             rLength = len(RedTeam.redPlayers)
-    #                             gLength = len(GreenTeam.greenPlayers)
-    #                             for i in range(rLength):
-    #                                 if(RedTeam.redPlayers[i].id == addedID):
-    #                                     inputField = 0
-    #                                     idWords = "Please Enter Player ID. Press Enter Key to Submit"
-    #                                     userInput = ""
-                                        
-    #                                     # break
-    #                             for k in range(gLength):
-    #                                 if(GreenTeam.greenPlayers[k].id == addedID):
-    #                                     inputField = 0
-    #                                     idWords = "Please Enter Player ID. Press Enter Key to Submit"
-    #                                     userInput = ""
-                                        
-    #                                     # break
-    #                             if (inputField != 0):
-    #                                 listNotEmpty = True
-    #                                 if (int(userInput) % 2 != 0):
-    #                                     newPlayer = RedTeam(addedID, addedCodeName, userInput)
-    #                                     RedTeam.redPlayers.append(newPlayer)
-    #                                     playRedPlayers.append(addedCodeName)
-    #                                     jsonObject = json.dumps(playRedPlayers)
-    #                                     with open("redPlayers.json", "w") as outfile:
-    #                                         outfile.write(jsonObject)
-    #                                 if (int(userInput) % 2 == 0):
-    #                                     newPlayer = GreenTeam(addedID, addedCodeName, userInput)
-    #                                     GreenTeam.greenPlayers.append(newPlayer)
-    #                                     playGreenPlayers.append(addedCodeName)
-    #                                     jsonObject = json.dumps(playGreenPlayers)
-    #                                     with open("greenPlayers.json", "w") as outfile:
-    #                                         outfile.write(jsonObject)
-    #                                 userInput = "Hardware/" + userInput + "/" + addedCodeName
-                                    
-    #                                 send_udp_packet(userInput)
-    #                                 idWords = "Please Enter Player ID. Press Enter Key to Submit"
-    #                                 inputField = 0
-    #                                 userInput = ""    
-    #                     else:
-    #                         idWords = "Please Enter an ID no more than 10 characters"
 
 
 def main():
