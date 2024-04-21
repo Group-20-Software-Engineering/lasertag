@@ -458,22 +458,6 @@ while not done:
     # Limit scroll offset
     scroll_offset = max(0, min(scroll_offset, max_scroll_offset))
 
-    # Create a scroll bar
-    scrollbar_width = 20
-    scrollbar_rect = pygame.Rect(kWidth - scrollbar_width, killFeedBox.top, scrollbar_width, kHeight)
-    scrollbar_color = (150, 150, 150)
-    if killFeed:
-        scrollbar_handle_height = kHeight / len(killFeed)
-    else:
-        scrollbar_handle_height = kHeight 
-
-    # Draw scrollbar
-    pygame.draw.rect(screen, scrollbar_color, scrollbar_rect)
-    if max_scroll_offset > 0:
-        handle_y = scroll_offset / max_scroll_offset * (kHeight - scrollbar_handle_height)
-        handle_rect = pygame.Rect(kWidth - scrollbar_width, killFeedBox.top + handle_y, scrollbar_width, scrollbar_handle_height)
-        pygame.draw.rect(screen, (100, 100, 100), handle_rect)
-
 
     pygame.display.flip()
     clock.tick(60)
