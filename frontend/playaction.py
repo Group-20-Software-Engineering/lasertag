@@ -449,6 +449,7 @@ while not done:
 
     # Adjust scroll offset when the maximum number of lines is reached
     if len(killFeed) > MAX_LINES:
+        killFeed.remove(killFeed[0])
         if y - scroll_offset <= kHeight:
             scroll_offset = max(0, y - kHeight)
         # Calculate the maximum scroll offset based on the height of the kill feed
