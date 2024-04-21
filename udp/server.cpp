@@ -126,9 +126,22 @@ int main() {
         // Respond based on the received message
         const char* responseMessage = "Default response";
         if (strcmp(buffer, "202") == 0) {
-            responseMessage = "Hello, client! Welcome to laser hair removal inc.";
+            struct sockaddr_in broadcastAddress;
+            memset(&broadcastAddress, 0, sizeof(broadcastAddress));
+            broadcastAddress.sin_family = AF_INET;
+            broadcastAddress.sin_port = htons(BROADCAST_PORT);
+            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+            sendto(socketFD, buffer, strlen(buffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
+            
         } else if (strcmp(buffer, "221") == 0) {
-            responseMessage = "Hello, client! Looks like the game is over.";
+            struct sockaddr_in broadcastAddress;
+            memset(&broadcastAddress, 0, sizeof(broadcastAddress));
+            broadcastAddress.sin_family = AF_INET;
+            broadcastAddress.sin_port = htons(BROADCAST_PORT);
+            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+            sendto(socketFD, buffer, strlen(buffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
         }
         else if (strncmp(buffer, "Hardware/", 9) == 0) {
            
@@ -187,9 +200,6 @@ int main() {
         }
     }
 }
-
-
-        
 
         sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
 

@@ -170,7 +170,7 @@ eventQueue = queue.Queue()
 killFeed = []
 
 #Continuously read events from the pipe in a separate thread
-pipeRemover = threading.Thread(target=pipeRemoveThread, args=(eventQueue, killFeed))
+pipeRemover = threading.Thread(target=pipeRemoveThread, args=(eventQueue, killFeed), daemon=True)
 pipeRemover.start()
 
 playerToAwardTen = ""
@@ -349,6 +349,7 @@ while not done:
     elif timerState == timer6min and currentTime >= totalTime:
 
         entryCondition = True
+        send_udp_packet("202")
         redPlayer.clear()
         greenPlayer.clear()
         jsonObject = json.dumps(playRedPlayers)
