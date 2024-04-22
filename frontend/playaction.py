@@ -16,12 +16,12 @@ from playentry import *
 
 
 should_continue = True
-message = ""
+
 
 
 def pipeRemoveThread(queue, killFeed):
     global should_continue
-    global message
+   
     while should_continue:
         try:
             pipeBlob = pipeRemove()  # Assume this function retrieves data from a pipe
@@ -29,7 +29,6 @@ def pipeRemoveThread(queue, killFeed):
                 parts = pipeBlob.split(':')
                 shooter = parts[0]
                 target = parts[1]
-                killFeed.append(f"{shooter} shot {target}")
                 queue.put(shooter)
                 # Formulate the message based on the target
                 if target == "53":
@@ -38,7 +37,8 @@ def pipeRemoveThread(queue, killFeed):
                     message = f"{shooter} shot Green Base"
                 else:
                     message = f"{shooter} shot {target}"
-                
+                print("Attempting to append message")
+                killFeed.append(message)
                
                 
                 
@@ -341,8 +341,7 @@ while not done:
                 elif currRed == Shooter:
                     redPlayerScores[Shooter] += 10
                     redTotalScore = redTotalScore + 10
-                    # print("Attempting to append message")
-                    # killFeed.append(message)
+                    
             for currGreen in greenPlayer:
                 #Red base Shot by Green
                 if Shot == "53":
@@ -355,8 +354,7 @@ while not done:
                 elif currGreen == Shooter:
                     greenPlayerScores[Shooter] += 10
                     greenTotalScore = greenTotalScore + 10
-                    # print("Attempting to append message")
-                    # killFeed.append(message)
+                    
 
     #Sort the redPlayerScores dict
     sorted_red_scores = dict(sorted(redPlayerScores.items(), key=lambda item: item[1]))
