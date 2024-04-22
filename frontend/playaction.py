@@ -310,12 +310,15 @@ while not done:
             jsonObject = json.dumps(playGreenPlayers)
             with open("greenPlayers.json", "w") as outfile:
                 outfile.write(jsonObject)
+            
             done = True
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
                 # totalTime = 360
                 redPlayer.clear()
                 greenPlayer.clear()
+                print("Sending Clean Request")
+                send_udp_packet("Clean")
 
                 jsonObject = json.dumps(playRedPlayers)
                 with open("redPlayers.json", "w") as outfile:
