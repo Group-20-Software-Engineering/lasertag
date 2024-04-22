@@ -182,23 +182,6 @@ int main() {
             sendto(socketFD, idBuffer, strlen(idBuffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
         } 
 
-
-//      else if (sscanf(buffer,"%d:%d", &tempShooter) == 2){
-
-//          std::cout<<"Red base Hit"<<std::endl; 
-//          auto shooter = machineToPlayerMap.find(shooterID);
-//         if(shooter != machineToPlayerMap.end()){
-//             std:: string& ShooterCodename = shooter->second;
-//             std::cout << "Base Killer" << ShooterCodename << std::endl;
-//             pipeInsert(ShooterCodename,redBase,pipePath); 
-//         }
-
-    
-
-// }
-
-        
-
         // Else-if block to handle "id/id" format
         else if (sscanf(buffer, "%d:%d", &shooterID, &killedID) == 2) {
             auto shooterEntry = machineToPlayerMap.find(shooterID);
@@ -206,6 +189,18 @@ int main() {
             std::string& playerShooterCodename = shooterEntry->second;
             pipeInsert(playerShooterCodename,std::to_string(killedID),pipePath);
 
+            }
+            else if((killedID%2 == 1 && shooterID%2 == 1)){
+                std::string message = "TeamR";
+                auto shooterEntry = machineToPlayerMap.find(shooterID);
+                std::string& playerShooterCodename = shooterEntry->second;
+                pipeInsert(playerShooterCodename,message,pipePath);
+            }
+            else if((killedID%2==0 && shooterID%2==0)){
+                std::string message = "TeamG";
+                auto shooterEntry = machineToPlayerMap.find(shooterID);
+                std::string& playerShooterCodename = shooterEntry->second;
+                pipeInsert(playerShooterCodename,message,pipePath);
             }
         
         auto killedEntry = machineToPlayerMap.find(killedID);
@@ -230,6 +225,13 @@ int main() {
             std::cerr << "Killed machine ID " << killedID << " not found in player map." << std::endl;
         }
     }
+}
+
+else if (strcmp(buffer, "Clean")==0){
+
+    machineToPlayerMap.clear();  // Clears the unordered_map of all elements
+    std::cout << "All entries cleared from the map." << std::endl;
+
 }
 
 

@@ -48,8 +48,8 @@ def pipeRemove():
 
 
 def main():
-    send_udp_packet("Hardware/22/YEET")
-    send_udp_packet("Hardware/11/YAGA")
+    # send_udp_packet("Hardware/22/YEET")
+    # send_udp_packet("Hardware/11/YAGA")
     while True:  
         pipeRemove()
 
