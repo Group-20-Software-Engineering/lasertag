@@ -27,17 +27,8 @@ def pipeRemoveThread(queue, killFeed):
                 parts = pipeBlob.split(':')
                 shooter = parts[0]
                 target = parts[1]
-                if target == "53":
-                    killFeed.append(f"{shooter} shot Red Base")
-                    queue.put(target)
-                    queue.put(shooter)
-                elif target == "43":
-                    killFeed.append(f"{shooter} shot Green Base")
-                    queue.put(target)
-                    queue.put(shooter)
-                else:        
-                    killFeed.append(f"{shooter} shot {target}")
-                    queue.put(shooter)
+                killFeed.append(f"{shooter} shot {target}")
+                queue.put(shooter)
             else:
                 continue
         except TimeoutError:
@@ -305,36 +296,33 @@ while not done:
                 # totalTime = 360
                 redPlayer.clear()
                 greenPlayer.clear()
+<<<<<<< Updated upstream
                 jsonObject = json.dumps(redPlayer)
+=======
+
+                jsonObject = json.dumps(playRedPlayers)
+>>>>>>> Stashed changes
                 with open("redPlayers.json", "w") as outfile:
                     outfile.write(jsonObject)
                 jsonObject = json.dumps(greenPlayer)
                 with open("greenPlayers.json", "w") as outfile:
                     outfile.write(jsonObject)
                 exec(open("playentry.py").read())
+
+                startTime = pygame.time.get_ticks()  # Restart the timer
+                totalTime = 40  # Set the total time back to 40 seconds
+                timerState = timer30sec
+
             
 
     if not eventQueue.empty():
             playerToAwardTen = eventQueue.get()
-            
-            print(playerToAwardTen) 
-
-
             for currRed in redPlayer:
-                if playerToAwardTen == "43":
-                    currRed == eventQueue.get()
-                    redPlayerScores[currRed] += 100
-                    redTotalScore = redTotalScore + 100
-
-                elif currRed == playerToAwardTen:
+                if currRed == playerToAwardTen:
                     redPlayerScores[currRed] += 10
                     redTotalScore = redTotalScore + 10
             for currGreen in greenPlayer:
-                if playerToAwardTen == "53":
-                    currGreen == eventQueue.get()
-                    greenPlayerScores[currGreen] += 100
-                    greenTotalScore = greenTotalScore + 100
-                elif currGreen == playerToAwardTen:
+                if currGreen == playerToAwardTen:
                     greenPlayerScores[currGreen] += 10
                     greenTotalScore = greenTotalScore + 10
 
@@ -384,7 +372,6 @@ while not done:
         halfSpeedCountdown = False
         startTime = pygame.time.get_ticks()
     elif timerState == timer6min and currentTime >= totalTime:
-
         entryCondition = True
         send_udp_packet("202")
         redPlayer.clear()
