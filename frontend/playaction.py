@@ -16,9 +16,12 @@ from playentry import *
 
 
 should_continue = True
+message = ""
+
 
 def pipeRemoveThread(queue, killFeed):
     global should_continue
+    global message
     while should_continue:
         try:
             pipeBlob = pipeRemove()  # Assume this function retrieves data from a pipe
@@ -37,8 +40,7 @@ def pipeRemoveThread(queue, killFeed):
                     message = f"{shooter} shot {target}"
                 
                 # Append the message to the killFeed
-                print("Attempting to append message")
-                killFeed.append(message)
+                
                 
                 # Put both shooter and target into the queue as a tuple
                 queue.put((shooter,target))
@@ -329,21 +331,29 @@ while not done:
             for currRed in redPlayer:
                 #Green Base Shot by Red
                 if Shot == "43":
-                    
                     redPlayerScores[Shooter] += 50
                     redTotalScore = redTotalScore + 50
-
+                elif Shot == "TeamR":
+                    redPlayerScores[Shooter] -= 10
+                    redTotalScore = redTotalScore - 10
                 elif currRed == Shooter:
-                    redPlayerScores[Shooter] += 10
-                    redTotalScore = redTotalScore + 10
+                    redPlayerScores[Shooter] -= 5
+                    redTotalScore = redTotalScore + 5
+                    print("Attempting to append message")
+                    killFeed.append(message)
             for currGreen in greenPlayer:
                 #Red base Shot by Green
                 if Shot == "53":
                     greenPlayerScores[Shooter] += 50
                     greenTotalScore = greenTotalScore + 50
+                elif Shot == "TeamG":
+                    greenPlayerScores[Shooter] -= 5
+                    greenTotalScore = greenTotalScore - 5
                 elif currGreen == Shooter:
                     greenPlayerScores[Shooter] += 10
                     greenTotalScore = greenTotalScore + 10
+                    print("Attempting to append message")
+                    killFeed.append(message)
 
     #Sort the redPlayerScores dict
     sorted_red_scores = dict(sorted(redPlayerScores.items(), key=lambda item: item[1]))
