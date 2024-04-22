@@ -526,6 +526,6 @@ def main():
         
 if __name__ == "__main__":
     main()
-    send_udp_packet("221")
-    send_udp_packet("221")
-    send_udp_packet("221")
+    # send_udp_packet("221")
+    # send_udp_packet("221")
+    # send_udp_packet("221")
