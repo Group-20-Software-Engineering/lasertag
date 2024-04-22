@@ -240,6 +240,7 @@ greenTotalScore = 0
 redPlayerScores = {}
 greenPlayerScores = {}
 
+
 lock = threading.Lock() #Lock to ensure score dicts are not sorted while the scores are being updated
 
 InputColorActive = pygame.Color('lightskyblue3')
@@ -290,21 +291,24 @@ while not done:
         if event.type == pygame.QUIT:
             redPlayer.clear()
             greenPlayer.clear()
-            jsonObject = json.dumps(playRedPlayers)
+            jsonObject = json.dumps(redPlayer)
             with open("redPlayers.json", "w") as outfile:
                 outfile.write(jsonObject)
-            jsonObject = json.dumps(playGreenPlayers)
+            jsonObject = json.dumps(greenPlayer)
             with open("greenPlayers.json", "w") as outfile:
                 outfile.write(jsonObject)
             done = True
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
+                redPlayerScores.clear()
+                redPlayerScores.clear()
+                # totalTime = 360
                 redPlayer.clear()
                 greenPlayer.clear()
-                jsonObject = json.dumps(playRedPlayers)
+                jsonObject = json.dumps(redPlayer)
                 with open("redPlayers.json", "w") as outfile:
                     outfile.write(jsonObject)
-                jsonObject = json.dumps(playGreenPlayers)
+                jsonObject = json.dumps(greenPlayer)
                 with open("greenPlayers.json", "w") as outfile:
                     outfile.write(jsonObject)
                 exec(open("playentry.py").read())
@@ -340,7 +344,7 @@ while not done:
     #Create a reversed list of the sorted keys
     sorted_red_scores_keys = list(sorted_red_scores.keys())
     sorted_red_scores_keys.reverse()
-    #print(f'sorted_red_scores_keys: {sorted_red_scores_keys}')
+    print(f'sorted_red_scores_keys: {sorted_red_scores_keys}')
 
     #Create a reversed list of the sorted values
     sorted_red_scores_values = list(sorted_red_scores.values())
