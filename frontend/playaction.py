@@ -17,18 +17,30 @@ from playentry import *
 
 
 
-should_continue = True
 def pipeRemoveThread(queue, killFeed):
     global should_continue
     while should_continue:
         try:
-            pipeBlob = pipeRemove()
+            pipeBlob = pipeRemove()  # Assume this function retrieves data from a pipe
             if pipeBlob:
                 parts = pipeBlob.split(':')
                 shooter = parts[0]
                 target = parts[1]
                 killFeed.append(f"{shooter} shot {target}")
                 queue.put(shooter)
+                # Formulate the message based on the target
+                if target == "53":
+                    message = f"{shooter} shot Red Base"
+                elif target == "43":
+                    message = f"{shooter} shot Green Base"
+                else:
+                    message = f"{shooter} shot {target}"
+                
+                # Append the message to the killFeed
+                killFeed.append(message)
+                
+                # Put both shooter and target into the queue as a tuple
+                queue.put(shooter,target)
             else:
                 continue
         except TimeoutError:
@@ -57,9 +69,9 @@ def drawKillFeed(killFeed, rect, screen, coolFont):
 #             pipeBlob = pipeRemove()  # Timeout after 1 second
 #             if pipeBlob:
 #                 parts = pipeBlob.split(':')
-#                 playerToAwardTen = parts[0]
-#                 print(f"Player to award ten: {playerToAwardTen}")
-#                 queue.put(playerToAwardTen)
+#                 Shooter = parts[0]
+#                 print(f"Player to award ten: {Shooter}")
+#                 queue.put(Shooter)
 #                 killFeed.append(pipeBlob)
 #             else:
 #                 continue  # Continue checking the while condition
@@ -173,7 +185,7 @@ killFeed = []
 pipeRemover = threading.Thread(target=pipeRemoveThread, args=(eventQueue, killFeed), daemon=True)
 pipeRemover.start()
 
-playerToAwardTen = ""
+Shooter = ""
 pygame.key.set_repeat(500, 100)
 coolFontName = "8-bit.ttf"
 defFontName = "freesansbold.ttf"
@@ -309,13 +321,29 @@ while not done:
 
     if not eventQueue.empty():
             playerToAwardTen = eventQueue.get()
+            Shooter,Shot = eventQueue.get()
+            
+            print(Shooter) 
+            print(Shot)
             for currRed in redPlayer:
                 if currRed == playerToAwardTen:
                     redPlayerScores[currRed] += 10
+                if Shot == "43":
+                    currRed == eventQueue.get()
+                    redPlayerScores[Shooter] += 100
+                    redTotalScore = redTotalScore + 100
+
+                elif currRed == Shooter:
+                    redPlayerScores[Shooter] += 10
                     redTotalScore = redTotalScore + 10
             for currGreen in greenPlayer:
                 if currGreen == playerToAwardTen:
                     greenPlayerScores[currGreen] += 10
+                if Shot == "53":
+                    greenPlayerScores[Shooter] += 100
+                    greenTotalScore = greenTotalScore + 100
+                elif currGreen == Shooter:
+                    greenPlayerScores[Shooter] += 10
                     greenTotalScore = greenTotalScore + 10
 
     #Sort the redPlayerScores dict
