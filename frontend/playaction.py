@@ -335,7 +335,7 @@ while not done:
                 # totalTime = 360
                 redPlayer.clear()
                 greenPlayer.clear()
-                print("Sending Clean Request")
+                #print("Sending Clean Request")
 
                 jsonObject = json.dumps(playRedPlayers)
                 with open("redPlayers.json", "w") as outfile:
@@ -344,7 +344,7 @@ while not done:
                 with open("greenPlayers.json", "w") as outfile:
                     outfile.write(jsonObject)
                 done = True
-                exec(open("playentry.py").read(), globals(), globals())
+                #exec(open("playentry.py").read(), globals(), globals())
             
 
     if not eventQueue.empty():
@@ -507,13 +507,6 @@ while not done:
     # Define the maximum number of lines that can fit inside the kill feed box
     MAX_LINES = int(kHeight / coolFont.get_height())
 
-    # Render text
-    # y = 0
-    # for i, entry in enumerate(killFeed):
-    #     text = coolFont.render(entry, True, WHITE)
-    #     text_rect = text.get_rect(topleft=(killFeedBox.left, killFeedBox.top + y - scroll_offset))
-    #     screen.blit(text, text_rect)
-    #     y += text.get_height()
 
     # Calculate the maximum scroll offset based on the height of the kill feed
     y = 0
