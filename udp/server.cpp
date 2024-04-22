@@ -207,6 +207,9 @@ int main() {
             pipeInsert(playerShooterCodename,std::to_string(killedID),pipePath);
 
             }
+            if((killedID%2 == 1 && killedID%2 == 1)||(killedID%2==0 && killedID%2==0)){
+                
+            }
         
         auto killedEntry = machineToPlayerMap.find(killedID);
     if (shooterEntry != machineToPlayerMap.end() && killedEntry != machineToPlayerMap.end()) {

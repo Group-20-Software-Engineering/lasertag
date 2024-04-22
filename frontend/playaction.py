@@ -15,7 +15,7 @@ from playerEntryScreenTables import drawLeftTable, drawRightTable
 from playentry import *
 
 
-
+should_continue = True
 
 def pipeRemoveThread(queue, killFeed):
     global should_continue
@@ -37,10 +37,11 @@ def pipeRemoveThread(queue, killFeed):
                     message = f"{shooter} shot {target}"
                 
                 # Append the message to the killFeed
+                print("Attempting to append message")
                 killFeed.append(message)
                 
                 # Put both shooter and target into the queue as a tuple
-                queue.put(shooter,target)
+                queue.put((shooter,target))
             else:
                 continue
         except TimeoutError:
@@ -326,22 +327,20 @@ while not done:
             print(Shooter) 
             print(Shot)
             for currRed in redPlayer:
-                if currRed == playerToAwardTen:
-                    redPlayerScores[currRed] += 10
+                #Green Base Shot by Red
                 if Shot == "43":
-                    currRed == eventQueue.get()
-                    redPlayerScores[Shooter] += 100
-                    redTotalScore = redTotalScore + 100
+                    
+                    redPlayerScores[Shooter] += 50
+                    redTotalScore = redTotalScore + 50
 
                 elif currRed == Shooter:
                     redPlayerScores[Shooter] += 10
                     redTotalScore = redTotalScore + 10
             for currGreen in greenPlayer:
-                if currGreen == playerToAwardTen:
-                    greenPlayerScores[currGreen] += 10
+                #Red base Shot by Green
                 if Shot == "53":
-                    greenPlayerScores[Shooter] += 100
-                    greenTotalScore = greenTotalScore + 100
+                    greenPlayerScores[Shooter] += 50
+                    greenTotalScore = greenTotalScore + 50
                 elif currGreen == Shooter:
                     greenPlayerScores[Shooter] += 10
                     greenTotalScore = greenTotalScore + 10
