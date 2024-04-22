@@ -16,11 +16,15 @@ from playentry import *
 
 
 should_continue = True
+rShooter = ""
+gShooter = ""
 
 
 
 def pipeRemoveThread(queue, killFeed):
     global should_continue
+    global gShooter
+    global rShooter
    
     while should_continue:
         try:
@@ -33,8 +37,10 @@ def pipeRemoveThread(queue, killFeed):
                 # Formulate the message based on the target
                 if target == "53":
                     message = f"{shooter} shot Red Base"
+                    gShooter = shooter
                 elif target == "43":
                     message = f"{shooter} shot Green Base"
+                    rShooter = shooter
                 else:
                     message = f"{shooter} shot {target}"
                 print("Attempting to append message")
@@ -83,7 +89,8 @@ def drawKillFeed(killFeed, rect, screen, coolFont):
 
 
 def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, redPlayer, redPlayerScores, greenPlayer, greenPlayerScores, flash):
-    
+        global rShooter
+        global gShooter
         for row in range(15):
             RowRedRect = []
             for col in range(3):
@@ -92,9 +99,15 @@ def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, r
                 rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw red rectangle
                 RowRedRect.append(rect)
                 if col == 0 and row < len(redPlayer):
-                    textWords = " "
-                    text = coolFont.render(textWords, True, WHITE)
-                    text_rect = text.get_rect(center=rect.center)
+                    
+                    if redPlayer[row] == rShooter:
+                        textWords = "B"
+                        text = coolFont.render(textWords, True, WHITE)
+                        text_rect = text.get_rect(center=rect.center)
+                    else:
+                        textWords = " "
+                        text = coolFont.render(textWords, True, WHITE)
+                        text_rect = text.get_rect(center=rect.center)
                 if col == 1 and row < len(redPlayer):
                     textWords = redPlayer[row] #red player name
                     text = coolFont.render(textWords, True, WHITE)
@@ -131,9 +144,14 @@ def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable
                 y = row * rectHeight + 78 #determine y coordinate for each rectangle
                 rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw green rectangle
                 if col == 0 and row < len(greenPlayer):
-                    textWords = " "
-                    text = coolFont.render(textWords, True, WHITE)
-                    text_rect = text.get_rect(center=rect.center)
+                    if greenPlayer[row]==gShooter:
+                        textWords = "B"
+                        text = coolFont.render(textWords, True, WHITE)
+                        text_rect = text.get_rect(center=rect.center)
+                    else:
+                        textWords = " "
+                        text = coolFont.render(textWords, True, WHITE)
+                        text_rect = text.get_rect(center=rect.center)
                 if col == 1 and row < len(greenPlayer):
                     textWords = greenPlayer[row] #green player name
                     text = coolFont.render(textWords, True, WHITE)
@@ -317,8 +335,7 @@ while not done:
                 # totalTime = 360
                 redPlayer.clear()
                 greenPlayer.clear()
-                print("Sending Clean Request")
-                send_udp_packet("Clean")
+                #print("Sending Clean Request")
 
                 jsonObject = json.dumps(playRedPlayers)
                 with open("redPlayers.json", "w") as outfile:
@@ -327,7 +344,7 @@ while not done:
                 with open("greenPlayers.json", "w") as outfile:
                     outfile.write(jsonObject)
                 done = True
-                exec(open("playentry.py").read(), globals(), globals())
+                #exec(open("playentry.py").read(), globals(), globals())
             
 
     if not eventQueue.empty():
@@ -336,30 +353,33 @@ while not done:
             
             print(Shooter) 
             print(Shot)
+            checkR = 0
+            checkG = 0
             for currRed in redPlayer:
                 #Green Base Shot by Red
-                if Shot == "43":
-                    
-                    redPlayerScores[Shooter] += 50
-                    redTotalScore = redTotalScore + 50
+                if Shot == "43" and checkR <=0:
+                    redPlayerScores[Shooter] += 100
+                    redTotalScore = redTotalScore + 100
+                    checkR += 1
                 elif Shot == "TeamR":
                     if redPlayerScores[Shooter] != 0:
                         redPlayerScores[Shooter] -= 5
                         redTotalScore = redTotalScore - 5
-                elif currRed == Shooter:
+                elif currRed == Shooter and Shot != "43":
                     redPlayerScores[Shooter] += 10
                     redTotalScore = redTotalScore + 10
                     
             for currGreen in greenPlayer:
                 #Red base Shot by Green
-                if Shot == "53":
-                    greenPlayerScores[Shooter] += 50
-                    greenTotalScore = greenTotalScore + 50
+                if Shot == "53" and checkG <= 0:
+                    greenPlayerScores[Shooter] += 100
+                    greenTotalScore = greenTotalScore + 100
+                    checkG += 1
                 elif Shot == "TeamG":
                     if greenPlayerScores[Shooter] != 0:
                         greenPlayerScores[Shooter] -= 5
                         greenTotalScore = greenTotalScore - 5
-                elif currGreen == Shooter:
+                elif currGreen == Shooter and Shot != "53":
                     greenPlayerScores[Shooter] += 10
                     greenTotalScore = greenTotalScore + 10
                     
@@ -487,13 +507,6 @@ while not done:
     # Define the maximum number of lines that can fit inside the kill feed box
     MAX_LINES = int(kHeight / coolFont.get_height())
 
-    # Render text
-    # y = 0
-    # for i, entry in enumerate(killFeed):
-    #     text = coolFont.render(entry, True, WHITE)
-    #     text_rect = text.get_rect(topleft=(killFeedBox.left, killFeedBox.top + y - scroll_offset))
-    #     screen.blit(text, text_rect)
-    #     y += text.get_height()
 
     # Calculate the maximum scroll offset based on the height of the kill feed
     y = 0
