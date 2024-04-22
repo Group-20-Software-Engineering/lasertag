@@ -13,13 +13,18 @@
 #include <cerrno>
 #include <cstring>
 #include <string>
+#include <stdio.h>
+#include <limits.h>
 //Bind server receive port 7501 do not bind 7500 broadcast but still create it
 //127.0.0.1
 
 const int PORT = 7501;
 const int BROADCAST_PORT = 7500;
 const int BUFFER_SIZE = 1024;
-int shooterID, killedID;
+int shooterID, killedID, tempShooter;
+
+std::string redBase = "53";
+std::string greenBase = "43";
 
 
 void printMapContents(const std::unordered_map<int, std::string>& map) {
@@ -28,8 +33,8 @@ void printMapContents(const std::unordered_map<int, std::string>& map) {
     }
 }
 
-int pipeInsert(const std::string& shooterCodename, const std::string& killedCodename) {
-    const char* pipePath = "pipe";
+int pipeInsert(const std::string& shooterCodename, const std::string& killedCodename, char* pipePath) {
+    //const char* pipePath = "pipe";
     int fd = open(pipePath, O_WRONLY | O_NONBLOCK);
     if (fd == -1) {
         std::cerr << "Error opening pipe: " << std::strerror(errno) << std::endl;
@@ -37,7 +42,7 @@ int pipeInsert(const std::string& shooterCodename, const std::string& killedCode
     }
 
     // Format the message with codenames instead of IDs
-    std::string message = shooterCodename + "/" + killedCodename + "\n";
+    std::string message = shooterCodename + ":" + killedCodename + "\n";
     ssize_t bytesWritten = write(fd, message.c_str(), message.length());
     if (bytesWritten == -1) {
         std::cerr << "Error writing to pipe: " << std::strerror(errno) << std::endl;
@@ -53,7 +58,32 @@ int pipeInsert(const std::string& shooterCodename, const std::string& killedCode
 
 
 
+
+
 int main() {
+    const char* pipe = new char[5]; //For concatenation later
+    pipe = "/udp/pipe"; 
+    char  pathBuffer[PATH_MAX];
+    //Get the current dir and store in buffer
+    if (getcwd(pathBuffer, sizeof(pathBuffer)) != NULL) {
+        printf("Current working directory : %s\n", pathBuffer);
+    } else {
+        perror("getcwd() error");
+    }
+    //Calculate total length of final concatenated path, plus one for null terminator :)
+    int total_length = strlen(pathBuffer) + strlen(pipe) + 1;
+    //Allocate the memory
+    char* pipePath = new char[total_length];
+    //Copy the current working directory
+    strcpy(pipePath, pathBuffer);
+    //Append "pipe"
+    strcat(pipePath, pipe);
+    //Free the allocated memory
+    // delete[] pipe;
+    // delete[] pathBuffer;
+    //Print the result
+    std::cout << "Pipe path is: " << pipePath <<std::endl;
+
     int socketFD = socket(AF_INET, SOCK_DGRAM, 0);
     if (socketFD == -1) {
         std::cerr << "Error creating socket" << std::endl;
@@ -101,9 +131,22 @@ int main() {
         // Respond based on the received message
         const char* responseMessage = "Default response";
         if (strcmp(buffer, "202") == 0) {
-            responseMessage = "Hello, client! Welcome to laser hair removal inc.";
+            struct sockaddr_in broadcastAddress;
+            memset(&broadcastAddress, 0, sizeof(broadcastAddress));
+            broadcastAddress.sin_family = AF_INET;
+            broadcastAddress.sin_port = htons(BROADCAST_PORT);
+            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+            sendto(socketFD, buffer, strlen(buffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
+            
         } else if (strcmp(buffer, "221") == 0) {
-            responseMessage = "Hello, client! Looks like the game is over.";
+            struct sockaddr_in broadcastAddress;
+            memset(&broadcastAddress, 0, sizeof(broadcastAddress));
+            broadcastAddress.sin_family = AF_INET;
+            broadcastAddress.sin_port = htons(BROADCAST_PORT);
+            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+            sendto(socketFD, buffer, strlen(buffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
         }
         else if (strncmp(buffer, "Hardware/", 9) == 0) {
            
@@ -139,20 +182,46 @@ int main() {
             sendto(socketFD, idBuffer, strlen(idBuffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
         } 
 
+
+//      else if (sscanf(buffer,"%d:%d", &tempShooter) == 2){
+
+//          std::cout<<"Red base Hit"<<std::endl; 
+//          auto shooter = machineToPlayerMap.find(shooterID);
+//         if(shooter != machineToPlayerMap.end()){
+//             std:: string& ShooterCodename = shooter->second;
+//             std::cout << "Base Killer" << ShooterCodename << std::endl;
+//             pipeInsert(ShooterCodename,redBase,pipePath); 
+//         }
+
+    
+
+// }
+
+        
+
         // Else-if block to handle "id/id" format
-    // Else-if block to handle "id/id" format
-        else if (sscanf(buffer, "%d/%d", &shooterID, &killedID) == 2) {
-    auto shooterEntry = machineToPlayerMap.find(shooterID);
-    auto killedEntry = machineToPlayerMap.find(killedID);
+        else if (sscanf(buffer, "%d:%d", &shooterID, &killedID) == 2) {
+            auto shooterEntry = machineToPlayerMap.find(shooterID);
+            if (killedID == 53 || killedID == 43){
+            std::string& playerShooterCodename = shooterEntry->second;
+            pipeInsert(playerShooterCodename,std::to_string(killedID),pipePath);
+
+            }
+        
+        auto killedEntry = machineToPlayerMap.find(killedID);
     if (shooterEntry != machineToPlayerMap.end() && killedEntry != machineToPlayerMap.end()) {
         // Found both shooter's and killed's player codenames in the map
-        const std::string& playerShooterCodename = shooterEntry->second;
-        const std::string& playerKilledCodename = killedEntry->second;
+         std::string& playerShooterCodename = shooterEntry->second;
+         std::string& playerKilledCodename = killedEntry->second;
         std::cout << "Shooter Player Codename: " << playerShooterCodename << ", Killed Player Codename: " << playerKilledCodename << std::endl;
         
-        // Assuming pipeInsert function needs to be updated to handle std::string instead of int
-        // You will need to adjust the pipeInsert function accordingly if it is supposed to accept player codenames as strings.
-        pipeInsert(playerShooterCodename, playerKilledCodename);
+        
+
+            pipeInsert(playerShooterCodename, playerKilledCodename, pipePath);
+        
+        
+        
+        
     } else {
         if (shooterEntry == machineToPlayerMap.end()) {
             std::cerr << "Shooter machine ID " << shooterID << " not found in player map." << std::endl;
@@ -164,7 +233,6 @@ int main() {
 }
 
 
-        
 
         sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
 

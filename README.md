@@ -8,10 +8,11 @@ Repository dedicated to developing the software to run a game utilizing the Phot
 - Build Dependencies `./build.sh`
   - This will update your machine and install the needed dependencies
   - You will need to insert your passcode as it calls sudo
-  - After the dependencies finish downloading, restart vscode to allow the changes to be applied
+  - If running in VScode built in terminal you will need to restart VScode for changes to apply
 
 # TO RUN
-- Run code `./run.sh`
+- Run game `./run.sh`
+- Press the `-` button to scroll faster on the Splash Screen
 - After Splash Screen enter Player ID, Followed by Codename, followed by Machine ID *in that order*
 
 

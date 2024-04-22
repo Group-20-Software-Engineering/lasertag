@@ -21,8 +21,10 @@ def pipeRemove():
     # Get the current file's directory
     current_dir = os.path.dirname(__file__)
     # Construct the pipe_path dynamically relative to the current file's location
-    pipe_path = os.path.join(current_dir, '..', 'udp', 'pipe')
-    
+    parent = os.path.abspath(os.path.join(current_dir, os.pardir))
+    pipe_path = os.path.abspath(os.path.join(parent, 'udp', 'pipe'))
+    print("Pipe Path: ")
+    print(pipe_path)
     # Ensure the named pipe exists before attempting to open it
     if not os.path.exists(pipe_path):
         os.mkfifo(pipe_path)
@@ -45,11 +47,11 @@ def pipeRemove():
         print(f"Error: {e}")
 
 
-# def main():
-#     send_udp_packet("Hardware/22/YEET")
-#     send_udp_packet("Hardware/11/YAGA")
-#     while True:  
-#         pipeRemove()
+def main():
+    send_udp_packet("Hardware/22/YEET")
+    send_udp_packet("Hardware/11/YAGA")
+    while True:  
+        pipeRemove()
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
