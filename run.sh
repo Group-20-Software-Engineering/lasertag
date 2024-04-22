@@ -38,13 +38,13 @@ cd "$directory" || exit
 
 # Run the Python file
 python3 "$filename"
+while true; do
+    python3 "$entry"
 
-python3 "$entry"
-
-python3 "$playAction"
-
+    python3 "$playAction"
+done
 kill $server_pid
-kill $client_pid
+kill $client_pid=
 
 
 

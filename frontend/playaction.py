@@ -3,7 +3,7 @@ import random
 import time
 import pygame
 import textwrap
-pygame.init()
+
 import os
 from send import send_udp_packet, pipeRemove
 import json
@@ -14,7 +14,7 @@ import main
 from playerEntryScreenTables import drawLeftTable, drawRightTable
 from playentry import *
 
-
+pygame.init()
 should_continue = True
 rShooter = ""
 gShooter = ""
@@ -237,9 +237,10 @@ pygame.display.set_caption("Photon -1: The Sequel (Laser Boogaloo)")
 screen = pygame.display.set_mode(size)
 countDownBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/18, screen.get_height()/40,100,40)
 count = 0
-if count == 0:
-    done = False
-    count += 1
+endCount = 0
+
+done = False
+
 redplayerCount = 0
 
 counterStartTimer = False
@@ -328,7 +329,8 @@ while not done:
             jsonObject = json.dumps(playGreenPlayers)
             with open("greenPlayers.json", "w") as outfile:
                 outfile.write(jsonObject)
-            
+            pygame.quit()
+            sys.exit()
             done = True
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
@@ -426,13 +428,18 @@ while not done:
     else:
         countdownSpeed = 1
     if timerState == timer30sec and currentTime >= totalTime:
+        send_udp_packet("202")
         timerState = timer6min
-        totalTime = 360
+        totalTime = 5
         halfSpeedCountdown = False
         startTime = pygame.time.get_ticks()
     elif timerState == timer6min and currentTime >= totalTime:
+        if endCount == 0:
+            endMessage = "Press + to go back to entry screen"
+            killFeed.append(endMessage)
+            endCount += 1
         entryCondition = True
-        send_udp_packet("202")
+        
         redPlayer.clear()
         greenPlayer.clear()
         jsonObject = json.dumps(playRedPlayers)
@@ -541,13 +548,14 @@ while not done:
 
 
 def main():
-    print("Hello World")
+    print("Hello World playA")
+    pygame.init()
     
 
 
         
 if __name__ == "__main__":
     main()
-    # send_udp_packet("221")
-    # send_udp_packet("221")
-    # send_udp_packet("221")
+    send_udp_packet("221")
+    send_udp_packet("221")
+    send_udp_packet("221")
