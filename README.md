@@ -19,8 +19,6 @@ Repository dedicated to developing the software to run a game utilizing the Phot
 - The program should quit once you exit the main window, but if it does not, `ctrl + c` the terminal that is running the Python code
 
 
-# KOWN BUGS
-- On the PlayAction Screen, when the main screen exits, it freezes making the user force quit
 
 # Contributers 
 - Programmer061703--------------Blake Williams            
