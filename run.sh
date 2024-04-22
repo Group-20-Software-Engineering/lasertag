@@ -2,6 +2,8 @@
 
 #./startScripts/compile.sh &
 
+git pull
+
 
 #Compiles the server and starts in a seperate window
 set -e

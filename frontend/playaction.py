@@ -27,8 +27,17 @@ def pipeRemoveThread(queue, killFeed):
                 parts = pipeBlob.split(':')
                 shooter = parts[0]
                 target = parts[1]
-                killFeed.append(f"{shooter} shot {target}")
-                queue.put(shooter)
+                if target == "53":
+                    killFeed.append(f"{shooter} shot Red Base")
+                    queue.put(target)
+                    queue.put(shooter)
+                elif target == "43":
+                    killFeed.append(f"{shooter} shot Green Base")
+                    queue.put(target)
+                    queue.put(shooter)
+                else:        
+                    killFeed.append(f"{shooter} shot {target}")
+                    queue.put(shooter)
             else:
                 continue
         except TimeoutError:
@@ -303,12 +312,25 @@ while not done:
 
     if not eventQueue.empty():
             playerToAwardTen = eventQueue.get()
+            
+            print(playerToAwardTen) 
+
+
             for currRed in redPlayer:
-                if currRed == playerToAwardTen:
+                if playerToAwardTen == "43":
+                    currRed == eventQueue.get()
+                    redPlayerScores[currRed] += 100
+                    redTotalScore = redTotalScore + 100
+
+                elif currRed == playerToAwardTen:
                     redPlayerScores[currRed] += 10
                     redTotalScore = redTotalScore + 10
             for currGreen in greenPlayer:
-                if currGreen == playerToAwardTen:
+                if playerToAwardTen == "53":
+                    currGreen == eventQueue.get()
+                    greenPlayerScores[currGreen] += 100
+                    greenTotalScore = greenTotalScore + 100
+                elif currGreen == playerToAwardTen:
                     greenPlayerScores[currGreen] += 10
                     greenTotalScore = greenTotalScore + 10
 

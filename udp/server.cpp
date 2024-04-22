@@ -21,7 +21,10 @@
 const int PORT = 7501;
 const int BROADCAST_PORT = 7500;
 const int BUFFER_SIZE = 1024;
-int shooterID, killedID;
+int shooterID, killedID, tempShooter;
+
+std::string redBase = "53";
+std::string greenBase = "43";
 
 
 void printMapContents(const std::unordered_map<int, std::string>& map) {
@@ -50,6 +53,8 @@ int pipeInsert(const std::string& shooterCodename, const std::string& killedCode
     close(fd);
     return 0;
 }
+
+
 
 
 
@@ -177,20 +182,46 @@ int main() {
             sendto(socketFD, idBuffer, strlen(idBuffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
         } 
 
+
+//      else if (sscanf(buffer,"%d:%d", &tempShooter) == 2){
+
+//          std::cout<<"Red base Hit"<<std::endl; 
+//          auto shooter = machineToPlayerMap.find(shooterID);
+//         if(shooter != machineToPlayerMap.end()){
+//             std:: string& ShooterCodename = shooter->second;
+//             std::cout << "Base Killer" << ShooterCodename << std::endl;
+//             pipeInsert(ShooterCodename,redBase,pipePath); 
+//         }
+
+    
+
+// }
+
+        
+
         // Else-if block to handle "id/id" format
-    // Else-if block to handle "id/id" format
         else if (sscanf(buffer, "%d:%d", &shooterID, &killedID) == 2) {
-    auto shooterEntry = machineToPlayerMap.find(shooterID);
-    auto killedEntry = machineToPlayerMap.find(killedID);
+            auto shooterEntry = machineToPlayerMap.find(shooterID);
+            if (killedID == 53 || killedID == 43){
+            std::string& playerShooterCodename = shooterEntry->second;
+            pipeInsert(playerShooterCodename,std::to_string(killedID),pipePath);
+
+            }
+        
+        auto killedEntry = machineToPlayerMap.find(killedID);
     if (shooterEntry != machineToPlayerMap.end() && killedEntry != machineToPlayerMap.end()) {
         // Found both shooter's and killed's player codenames in the map
-        const std::string& playerShooterCodename = shooterEntry->second;
-        const std::string& playerKilledCodename = killedEntry->second;
+         std::string& playerShooterCodename = shooterEntry->second;
+         std::string& playerKilledCodename = killedEntry->second;
         std::cout << "Shooter Player Codename: " << playerShooterCodename << ", Killed Player Codename: " << playerKilledCodename << std::endl;
         
-        // Assuming pipeInsert function needs to be updated to handle std::string instead of int
-        // You will need to adjust the pipeInsert function accordingly if it is supposed to accept player codenames as strings.
-        pipeInsert(playerShooterCodename, playerKilledCodename, pipePath);
+        
+
+            pipeInsert(playerShooterCodename, playerKilledCodename, pipePath);
+        
+        
+        
+        
     } else {
         if (shooterEntry == machineToPlayerMap.end()) {
             std::cerr << "Shooter machine ID " << shooterID << " not found in player map." << std::endl;
@@ -200,6 +231,8 @@ int main() {
         }
     }
 }
+
+
 
         sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
 
