@@ -334,11 +334,11 @@ while not done:
                     redPlayerScores[Shooter] += 50
                     redTotalScore = redTotalScore + 50
                 elif Shot == "TeamR":
-                    redPlayerScores[Shooter] -= 10
-                    redTotalScore = redTotalScore - 10
-                elif currRed == Shooter:
                     redPlayerScores[Shooter] -= 5
-                    redTotalScore = redTotalScore + 5
+                    redTotalScore = redTotalScore - 5
+                elif currRed == Shooter:
+                    redPlayerScores[Shooter] += 10
+                    redTotalScore = redTotalScore + 10
                     print("Attempting to append message")
                     killFeed.append(message)
             for currGreen in greenPlayer:
