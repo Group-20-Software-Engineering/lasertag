@@ -207,6 +207,18 @@ int main() {
             pipeInsert(playerShooterCodename,std::to_string(killedID),pipePath);
 
             }
+            else if((killedID%2 == 1 && shooterID%2 == 1)){
+                std::string message = "TeamR";
+                auto shooterEntry = machineToPlayerMap.find(shooterID);
+                std::string& playerShooterCodename = shooterEntry->second;
+                pipeInsert(playerShooterCodename,message,pipePath);
+            }
+            else if((killedID%2==0 && shooterID%2==0)){
+                std::string message = "TeamG";
+                auto shooterEntry = machineToPlayerMap.find(shooterID);
+                std::string& playerShooterCodename = shooterEntry->second;
+                pipeInsert(playerShooterCodename,message,pipePath);
+            }
         
         auto killedEntry = machineToPlayerMap.find(killedID);
     if (shooterEntry != machineToPlayerMap.end() && killedEntry != machineToPlayerMap.end()) {

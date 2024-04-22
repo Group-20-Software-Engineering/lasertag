@@ -128,7 +128,7 @@ def setup():
     playMusic()
     while not exitIntroScreen:    
         #WHEN SENDING HARDWARE ID USE THE FORMAT "Hardware/ID" AS SEEN BELLOW
-        # test = "Hardware/9"
+        # test = "Hardware:9"
         # send_udp_packet(test)
         screen.fill(BLACK)
         for i in range(5):

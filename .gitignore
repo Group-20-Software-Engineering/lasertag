@@ -1,3 +1,5 @@
 frontend/__pycache__/
 udp/client
 udp/server
+frontend/greenPlayers.json
+frontend/redPlayers.json
