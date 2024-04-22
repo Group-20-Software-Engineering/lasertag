@@ -288,6 +288,17 @@ while not done:
             with open("greenPlayers.json", "w") as outfile:
                 outfile.write(jsonObject)
             done = True
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
+                redPlayer.clear()
+                greenPlayer.clear()
+                jsonObject = json.dumps(playRedPlayers)
+                with open("redPlayers.json", "w") as outfile:
+                    outfile.write(jsonObject)
+                jsonObject = json.dumps(playGreenPlayers)
+                with open("greenPlayers.json", "w") as outfile:
+                    outfile.write(jsonObject)
+                exec(open("playentry.py").read())
             
 
     if not eventQueue.empty():
