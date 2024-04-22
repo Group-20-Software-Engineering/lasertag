@@ -7,7 +7,7 @@ import textwrap
 import json
 #import playaction as playaction
 from playerEntryScreenTables import drawLeftTable, drawRightTable
-
+import playaction
 import os
 from send import send_udp_packet, pipeRemove
 
@@ -64,284 +64,286 @@ def circles(screen, color):
 def write():
         x = 1
 
-def setup():
+#def setup():
+pygame.key.set_repeat(500, 25) #set up repeat entry from key holding
+currentDir = os.getcwd() #establish working directory
+coolFontName = "8-bit.ttf" #cool font
+defFontName = "freesansbold.ttf" #default font
+coolFont = pygame.font.Font(coolFontName, 18)
+inputBoxFont = pygame.font.Font(coolFontName, 14) 
+defFont = pygame.font.Font(defFontName, 24)
+WHITE = (255, 255, 255)
+BLUE = (0, 71, 171)
+BLACK = (0, 0, 0)
+YELLOW = (255, 255, 0)
+RED = (125, 19, 19)
+GREEN = (32, 87, 60)
+exitProgram = False
+inEntryScreen = True
+inPlayScreen = False
+idNamePairFound = True
+clock = pygame.time.Clock()
+size = (900,700)
+screen = pygame.display.set_mode(size)
+image_path = "logo.jpg"
+center = screen.get_rect().center
+pygame.display.set_caption("Photon")
+title = pygame.image.load(image_path).convert()
+title = pygame.transform.scale(title, (500,242)) 
+y = 0
+i = 1
+userInput = ''
+codeName = ''
+red_Id = []
+red_Code = []
+InputColorActive = pygame.Color('lightskyblue3')
+InputColorPassive = pygame.Color('chartreuse4')
+InputBoxColor = InputColorPassive
+active = False
+inputField = 0
+numPlayers = 0
+idWords = "Please Enter Player ID. Press Enter Key to Submit"
+inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_height()/2 + 300, screen.get_width()/2, 40)
+start = time.time()
+RedTable = []
+GreenTable = []
+
+#list of machine codes
+machine_codes = []
+
+id = ''
+codename = ''
+numPlayers = 1
+addedID = ''
+addedCodeName = ''
+machineCode = ''
+redPlayerCount = 0
+
+listNotEmpty = False
+textWords = ''
+
+while (inEntryScreen == True):
     pygame.key.set_repeat(500, 25) #set up repeat entry from key holding
-    currentDir = os.getcwd() #establish working directory
-    coolFontName = "8-bit.ttf" #cool font
-    defFontName = "freesansbold.ttf" #default font
-    coolFont = pygame.font.Font(coolFontName, 18)
-    inputBoxFont = pygame.font.Font(coolFontName, 14) 
-    defFont = pygame.font.Font(defFontName, 24)
-    WHITE = (255, 255, 255)
-    BLUE = (0, 71, 171)
-    BLACK = (0, 0, 0)
-    YELLOW = (255, 255, 0)
-    RED = (125, 19, 19)
-    GREEN = (32, 87, 60)
-    exitProgram = False
-    inEntryScreen = True
-    inPlayScreen = False
-    idNamePairFound = True
-    clock = pygame.time.Clock()
-    size = (900,700)
-    screen = pygame.display.set_mode(size)
-    image_path = "logo.jpg"
-    center = screen.get_rect().center
-    pygame.display.set_caption("Photon")
-    title = pygame.image.load(image_path).convert()
-    title = pygame.transform.scale(title, (500,242)) 
-    y = 0
-    i = 1
-    userInput = ''
-    codeName = ''
-    red_Id = []
-    red_Code = []
-    InputColorActive = pygame.Color('lightskyblue3')
-    InputColorPassive = pygame.Color('chartreuse4')
-    InputBoxColor = InputColorPassive
-    active = False
-    inputField = 0
-    numPlayers = 0
-    idWords = "Please Enter Player ID. Press Enter Key to Submit"
-    inputBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/4, screen.get_height()/2 + 300, screen.get_width()/2, 40)
-    start = time.time()
-    RedTable = []
-    GreenTable = []
+    screen.fill(BLACK)
+    # rectWidth = 900/4
+    # rectHeight = 580/16
+    redRects = [[None] * 2 for _ in range(16)]
+    greenRects = [[None] * 2 for _ in range(16)]
 
-    #list of machine codes
-    machine_codes = []
+    drawLeftTable(RedTable, listNotEmpty, RedTeam, coolFont, screen, BLACK, RED, WHITE, textWords)
 
-    id = ''
-    codename = ''
-    numPlayers = 1
-    addedID = ''
-    addedCodeName = ''
-    machineCode = ''
-    redPlayerCount = 0
-    
-    listNotEmpty = False
-    textWords = ''
+    drawRightTable(GreenTable, listNotEmpty, GreenTeam, coolFont, screen, BLACK, GREEN, WHITE, textWords)
 
-    while (inEntryScreen == True):
-        pygame.key.set_repeat(500, 25) #set up repeat entry from key holding
-        screen.fill(BLACK)
-        # rectWidth = 900/4
-        # rectHeight = 580/16
-        redRects = [[None] * 2 for _ in range(16)]
-        greenRects = [[None] * 2 for _ in range(16)]
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            inEntryScreen = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if inputBox.collidepoint(event.pos):
+                active = True
+            else:
+                active = False
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_BACKSPACE:
+                userInput = userInput[:-1]
 
-        drawLeftTable(RedTable, listNotEmpty, RedTeam, coolFont, screen, BLACK, RED, WHITE, textWords)
-
-        drawRightTable(GreenTable, listNotEmpty, GreenTeam, coolFont, screen, BLACK, GREEN, WHITE, textWords)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            elif event.key == pygame.K_MINUS:
+                RedTeam.redPlayers.clear()
+                GreenTeam.greenPlayers.clear()
+                playRedPlayers.clear()
+                playGreenPlayers.clear()
+                jsonObject = json.dumps(playRedPlayers)
+                with open("redPlayers.json", "w") as outfile:
+                    outfile.write(jsonObject)
+                jsonObject = json.dumps(playGreenPlayers)
+                with open("greenPlayers.json", "w") as outfile:
+                    outfile.write(jsonObject)
+            elif event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
                 inEntryScreen = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if inputBox.collidepoint(event.pos):
-                    active = True
-                else:
-                    active = False
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_BACKSPACE:
-                    userInput = userInput[:-1]
-
-                elif event.key == pygame.K_MINUS:
-                    RedTeam.redPlayers.clear()
-                    GreenTeam.greenPlayers.clear()
-                    playRedPlayers.clear()
-                    playGreenPlayers.clear()
-                    jsonObject = json.dumps(playRedPlayers)
-                    with open("redPlayers.json", "w") as outfile:
-                        outfile.write(jsonObject)
-                    jsonObject = json.dumps(playGreenPlayers)
-                    with open("greenPlayers.json", "w") as outfile:
-                        outfile.write(jsonObject)
-                elif event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
-                    inEntryScreen = False
+                done = True
+                
+                
+            else:
+                if (event.key != pygame.K_RETURN):
+                    userInput += event.unicode
                     
-                else:
-                    if (event.key != pygame.K_RETURN):
-                        userInput += event.unicode
-                        
-                    elif (event.key == pygame.K_RETURN):
-                        
-                        if len(userInput) <= 10: 
-                            if (inputField == 0):
-                                fetchData = (supabase.table('player').select("*").eq('id', userInput).execute())
-                                print("fetchData = " + str(fetchData))
-                                data = fetchData.data
-                                key1 = "none"
-                                if (data):
-                                    key1 = data[0]['id']
-                                    key2 = data[0]['codename']
-                                    print ("outside if statement. key = " + str(key) + " userInput = " + userInput)
+                elif (event.key == pygame.K_RETURN):
+                    
+                    if len(userInput) <= 10: 
+                        if (inputField == 0):
+                            fetchData = (supabase.table('player').select("*").eq('id', userInput).execute())
+                            print("fetchData = " + str(fetchData))
+                            data = fetchData.data
+                            key1 = "none"
+                            if (data):
+                                key1 = data[0]['id']
+                                key2 = data[0]['codename']
+                                print ("outside if statement. key = " + str(key) + " userInput = " + userInput)
 
-                                    if (userInput == str(key1)):
+                                if (userInput == str(key1)):
 
-                                        # used to check if id is in table already
-                                        rLength = len(RedTeam.redPlayers)
-                                        gLength = len(GreenTeam.greenPlayers)
-                                        print(rLength)
-                                        print(gLength)
-                                        for i in range(rLength):
-                                            if(RedTeam.redPlayers[i].id == str(key1)):
-                                                inputField = 0
-                                                idWords = "               ID in table. Please Enter New ID"
-                                                userInput = ""
-                                                # break
-                                        for k in range(gLength):
-                                            if(GreenTeam.greenPlayers[k].id == str(key1)):
-                                                inputField = 0
-                                                idWords = "               ID in table. Please Enter New ID"
-                                                userInput = ""
-                                                # break
-
-                                        if (userInput != ""):
-                                            # if not in the table finds codename and prompts for machine code
-                                            addedCodeName = str(key2)
-                                            print("ID already exists, please input a new ID.") 
-                                            addedID = str(key1)                          
-                                            print(addedID)
-                                            print(addedCodeName)
-                                            idWords = "         ID found, please input a Machine Code."
+                                    # used to check if id is in table already
+                                    rLength = len(RedTeam.redPlayers)
+                                    gLength = len(GreenTeam.greenPlayers)
+                                    print(rLength)
+                                    print(gLength)
+                                    for i in range(rLength):
+                                        if(RedTeam.redPlayers[i].id == str(key1)):
+                                            inputField = 0
+                                            idWords = "               ID in table. Please Enter New ID"
                                             userInput = ""
-                                            inputField = 2
-                                            print("inside if statement " + " userInput = " + userInput + " key = " + str(key1))
-                                    
-                                elif ((userInput != str(key)) and (userInput != "") and (inputField == 0)):                           
-                                    print("Welcome to the battlefield, enter your codename.")
-                                    idWords = "Please Enter Code Name. Press Enter Key to Submit"
-                                    
-                                    if ((userInput != "") and (inputField == 0)):
-                                        addPlayer = supabase.table('player').insert({ 'id': userInput}).execute()
-                                        inputField = 1
-                                        #set the addedID equal to the userInput
-                                        addedID = userInput
+                                            # break
+                                    for k in range(gLength):
+                                        if(GreenTeam.greenPlayers[k].id == str(key1)):
+                                            inputField = 0
+                                            idWords = "               ID in table. Please Enter New ID"
+                                            userInput = ""
+                                            # break
+
+                                    if (userInput != ""):
+                                        # if not in the table finds codename and prompts for machine code
+                                        addedCodeName = str(key2)
+                                        print("ID already exists, please input a new ID.") 
+                                        addedID = str(key1)                          
+                                        print(addedID)
+                                        print(addedCodeName)
+                                        idWords = "         ID found, please input a Machine Code."
                                         userInput = ""
-                                    elif ((userInput != "") and (inputField == 1)):
-                                        supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute() 
-
-                            if (inputField == 1) and (userInput != ""):
-                                supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()
-                                fetchCodeName = supabase.table('player').select("codename").eq('id', addedID).execute()
-                                print(fetchCodeName)
-                                addedCodeName = userInput
-                                inputField = 2
-                                idWords = "Please Enter Machine Code. Press Enter Key to Submit"
-                                userInput = ""
-                                numPlayers += 1
-                                #data_to_be_displayed = supabase.table('player').select("id").eq('id', addedID).execute()
-                                response = supabase.table('player').select("*").eq('id', addedID).execute()
-                                print(numPlayers)
-                                # Extract the data part of the response
-                                data = response.data
-
-                                #Assuming there's at least one result and you want the first one
-                                if data:
-                                    codename = data[0]['codename']
-                                    id = data[0]['id']
-                                    print(codename)
-                                    print(id)
+                                        inputField = 2
+                                        print("inside if statement " + " userInput = " + userInput + " key = " + str(key1))
                                 
-                                else:
-                                    print("No data found.")
-
-                            if (inputField == 2) and (userInput == ""):
-                                while(event.key != pygame.K_RETURN):
-                                    if event.type == pygame.KEYUP:
-                                        if event.key == pygame.K_BACKSPACE:
-                                            userInput = userInput[:-1]
-                                    if event.type == pygame.QUIT:
-                                        exitProgram = True
-                                        inEntryScreen = False
-                                    if event.key == pygame.K_MINUS:
-                                        RedTeam.redPlayers.clear()
-                                        GreenTeam.greenPlayers.clear()
-                                        playRedPlayers.clear()
-                                        playGreenPlayers.clear()
-                                        jsonObject = json.dumps(playRedPlayers)
-                                        with open("redPlayers.json", "w") as outfile:
-                                            outfile.write(jsonObject)
-                                        jsonObject = json.dumps(playGreenPlayers)
-                                        with open("greenPlayers.json", "w") as outfile:
-                                            outfile.write(jsonObject)
-                                    if event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
-                                        exitProgram = True
-                                        inEntryScreen = False
-                                    else:
-                                        userInput += event.unicode
-
-                            if (inputField == 2) and (userInput != ""):
-                                rLength = len(RedTeam.redPlayers)
-                                gLength = len(GreenTeam.greenPlayers)
-                                for i in range(rLength):
-                                    if(RedTeam.redPlayers[i].id == addedID):
-                                        inputField = 0
-                                        idWords = "Please Enter Player ID. Press Enter Key to Submit"
-                                        userInput = ""
-                                        
-                                        # break
-                                for k in range(gLength):
-                                    if(GreenTeam.greenPlayers[k].id == addedID):
-                                        inputField = 0
-                                        idWords = "Please Enter Player ID. Press Enter Key to Submit"
-                                        userInput = ""
-                                        
-                                        # break
-                                if (inputField != 0):
-                                    listNotEmpty = True
-
-                                #checks for duplicate machine codes
-                                if (userInput in machine_codes):
-                                    idWords = "            Please enter an unused machine ID."
+                            elif ((userInput != str(key)) and (userInput != "") and (inputField == 0)):                           
+                                print("Welcome to the battlefield, enter your codename.")
+                                idWords = "Please Enter Code Name. Press Enter Key to Submit"
+                                
+                                if ((userInput != "") and (inputField == 0)):
+                                    addPlayer = supabase.table('player').insert({ 'id': userInput}).execute()
+                                    inputField = 1
+                                    #set the addedID equal to the userInput
+                                    addedID = userInput
                                     userInput = ""
+                                elif ((userInput != "") and (inputField == 1)):
+                                    supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute() 
+
+                        if (inputField == 1) and (userInput != ""):
+                            supabase.table('player').update({ 'codename': userInput}).eq('id', addedID).execute()
+                            fetchCodeName = supabase.table('player').select("codename").eq('id', addedID).execute()
+                            print(fetchCodeName)
+                            addedCodeName = userInput
+                            inputField = 2
+                            idWords = "Please Enter Machine Code. Press Enter Key to Submit"
+                            userInput = ""
+                            numPlayers += 1
+                            #data_to_be_displayed = supabase.table('player').select("id").eq('id', addedID).execute()
+                            response = supabase.table('player').select("*").eq('id', addedID).execute()
+                            print(numPlayers)
+                            # Extract the data part of the response
+                            data = response.data
+
+                            #Assuming there's at least one result and you want the first one
+                            if data:
+                                codename = data[0]['codename']
+                                id = data[0]['id']
+                                print(codename)
+                                print(id)
+                            
+                            else:
+                                print("No data found.")
+
+                        if (inputField == 2) and (userInput == ""):
+                            while(event.key != pygame.K_RETURN):
+                                if event.type == pygame.KEYUP:
+                                    if event.key == pygame.K_BACKSPACE:
+                                        userInput = userInput[:-1]
+                                if event.type == pygame.QUIT:
+                                    exitProgram = True
+                                    inEntryScreen = False
+                                if event.key == pygame.K_MINUS:
+                                    RedTeam.redPlayers.clear()
+                                    GreenTeam.greenPlayers.clear()
+                                    playRedPlayers.clear()
+                                    playGreenPlayers.clear()
+                                    jsonObject = json.dumps(playRedPlayers)
+                                    with open("redPlayers.json", "w") as outfile:
+                                        outfile.write(jsonObject)
+                                    jsonObject = json.dumps(playGreenPlayers)
+                                    with open("greenPlayers.json", "w") as outfile:
+                                        outfile.write(jsonObject)
+                                if event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
+                                    exitProgram = True
+                                    inEntryScreen = False
                                 else:
-                                    machine_codes.append(userInput)
+                                    userInput += event.unicode
 
-                                    if (int(userInput) % 2 != 0):
-                                        newPlayer = RedTeam(addedID, addedCodeName, userInput)
-                                        RedTeam.redPlayers.append(newPlayer)
-                                        playRedPlayers.append(addedCodeName)
-                                        jsonObject = json.dumps(playRedPlayers)
-                                        with open("redPlayers.json", "w") as outfile:
-                                            outfile.write(jsonObject)
-                                    if (int(userInput) % 2 == 0):
-                                        newPlayer = GreenTeam(addedID, addedCodeName, userInput)
-                                        GreenTeam.greenPlayers.append(newPlayer)
-                                        playGreenPlayers.append(addedCodeName)
-                                        jsonObject = json.dumps(playGreenPlayers)
-                                        with open("greenPlayers.json", "w") as outfile:
-                                            outfile.write(jsonObject)
-                                    userInput = "Hardware/" + userInput + "/" + addedCodeName
-                                    
-                                    send_udp_packet(userInput)
-                                    idWords = "Please Enter Player ID. Press Enter Key to Submit"
+                        if (inputField == 2) and (userInput != ""):
+                            rLength = len(RedTeam.redPlayers)
+                            gLength = len(GreenTeam.greenPlayers)
+                            for i in range(rLength):
+                                if(RedTeam.redPlayers[i].id == addedID):
                                     inputField = 0
-                                    userInput = ""    
-                        else:
-                            idWords = "Please Enter an ID no more than 10 characters"     
+                                    idWords = "Please Enter Player ID. Press Enter Key to Submit"
+                                    userInput = ""
+                                    
+                                    # break
+                            for k in range(gLength):
+                                if(GreenTeam.greenPlayers[k].id == addedID):
+                                    inputField = 0
+                                    idWords = "Please Enter Player ID. Press Enter Key to Submit"
+                                    userInput = ""
+                                    
+                                    # break
+                            if (inputField != 0):
+                                listNotEmpty = True
 
-        if active:
-            InputBoxColor = InputColorActive
-        else:
-            InputBoxColor = InputColorPassive
-        idText = inputBoxFont.render(idWords, True, YELLOW) # Input Box Message
-        screen.blit(idText,(screen.get_width()/2 - screen.get_width()/3, screen.get_height()/2 +275))
-        deleteStartText = inputBoxFont.render("'-' To Clear the Players '+' To Start Game", True, WHITE)
-        screen.blit(deleteStartText,(screen.get_width()/2 - screen.get_width()/3.5, screen.get_height()/2 +250))
-        redText = inputBoxFont.render("Red Team", True, RED) # Red Team
-        screen.blit(redText,(screen.get_width()/4 - screen.get_width()/18, 12))
-        redText = inputBoxFont.render("Green Team", True, GREEN) # Green Team
-        screen.blit(redText,(screen.get_width() - screen.get_width()/4 - screen.get_width()/14, 12))
-        pygame.draw.rect(screen, InputBoxColor, inputBox)
-        textSurface = coolFont.render(userInput, True, YELLOW)
-        screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
-        inputBox.w = max(screen.get_width()/2, textSurface.get_width()+10)
-        pygame.display.update()      
-    pygame.display.flip()
+                            #checks for duplicate machine codes
+                            if (userInput in machine_codes):
+                                idWords = "            Please enter an unused machine ID."
+                                userInput = ""
+                            else:
+                                machine_codes.append(userInput)
 
-    clock.tick(60)
+                                if (int(userInput) % 2 != 0):
+                                    newPlayer = RedTeam(addedID, addedCodeName, userInput)
+                                    RedTeam.redPlayers.append(newPlayer)
+                                    playRedPlayers.append(addedCodeName)
+                                    jsonObject = json.dumps(playRedPlayers)
+                                    with open("redPlayers.json", "w") as outfile:
+                                        outfile.write(jsonObject)
+                                if (int(userInput) % 2 == 0):
+                                    newPlayer = GreenTeam(addedID, addedCodeName, userInput)
+                                    GreenTeam.greenPlayers.append(newPlayer)
+                                    playGreenPlayers.append(addedCodeName)
+                                    jsonObject = json.dumps(playGreenPlayers)
+                                    with open("greenPlayers.json", "w") as outfile:
+                                        outfile.write(jsonObject)
+                                userInput = "Hardware/" + userInput + "/" + addedCodeName
+                                
+                                send_udp_packet(userInput)
+                                idWords = "Please Enter Player ID. Press Enter Key to Submit"
+                                inputField = 0
+                                userInput = ""    
+                    else:
+                        idWords = "Please Enter an ID no more than 10 characters"     
+
+    if active:
+        InputBoxColor = InputColorActive
+    else:
+        InputBoxColor = InputColorPassive
+    idText = inputBoxFont.render(idWords, True, YELLOW) # Input Box Message
+    screen.blit(idText,(screen.get_width()/2 - screen.get_width()/3, screen.get_height()/2 +275))
+    deleteStartText = inputBoxFont.render("'-' To Clear the Players '+' To Start Game", True, WHITE)
+    screen.blit(deleteStartText,(screen.get_width()/2 - screen.get_width()/3.5, screen.get_height()/2 +250))
+    redText = inputBoxFont.render("Red Team", True, RED) # Red Team
+    screen.blit(redText,(screen.get_width()/4 - screen.get_width()/18, 12))
+    redText = inputBoxFont.render("Green Team", True, GREEN) # Green Team
+    screen.blit(redText,(screen.get_width() - screen.get_width()/4 - screen.get_width()/14, 12))
+    pygame.draw.rect(screen, InputBoxColor, inputBox)
+    textSurface = coolFont.render(userInput, True, YELLOW)
+    screen.blit(textSurface, (inputBox.x+5, inputBox.y+5))
+    inputBox.w = max(screen.get_width()/2, textSurface.get_width()+10)
+    pygame.display.update()      
+pygame.display.flip()
+
+clock.tick(60)
 
 
 
@@ -365,7 +367,7 @@ def blit_text(surface, text, pos, font, color=pygame.Color('yellow')):
 
 def main():
     print("Hello World")
-    setup()
+    #setup()
     
     
 

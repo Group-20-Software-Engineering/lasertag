@@ -86,7 +86,7 @@ def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, r
                 rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw red rectangle
                 RowRedRect.append(rect)
                 if col == 0 and row < len(redPlayer):
-                    textWords = "B"
+                    textWords = " "
                     text = coolFont.render(textWords, True, WHITE)
                     text_rect = text.get_rect(center=rect.center)
                 if col == 1 and row < len(redPlayer):
@@ -98,14 +98,15 @@ def drawLeftPlayTable(rectWidth, rectHeight, screen, coolFont, rect, RedTable, r
                     text = coolFont.render(textWords, True, WHITE)
                     text_rect = text.get_rect(center=rect.center)
                 if col == 2 and row == 0:
-                    redTopScore = redPlayerScores[redPlayer[0]]
-                    greenTopScore = greenPlayerScores[greenPlayer[0]]
-                    if redPlayerScores[redPlayer[0]] != 0 and (int(greenTopScore) < int(redTopScore)):
-                        textWords = str(redPlayerScores[redPlayer[0]])
-                        if flash % 60 < 30:
-                            text = coolFont.render(textWords, True, WHITE)
-                        if flash % 60 > 30:
-                            text = coolFont.render(textWords, True, YELLOW)
+                    if 0 < len(redPlayerScores) and 0 < len(greenPlayerScores):
+                        redTopScore = redPlayerScores[redPlayer[0]]
+                        greenTopScore = greenPlayerScores[greenPlayer[0]]
+                        if redPlayerScores[redPlayer[0]] != 0 and (int(greenTopScore) < int(redTopScore)):
+                            textWords = str(redPlayerScores[redPlayer[0]])
+                            if flash % 60 < 30:
+                                text = coolFont.render(textWords, True, WHITE)
+                            if flash % 60 > 30:
+                                text = coolFont.render(textWords, True, YELLOW)
                 if row >= len(redPlayer):
                     textWords = " "
                     text = coolFont.render(textWords, True, WHITE)
@@ -124,7 +125,7 @@ def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable
                 y = row * rectHeight + 78 #determine y coordinate for each rectangle
                 rect = drawRect(row, col, x, y, rectWidth, rectHeight, screen, BLACK, BLACK) #draw green rectangle
                 if col == 0 and row < len(greenPlayer):
-                    textWords = "B"
+                    textWords = " "
                     text = coolFont.render(textWords, True, WHITE)
                     text_rect = text.get_rect(center=rect.center)
                 if col == 1 and row < len(greenPlayer):
@@ -136,14 +137,15 @@ def drawRightPlayTable(rectWidth, rectHeight, screen, coolFont, rect, GreenTable
                     text = coolFont.render(textWords, True, WHITE)
                     text_rect = text.get_rect(center=rect.center)
                 if col == 2 and row == 0:
-                    redTopScore = redPlayerScores[redPlayer[0]]
-                    greenTopScore = greenPlayerScores[greenPlayer[0]]
-                    if greenPlayerScores[greenPlayer[0]] != 0 and (int(greenTopScore) > int(redTopScore)):
-                        textWords = str(greenPlayerScores[greenPlayer[0]])
-                        if flash % 60 < 30:
-                            text = coolFont.render(textWords, True, WHITE)
-                        if flash % 60 > 30:
-                            text = coolFont.render(textWords, True, YELLOW)
+                    if 0 < len(redPlayerScores) and 0 < len(greenPlayerScores):
+                        redTopScore = redPlayerScores[redPlayer[0]]
+                        greenTopScore = greenPlayerScores[greenPlayer[0]]
+                        if greenPlayerScores[greenPlayer[0]] != 0 and (int(greenTopScore) > int(redTopScore)):
+                            textWords = str(greenPlayerScores[greenPlayer[0]])
+                            if flash % 60 < 30:
+                                text = coolFont.render(textWords, True, WHITE)
+                            if flash % 60 > 30:
+                                text = coolFont.render(textWords, True, YELLOW)
                 if row >= len(greenPlayer):
                     textWords = " "
                     text = coolFont.render(textWords, True, WHITE)
@@ -210,7 +212,10 @@ textFlashCount = 0
 pygame.display.set_caption("Photon -1: The Sequel (Laser Boogaloo)")
 screen = pygame.display.set_mode(size)
 countDownBox = pygame.Rect(screen.get_width()/2 - screen.get_width()/18, screen.get_height()/40,100,40)
-done = False
+count = 0
+if count == 0:
+    done = False
+    count += 1
 redplayerCount = 0
 
 counterStartTimer = False
@@ -230,6 +235,8 @@ with open('greenPlayers.json', 'r') as openfile:
     jsonGreenObject = json.load(openfile)
 redPlayer = []
 greenPlayer = []
+redStartScore = []
+greenStartScore = []
 redPlayer = jsonRedObject
 greenPlayer = jsonGreenObject
 redTotalScore = 0
@@ -277,8 +284,9 @@ for currRed in redPlayer:
 for currGreen in greenPlayer:
     greenPlayerScores[currGreen] = 0
 
-
 while not done:
+
+
     screen.fill(BLACK)
     rect = pygame.Rect(0, 75, 448, 300)
     pygame.draw.rect(screen, RED, rect, 1)
@@ -300,8 +308,6 @@ while not done:
             done = True
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
-                redPlayerScores.clear()
-                redPlayerScores.clear()
                 # totalTime = 360
                 redPlayer.clear()
                 greenPlayer.clear()
@@ -311,7 +317,8 @@ while not done:
                 jsonObject = json.dumps(greenPlayer)
                 with open("greenPlayers.json", "w") as outfile:
                     outfile.write(jsonObject)
-                exec(open("playentry.py").read())
+                done = True
+                exec(open("playentry.py").read(), globals(), globals())
             
 
     if not eventQueue.empty():
@@ -344,7 +351,7 @@ while not done:
     #Create a reversed list of the sorted keys
     sorted_red_scores_keys = list(sorted_red_scores.keys())
     sorted_red_scores_keys.reverse()
-    print(f'sorted_red_scores_keys: {sorted_red_scores_keys}')
+    #print(f'sorted_red_scores_keys: {sorted_red_scores_keys}')
 
     #Create a reversed list of the sorted values
     sorted_red_scores_values = list(sorted_red_scores.values())
