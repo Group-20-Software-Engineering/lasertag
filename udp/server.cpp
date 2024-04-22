@@ -28,7 +28,6 @@ std::string greenBase = "43";
 
 
 void printMapContents(const std::unordered_map<int, std::string>& map) {
-void printMapContents(const std::unordered_map<int, std::string>& map) {
     for (const auto& pair : map) {
         std::cout << "Machine ID: " << pair.first << ", Player ID: " << pair.second << std::endl;
     }
@@ -48,12 +47,9 @@ int pipeInsert(const std::string& shooterCodename, const std::string& killedCode
     if (bytesWritten == -1) {
         std::cerr << "Error writing to pipe: " << std::strerror(errno) << std::endl;
         close(fd);
-        close(fd);
         return 1;
     }
 
-    close(fd);
-    return 0;
     close(fd);
     return 0;
 }
@@ -117,7 +113,6 @@ int main() {
     std::cout << "UDP Server is listening on port " << PORT << std::endl;
 
     std::unordered_map<int, std::string> machineToPlayerMap;
-    std::unordered_map<int, std::string> machineToPlayerMap;
 
 
     char buffer[BUFFER_SIZE];
@@ -161,20 +156,6 @@ int main() {
             std::string playerCodename(playerCodenameBuffer);
             machineToPlayerMap[machineID] = playerCodename;
             printMapContents(machineToPlayerMap);
-             int machineID;
-            char playerCodenameBuffer[128]; // Make sure the buffer is large enough for the codename
-            sscanf(buffer, "Hardware/%d/%s", &machineID, playerCodenameBuffer);
-            std::string playerCodename(playerCodenameBuffer);
-            machineToPlayerMap[machineID] = playerCodename;
-            printMapContents(machineToPlayerMap);
-            
-
-
-
-            // std::string playerCodename;
-            // sscanf(buffer, "Hardware/%d/%s", &machineID, &playerCodename);
-            // machineToPlayerMap[machineID] = playerCodename; 
-            // printMapContents(machineToPlayerMap); 
             
 
 
@@ -260,4 +241,3 @@ int main() {
     close(socketFD);
     return 0;
 }
-
