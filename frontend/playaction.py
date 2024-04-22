@@ -39,7 +39,7 @@ def pipeRemoveThread(queue, killFeed):
                 else:
                     message = f"{shooter} shot {target}"
                 
-                # Append the message to the killFeed
+               
                 
                 
                 # Put both shooter and target into the queue as a tuple
@@ -331,29 +331,32 @@ while not done:
             for currRed in redPlayer:
                 #Green Base Shot by Red
                 if Shot == "43":
+                    
                     redPlayerScores[Shooter] += 50
                     redTotalScore = redTotalScore + 50
                 elif Shot == "TeamR":
-                    redPlayerScores[Shooter] -= 5
-                    redTotalScore = redTotalScore - 5
+                    if redPlayerScores[Shooter] != 0:
+                        redPlayerScores[Shooter] -= 5
+                        redTotalScore = redTotalScore - 5
                 elif currRed == Shooter:
                     redPlayerScores[Shooter] += 10
                     redTotalScore = redTotalScore + 10
-                    print("Attempting to append message")
-                    killFeed.append(message)
+                    # print("Attempting to append message")
+                    # killFeed.append(message)
             for currGreen in greenPlayer:
                 #Red base Shot by Green
                 if Shot == "53":
                     greenPlayerScores[Shooter] += 50
                     greenTotalScore = greenTotalScore + 50
                 elif Shot == "TeamG":
-                    greenPlayerScores[Shooter] -= 5
-                    greenTotalScore = greenTotalScore - 5
+                    if greenPlayerScores[Shooter] != 0:
+                        greenPlayerScores[Shooter] -= 5
+                        greenTotalScore = greenTotalScore - 5
                 elif currGreen == Shooter:
                     greenPlayerScores[Shooter] += 10
                     greenTotalScore = greenTotalScore + 10
-                    print("Attempting to append message")
-                    killFeed.append(message)
+                    # print("Attempting to append message")
+                    # killFeed.append(message)
 
     #Sort the redPlayerScores dict
     sorted_red_scores = dict(sorted(redPlayerScores.items(), key=lambda item: item[1]))
