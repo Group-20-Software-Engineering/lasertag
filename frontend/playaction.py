@@ -432,7 +432,7 @@ while not done:
     if timerState == timer30sec and currentTime >= totalTime:
         send_udp_packet("202")
         timerState = timer6min
-        totalTime = 5
+        totalTime = 360
         halfSpeedCountdown = False
         startTime = pygame.time.get_ticks()
     elif timerState == timer6min and currentTime >= totalTime:
