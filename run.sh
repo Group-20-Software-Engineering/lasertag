@@ -38,13 +38,20 @@ cd "$directory" || exit
 
 # Run the Python file
 python3 "$filename"
+while true; do
+    python3 "$entry"
 
-python3 "$entry"
+    python3 "$playAction"
 
-python3 "$playAction"
+    play_action_exit_code=$?
 
-kill $server_pid
-kill $client_pid
+    if [ $play_action_exit_code -eq 42 ]; then
+        kill $server_pid
+        kill $client_pid
+        break
+    fi
+done
+
 
 
 

@@ -43,7 +43,7 @@ def proceedToPlayerEntry():
     pygame.mixer.music.play(-1)
 
 def playMusic():
-    pygame.mixer.music.load("Tank!.wav")
+    pygame.mixer.music.load("player_entry.wav")
     pygame.mixer.music.play(-1)
 
 
@@ -121,7 +121,7 @@ redPlayerCount = 0
 
 listNotEmpty = False
 textWords = ''
-
+playMusic()
 while (inEntryScreen == True):
     pygame.key.set_repeat(500, 25) #set up repeat entry from key holding
     screen.fill(BLACK)
