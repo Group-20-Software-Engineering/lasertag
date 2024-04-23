@@ -42,9 +42,16 @@ while true; do
     python3 "$entry"
 
     python3 "$playAction"
+
+    play_action_exit_code=$?
+
+    if [ $play_action_exit_code -eq 42 ]; then
+        kill $server_pid
+        kill $client_pid
+        break
+    fi
 done
-kill $server_pid
-kill $client_pid=
+
 
 
 

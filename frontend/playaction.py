@@ -329,8 +329,10 @@ while not done:
             jsonObject = json.dumps(playGreenPlayers)
             with open("greenPlayers.json", "w") as outfile:
                 outfile.write(jsonObject)
-            pygame.quit()
-            sys.exit()
+            send_udp_packet("221")
+            send_udp_packet("221")
+            send_udp_packet("221")
+            sys.exit(42)
             done = True
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
@@ -556,6 +558,4 @@ def main():
         
 if __name__ == "__main__":
     main()
-    send_udp_packet("221")
-    send_udp_packet("221")
-    send_udp_packet("221")
+  
