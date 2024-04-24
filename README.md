@@ -19,7 +19,7 @@ Repository dedicated to developing the software to run a game utilizing the Phot
 - While game is running if you wish to return to the player entry screen again press the `=` button
 
 # TO USE TRAFFIC GENERATOR
-- After the splash screen is finished and the playerentry screen is up do `cd frontend` then run `python3 python_trafficgenarator_v2.py` 
+- After the splash screen is finished and the playerentry screen is open another terminal and  `cd frontend` then run `python3 python_trafficgenarator_v2.py` 
 - Input the machine IDs in the order of `odd,odd,even,even`
 - Return to the playerentry screen and press the `=` button to start the game
 - The numbers you entered previously should appear in the playeraction screen
