@@ -22,6 +22,7 @@ const int PORT = 7501;
 const int BROADCAST_PORT = 7500;
 const int BUFFER_SIZE = 1024;
 int shooterID, killedID, tempShooter;
+const char* responseMessage = "Default response";
 
 std::string redBase = "53";
 std::string greenBase = "43";
@@ -129,7 +130,7 @@ int main() {
         std::cout << "Received: " << buffer << std::endl;
 
         // Respond based on the received message
-        const char* responseMessage = "Default response";
+        
         if (strcmp(buffer, "202") == 0) {
             struct sockaddr_in broadcastAddress;
             memset(&broadcastAddress, 0, sizeof(broadcastAddress));
@@ -185,6 +186,12 @@ int main() {
         // Else-if block to handle "id/id" format
         else if (sscanf(buffer, "%d:%d", &shooterID, &killedID) == 2) {
             auto shooterEntry = machineToPlayerMap.find(shooterID);
+            struct sockaddr_in broadcastAddress;
+            memset(&broadcastAddress, 0, sizeof(broadcastAddress));
+            broadcastAddress.sin_family = AF_INET;
+            broadcastAddress.sin_port = htons(BROADCAST_PORT);
+            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+
             if (killedID == 53 || killedID == 43){
             std::string& playerShooterCodename = shooterEntry->second;
             pipeInsert(playerShooterCodename,std::to_string(killedID),pipePath);
@@ -195,12 +202,14 @@ int main() {
                 auto shooterEntry = machineToPlayerMap.find(shooterID);
                 std::string& playerShooterCodename = shooterEntry->second;
                 pipeInsert(playerShooterCodename,message,pipePath);
+                sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
             }
             else if((killedID%2==0 && shooterID%2==0)){
                 std::string message = "TeamG";
                 auto shooterEntry = machineToPlayerMap.find(shooterID);
                 std::string& playerShooterCodename = shooterEntry->second;
                 pipeInsert(playerShooterCodename,message,pipePath);
+                sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
             }
         
         auto killedEntry = machineToPlayerMap.find(killedID);
@@ -213,7 +222,7 @@ int main() {
         
 
             pipeInsert(playerShooterCodename, playerKilledCodename, pipePath);
-        
+            sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
         
         
         
@@ -225,12 +234,25 @@ int main() {
             std::cerr << "Killed machine ID " << killedID << " not found in player map." << std::endl;
         }
     }
+
+    
+
 }
 
 else if (strcmp(buffer, "Clean")==0){
 
     machineToPlayerMap.clear();  // Clears the unordered_map of all elements
     std::cout << "All entries cleared from the map." << std::endl;
+
+}
+else if (strcmp(buffer, "Response")==0){
+            struct sockaddr_in broadcastAddress;
+            memset(&broadcastAddress, 0, sizeof(broadcastAddress));
+            broadcastAddress.sin_family = AF_INET;
+            broadcastAddress.sin_port = htons(BROADCAST_PORT);
+            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+            sendto(socketFD, buffer, strlen(buffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
 
 }
 

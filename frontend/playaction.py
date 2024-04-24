@@ -347,6 +347,9 @@ while not done:
                 jsonObject = json.dumps(playGreenPlayers)
                 with open("greenPlayers.json", "w") as outfile:
                     outfile.write(jsonObject)
+                    send_udp_packet("221")
+                    send_udp_packet("221")
+                    send_udp_packet("221")
                 done = True
                 #exec(open("playentry.py").read(), globals(), globals())
             
@@ -365,13 +368,16 @@ while not done:
                     redPlayerScores[Shooter] += 100
                     redTotalScore = redTotalScore + 100
                     checkR += 1
+                    send_udp_packet("Response")
                 elif Shot == "TeamR":
                     if redPlayerScores[Shooter] != 0:
                         redPlayerScores[Shooter] -= 5
                         redTotalScore = redTotalScore - 5
+                        send_udp_packet("Response")
                 elif currRed == Shooter and Shot != "43":
                     redPlayerScores[Shooter] += 10
                     redTotalScore = redTotalScore + 10
+                    send_udp_packet("Response")
                     
             for currGreen in greenPlayer:
                 #Red base Shot by Green
@@ -379,13 +385,17 @@ while not done:
                     greenPlayerScores[Shooter] += 100
                     greenTotalScore = greenTotalScore + 100
                     checkG += 1
+                    send_udp_packet("Response")
                 elif Shot == "TeamG":
                     if greenPlayerScores[Shooter] != 0:
                         greenPlayerScores[Shooter] -= 5
                         greenTotalScore = greenTotalScore - 5
+                        send_udp_packet("Response")
                 elif currGreen == Shooter and Shot != "53":
                     greenPlayerScores[Shooter] += 10
                     greenTotalScore = greenTotalScore + 10
+                    send_udp_packet("Response")
+        
                     
 
     #Sort the redPlayerScores dict
@@ -544,7 +554,7 @@ while not done:
     # Limit scroll offset
     scroll_offset = max(0, min(scroll_offset, max_scroll_offset))
 
-
+    
     pygame.display.flip()
     clock.tick(60)
 
