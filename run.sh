@@ -46,8 +46,8 @@ while true; do
     play_action_exit_code=$?
 
     if [ $play_action_exit_code -eq 42 ]; then
-        # kill $server_pid
-        kill $client_pid
+         kill $server_pid
+        # kill $client_pid
         break
     fi
 done
