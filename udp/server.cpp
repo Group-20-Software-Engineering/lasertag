@@ -71,6 +71,7 @@ int main() {
     } else {
         perror("getcwd() error");
     }
+    char temp[64];
     //Calculate total length of final concatenated path, plus one for null terminator :)
     int total_length = strlen(pathBuffer) + strlen(pipe) + 1;
     //Allocate the memory
@@ -186,11 +187,10 @@ int main() {
         // Else-if block to handle "id/id" format
         else if (sscanf(buffer, "%d:%d", &shooterID, &killedID) == 2) {
             auto shooterEntry = machineToPlayerMap.find(shooterID);
-            struct sockaddr_in broadcastAddress;
-            memset(&broadcastAddress, 0, sizeof(broadcastAddress));
-            broadcastAddress.sin_family = AF_INET;
-            broadcastAddress.sin_port = htons(BROADCAST_PORT);
-            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+            
+            sprintf(temp, "%d", killedID);
+            std::cout << killedID << std::endl;
+            
 
             if (killedID == 53 || killedID == 43){
             std::string& playerShooterCodename = shooterEntry->second;
@@ -198,22 +198,40 @@ int main() {
 
             }
             else if((killedID%2 == 1 && shooterID%2 == 1)){
+                struct sockaddr_in broadcastAddress;
+                memset(&broadcastAddress, 0, sizeof(broadcastAddress));
+                broadcastAddress.sin_family = AF_INET;
+                broadcastAddress.sin_port = htons(BROADCAST_PORT);
+                broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+
                 std::string message = "TeamR";
                 auto shooterEntry = machineToPlayerMap.find(shooterID);
                 std::string& playerShooterCodename = shooterEntry->second;
                 pipeInsert(playerShooterCodename,message,pipePath);
-                sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
+                sendto(socketFD, temp, strlen(temp), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
             }
             else if((killedID%2==0 && shooterID%2==0)){
+                struct sockaddr_in broadcastAddress;
+                memset(&broadcastAddress, 0, sizeof(broadcastAddress));
+                broadcastAddress.sin_family = AF_INET;
+                broadcastAddress.sin_port = htons(BROADCAST_PORT);
+                broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+
                 std::string message = "TeamG";
                 auto shooterEntry = machineToPlayerMap.find(shooterID);
                 std::string& playerShooterCodename = shooterEntry->second;
                 pipeInsert(playerShooterCodename,message,pipePath);
-                sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
+                sendto(socketFD, temp, strlen(temp), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
             }
         
         auto killedEntry = machineToPlayerMap.find(killedID);
     if (shooterEntry != machineToPlayerMap.end() && killedEntry != machineToPlayerMap.end()) {
+                struct sockaddr_in broadcastAddress;
+                memset(&broadcastAddress, 0, sizeof(broadcastAddress));
+                broadcastAddress.sin_family = AF_INET;
+                broadcastAddress.sin_port = htons(BROADCAST_PORT);
+                broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+                
         // Found both shooter's and killed's player codenames in the map
          std::string& playerShooterCodename = shooterEntry->second;
          std::string& playerKilledCodename = killedEntry->second;
@@ -222,7 +240,7 @@ int main() {
         
 
             pipeInsert(playerShooterCodename, playerKilledCodename, pipePath);
-            sendto(socketFD, responseMessage, strlen(responseMessage), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
+            sendto(socketFD, temp, strlen(temp), 0, (struct sockaddr*)&clientAddress, clientAddrLen);
         
         
         
@@ -252,7 +270,7 @@ else if (strcmp(buffer, "Response")==0){
             broadcastAddress.sin_port = htons(BROADCAST_PORT);
             broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-            sendto(socketFD, buffer, strlen(buffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
+            sendto(socketFD, temp, strlen(temp), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
 
 }
 
