@@ -23,6 +23,7 @@ const int BROADCAST_PORT = 7500;
 const int BUFFER_SIZE = 1024;
 int shooterID, killedID, tempShooter;
 const char* responseMessage = "Default response";
+const char* ip = "127.0.0.1";
 
 std::string redBase = "53";
 std::string greenBase = "43";
@@ -137,7 +138,7 @@ int main() {
             memset(&broadcastAddress, 0, sizeof(broadcastAddress));
             broadcastAddress.sin_family = AF_INET;
             broadcastAddress.sin_port = htons(BROADCAST_PORT);
-            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+            broadcastAddress.sin_addr.s_addr = inet_addr(ip);
 
             sendto(socketFD, buffer, strlen(buffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
             
@@ -146,7 +147,7 @@ int main() {
             memset(&broadcastAddress, 0, sizeof(broadcastAddress));
             broadcastAddress.sin_family = AF_INET;
             broadcastAddress.sin_port = htons(BROADCAST_PORT);
-            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+            broadcastAddress.sin_addr.s_addr = inet_addr(ip);
 
             sendto(socketFD, buffer, strlen(buffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
         }
@@ -174,7 +175,7 @@ int main() {
             memset(&broadcastAddress, 0, sizeof(broadcastAddress));
             broadcastAddress.sin_family = AF_INET;
             broadcastAddress.sin_port = htons(BROADCAST_PORT);
-            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+            broadcastAddress.sin_addr.s_addr = inet_addr(ip);
 
             //Converts machineID to a char so it can be broadcasted
             char idBuffer[32];
@@ -202,7 +203,7 @@ int main() {
                 memset(&broadcastAddress, 0, sizeof(broadcastAddress));
                 broadcastAddress.sin_family = AF_INET;
                 broadcastAddress.sin_port = htons(BROADCAST_PORT);
-                broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+                broadcastAddress.sin_addr.s_addr = inet_addr(ip);
 
                 std::string message = "TeamR";
                 auto shooterEntry = machineToPlayerMap.find(shooterID);
@@ -215,7 +216,7 @@ int main() {
                 memset(&broadcastAddress, 0, sizeof(broadcastAddress));
                 broadcastAddress.sin_family = AF_INET;
                 broadcastAddress.sin_port = htons(BROADCAST_PORT);
-                broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+                broadcastAddress.sin_addr.s_addr = inet_addr(ip);
 
                 std::string message = "TeamG";
                 auto shooterEntry = machineToPlayerMap.find(shooterID);
@@ -230,7 +231,7 @@ int main() {
                 memset(&broadcastAddress, 0, sizeof(broadcastAddress));
                 broadcastAddress.sin_family = AF_INET;
                 broadcastAddress.sin_port = htons(BROADCAST_PORT);
-                broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+                broadcastAddress.sin_addr.s_addr = inet_addr(ip);
                 
         // Found both shooter's and killed's player codenames in the map
          std::string& playerShooterCodename = shooterEntry->second;
@@ -268,7 +269,7 @@ else if (strcmp(buffer, "Response")==0){
             memset(&broadcastAddress, 0, sizeof(broadcastAddress));
             broadcastAddress.sin_family = AF_INET;
             broadcastAddress.sin_port = htons(BROADCAST_PORT);
-            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+            broadcastAddress.sin_addr.s_addr = inet_addr(ip);
 
             sendto(socketFD, temp, strlen(temp), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
 
