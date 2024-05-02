@@ -25,6 +25,7 @@ int shooterID, killedID, tempShooter;
 
 std::string redBase = "53";
 std::string greenBase = "43";
+const char* ip = "127.0.0.1";
 
 
 void printMapContents(const std::unordered_map<int, std::string>& map) {
@@ -135,7 +136,7 @@ int main() {
             memset(&broadcastAddress, 0, sizeof(broadcastAddress));
             broadcastAddress.sin_family = AF_INET;
             broadcastAddress.sin_port = htons(BROADCAST_PORT);
-            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+            broadcastAddress.sin_addr.s_addr = inet_addr(ip);
 
             sendto(socketFD, buffer, strlen(buffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
             
@@ -144,7 +145,7 @@ int main() {
             memset(&broadcastAddress, 0, sizeof(broadcastAddress));
             broadcastAddress.sin_family = AF_INET;
             broadcastAddress.sin_port = htons(BROADCAST_PORT);
-            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+            broadcastAddress.sin_addr.s_addr = inet_addr(ip);
 
             sendto(socketFD, buffer, strlen(buffer), 0, (struct sockaddr*)&broadcastAddress, sizeof(broadcastAddress));
         }
@@ -172,7 +173,7 @@ int main() {
             memset(&broadcastAddress, 0, sizeof(broadcastAddress));
             broadcastAddress.sin_family = AF_INET;
             broadcastAddress.sin_port = htons(BROADCAST_PORT);
-            broadcastAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+            broadcastAddress.sin_addr.s_addr = inet_addr(ip);
 
             //Converts machineID to a char so it can be broadcasted
             char idBuffer[32];

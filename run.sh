@@ -18,8 +18,8 @@ xterm -e ./udp/server &
 server_pid=$!
 
 # Start the client in a new xterm window and get its PID.
-xterm -e ./udp/client &
-client_pid=$!
+# xterm -e ./udp/client &
+# client_pid=$!
 
 # Set the directory where the Python file is located
 directory="frontend"
@@ -47,7 +47,7 @@ while true; do
 
     if [ $play_action_exit_code -eq 42 ]; then
         kill $server_pid
-        kill $client_pid
+        # kill $client_pid
         break
     fi
 done
