@@ -35,7 +35,7 @@ Repository dedicated to developing the software to run a game utilizing the Phot
 - Programmer061703--------------Blake Williams            
 - m-thursday--------------------Max Thursby
 - chinamanryan------------------Ryan Cheng
-- noahnewton10------------------Noah Newman
+- noahnew10---------------------Noah Newman
 - JosephFolenV------------------Joseph Folen
 - unclejeffaimgumin-------------Kevin Zheng
 - landonr7----------------------Landon Reynolds
